@@ -1,0 +1,44 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path" : "pages/curriculums/curriculums",
+			"style" :
+			{
+				"navigationBarTitleText" : "uni-app",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		}
+
+	],
+	"tabBar": {
+		"color": "#000000",
+		"selectedColor": "#000000",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/curriculums/curriculums",
+			"iconPath": "/static/table_select.png",
+			"selectedIconPath": "/static/table.png",
+			"text": "课表"
+		},
+		{
+			"pagePath": "pages/index/index",
+			"iconPath": "/static/read_more_select.png",
+			"selectedIconPath": "/static/read_more.png",
+			"text": "关于"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
