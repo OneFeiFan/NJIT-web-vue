@@ -18,24 +18,40 @@ export default function getCurriculumByUsernameAndPassword(rawData) {
             let classroom = item.jxdd;
             const courseName = item.kcmc;
             const time = item.sksj;
-            if (time === null) {
+            if (time === null || time === undefined) {
                 continue;
             }
-            if (classroom === null) {
+            if (classroom === null || classroom===undefined) {
                 classroom = "上课地点未定";
             }
-            const times = time.split(';');
-            const classrooms = classroom.split(';');
-            teacher = teacher.split('/')[1];
+			
+            let times = null
+            let classrooms = null;
+			try{
+				// console.log(typeof time)
+				times = time.split(';');
+			}catch(e){
+				console.log(e)
+			}
+            try{
+				// console.log(typeof classroom)
+            	classrooms = classroom.split(';');
+            }catch(e){
+            	console.log(e)
+            }
+			try{
+				teacher = teacher.split('/')[1];
+			}catch(e){
+				console.log(e)
+			}
             let j = 0;
             for (let t of times) {
                 const weekday = t.substring(0, 3);
                 const courseTime = t.substring(t.indexOf('第'), t.indexOf('{'));
                 const weeks = t.substring(t.indexOf('{') + 1, t.indexOf('}'));
-
                 const timeArray = getCourseTime(courseTime);
                 const weekss = weeks.split(',');
-
+				
                 for (let week of weekss) {
                     if (!week.includes('-')) {
                         const course = {
@@ -124,6 +140,7 @@ export default function getCurriculumByUsernameAndPassword(rawData) {
 }
 
 function getCourseTime(courseTime) {
+	try{
     courseTime = courseTime.replace(/第/g, '');
     courseTime = courseTime.replace(/节/g, '');
     const split = courseTime.split(',');
@@ -137,4 +154,7 @@ function getCourseTime(courseTime) {
         }
     }
     return timeArray;
+	}catch(e){
+		console.log(e)
+	}
 }

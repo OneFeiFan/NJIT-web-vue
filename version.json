@@ -1,4 +1,4 @@
 {
-    "version": "1.0.1",
-    "description": "1.第一次升级\n2.测试"
+    "version": "1.0.2",
+    "description": "1.修复部分学生课表没有上课时间和地点，无法解析的bug。"
 }
