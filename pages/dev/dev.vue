@@ -1,44 +1,18 @@
 <template>
   <view class="content">
-    <status-bar></status-bar>
-    <view class="header">
-      <image class="headimg" src="@/static/headimg.png" mode="aspectFit"></image>
-      <text class="des">
-        {{ "Made by " }}
-        <a href="http://res.abeim.cn/api-qq?qq=3022504358" style="color: rgb(0, 0, 0);">OneFeiFan</a>
-      </text>
-      <text class="more">
-        <uni-link href="https://gitee.com/OneFeiFan/u-coder-community" text="U-Coder社区" color="#007BFF"></uni-link>
-        倾情奉献
-      </text>
-      <text class="more">
-        感谢不愿透露姓名的神秘人开源前端
-      </text>
-    </view>
     <view class="footer">
       <zero-markdown-view :markdown="content" themeColor="#000"></zero-markdown-view>
-      <fui-list>
-        <fui-list-cell arrow @click="jump(`faq`)">
-          <text>FAQ</text>
-        </fui-list-cell>
-        <fui-list-cell arrow @click="jump(`dev`)">
-          <text>监督我开发</text>
-        </fui-list-cell>
-        <fui-list-cell arrow @click="jump(`about`)">
-          <text>关于</text>
-        </fui-list-cell>
-      </fui-list>
     </view>
   </view>
 </template>
 
 <script>
 
+
 export default {
   data() {
     return {
-      content: `<p align="center">不晓得为啥,没获取到数据QAQ</p>`,
-      main: null,
+      content:  `<p align="center">不晓得为啥,没获取到数据QAQ</p>`
     }
   },
   onLoad() {
@@ -51,19 +25,13 @@ export default {
         "Connection": "keep-alive"
       },
       success: (res) => {
-        if (res.statusCode === 200) {
-          this.content = `${res.data.notice}`;
+        if(res.statusCode === 200){
+          this.content = `${res.data.dev}`;
         }
       }
     });
   },
-  methods: {
-    jump(page) {
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      });
-    }
-  }
+  methods: {}
 }
 </script>
 

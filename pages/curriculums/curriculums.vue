@@ -1,7 +1,7 @@
 <template>
   <view class="container">
 	<status-bar></status-bar>
-    <web-view :webview-styles="webviewStyles" :src=URL @message="handlePostMessage"/>
+    <web-view v-if="app" :webview-styles="webviewStyles" :src=URL @message="handlePostMessage"/>
     <!--		<u-picker @cancel="show = false" @close="show = false" :show="show" :columns="weekdays" @confirm="localConfirm"-->
     <!--			title="请选择周次" closeOnClickOverlay ref="uPicker"></u-picker>-->
 
@@ -15,7 +15,7 @@
       <u-button :customStyle="btnStyle" text="复位" size="small" shape="circle" @click="reSet"></u-button>
     </view>
 
-    <timetable :timetables="timetableData[week]" :timetableType="timeSlots"></timetable>
+    <timetable :timetables="timetableData[week]" :timetableType="timeSlots" @courseClick="handleCourseClick"></timetable>
 
     <uni-popup ref="loginModal" type="message" :mask-click="false">
       <view class="login-modal">
@@ -46,15 +46,20 @@ import moment from 'moment';
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import getCurriculumByUsernameAndPassword from "@/static/tool"
+import UIcon from "@/uni_modules/uview-ui/components/u-icon/u-icon.vue";
+import UButton from "@/uni_modules/uview-ui/components/u-button/u-button.vue";
 
 export default {
   components: {
+    UButton,
+    UIcon,
     UniPopup,
     UniEasyinput,
     Timetable
   },
   data() {
     return {
+      app:false,
       check: null,
       wait:null,
       loginPage: null,
@@ -132,9 +137,12 @@ export default {
     };
   },
   created() {
+    // #ifdef APP-PLUS
+    this.app = true;
     this.getJS().then(res => {
       this.webviewJS = res;
     });
+    // #endif
   },
   onLoad() {
     try {
@@ -199,6 +207,12 @@ export default {
       this.week = this.calculateCurrentWeek()
       uni.hideLoading();
       clearTimeout(this.wait);
+    },
+    handleCourseClick(e){
+      uni.showModal({
+        title: '详细信息',
+        content: `${e.name}`
+      });
     },
     handlePrevWeek() {
 
@@ -515,7 +529,7 @@ $modal-width: 90vw;
 }
 
 .container {
-  height: calc(100vh - var(--status-bar-height));
+  height: calc(100vh - var(--tabbar-height) - var(--statusbar-height));
   background: #f5f5f5;
 }
 
