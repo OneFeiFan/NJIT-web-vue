@@ -142,6 +142,7 @@
   border-radius: 8rpx;
 
   .header{
+    width: calc(100% - 88rpx);
     padding-left: 88rpx;
     height: 56rpx;
     display: flex;

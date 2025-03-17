@@ -35,6 +35,13 @@
         "navigationBarTitleText": "FAQ",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/privacy/privacy",
+      "style": {
+        "navigationBarTitleText": "隐私政策",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "tabBar": {

@@ -24,6 +24,9 @@
         <fui-list-cell arrow @click="jump(`dev`)">
           <text>监督我开发</text>
         </fui-list-cell>
+        <fui-list-cell arrow @click="jump(`privacy`)">
+          <text>隐私政策</text>
+        </fui-list-cell>
         <fui-list-cell arrow @click="jump(`about`)">
           <text>关于</text>
         </fui-list-cell>
@@ -34,7 +37,14 @@
 
 <script>
 
+import ZeroMarkdownView from "@/uni_modules/zero-markdown-view/components/zero-markdown-view/zero-markdown-view.vue";
+import FuiList from "@/components/fui-list/fui-list.vue";
+import UniLink from "@/uni_modules/uni-link/components/uni-link/uni-link.vue";
+import StatusBar from "@/components/status-bar/status-bar.vue";
+import FuiListCell from "@/components/fui-list-cell/fui-list-cell.vue";
+
 export default {
+  components: {FuiListCell, StatusBar, UniLink, FuiList, ZeroMarkdownView},
   data() {
     return {
       content: `<p align="center">不晓得为啥,没获取到数据QAQ</p>`,

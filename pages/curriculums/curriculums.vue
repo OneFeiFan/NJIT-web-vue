@@ -58,9 +58,13 @@ import UIcon from "@/uni_modules/uview-ui/components/u-icon/u-icon.vue";
 import UButton from "@/uni_modules/uview-ui/components/u-button/u-button.vue";
 import StatusBar from "@/components/status-bar/status-bar.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
+import YTabs from "@/uni_modules/y-tabs/components/y-tabs/y-tabs.vue";
+import YTab from "@/uni_modules/y-tabs/components/y-tab/y-tab.vue";
 
 export default {
   components: {
+    YTab,
+    YTabs,
     UniNavBar,
     StatusBar,
     UButton,
@@ -75,7 +79,7 @@ export default {
       check: null,
       wait:null,
       loginPage: null,
-      URL: "https://www.baidu.com",
+      URL: "http://127.0.0.1",
       captchaImg: null,
       username: '',
       password: '',
@@ -162,7 +166,6 @@ export default {
     // #endif
     try {
       let temp = uni.getStorageSync('curriculum');
-      console.log(temp)
       if(temp !== null && temp !== ''){
         this.schedules = temp;
         this.loadSchedule();
@@ -207,7 +210,6 @@ export default {
       //#endif
       for (let i = 1; i < temp.length; i++) {
         const weekCourses = temp[i];
-        console.log(weekCourses)
         for (let j = 0; j < weekCourses.length; j++) {
           const course = weekCourses[j];
           const time = course.time;
@@ -313,7 +315,7 @@ export default {
         title: '登录中'
       });
       this.wait = setTimeout(()=>{
-        this.URL = "https://www.baidu.com";
+        this.URL = "http://127.0.0.1";
         uni.hideLoading();
         uni.showToast({
           title: '登录失败',
@@ -364,7 +366,7 @@ export default {
         icon: 'loading',
         duration: 500
       });
-      this.URL = "https://www.baidu.com";
+      this.URL = "http://127.0.0.1";
       if (this.webviewJS === null || this.webviewJS === '' || this.webviewJS === undefined) {
         this.getJS().then(res => {
           if(res !== null && res !== '' && res !== undefined){
