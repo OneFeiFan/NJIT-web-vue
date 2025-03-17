@@ -2,20 +2,28 @@
   <view class="container">
 	<status-bar></status-bar>
     <web-view v-if="app" :webview-styles="webviewStyles" :src=URL @message="handlePostMessage"/>
+    <!-- 头部控制栏 -->
+    <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="rgb(248, 248, 248)">
+      <view class="header">
+        <u-button :customStyle="btnStyle" text="更新" size="small" shape="circle"
+                  @click="update"></u-button>
+<!--        <u-icon name="arrow-left" class="icon-left" @click="handlePrevWeek"></u-icon>-->
+        <text class="title" v-if="week>0">第{{ week }}周课表</text>
+        <text class="title" v-if="week===0">学期课表</text>
+<!--        <u-icon name="arrow-right" class="icon-right" @click="handleNextWeek"></u-icon>-->
+        <u-button :customStyle="btnStyle" text="复位" size="small" shape="circle" @click="reSet"></u-button>
+      </view>
+    </uni-nav-bar>
+
     <!--		<u-picker @cancel="show = false" @close="show = false" :show="show" :columns="weekdays" @confirm="localConfirm"-->
     <!--			title="请选择周次" closeOnClickOverlay ref="uPicker"></u-picker>-->
 
-    <!-- 头部控制栏 -->
-    <view class="header">
-      <u-button :customStyle="btnStyle" text="更新" size="small" shape="circle"
-                @click="update"></u-button>
-      <u-icon name="arrow-left" class="icon-left" @click="handlePrevWeek"></u-icon>
-      <text class="title">第{{ week }}周课表</text>
-      <u-icon name="arrow-right" class="icon-right" @click="handleNextWeek"></u-icon>
-      <u-button :customStyle="btnStyle" text="复位" size="small" shape="circle" @click="reSet"></u-button>
-    </view>
 
-    <timetable :timetables="timetableData[week]" :timetableType="timeSlots" @courseClick="handleCourseClick"></timetable>
+    <y-tabs v-model="week" :swipeable="true" :hide="true">
+      <y-tab class="y-tab-virtual" v-for="tab in timetableData">
+        <timetable :timetables="tab" :timetableType="timeSlots" @courseClick="handleCourseClick"></timetable>
+      </y-tab>
+    </y-tabs>
 
     <uni-popup ref="loginModal" type="message" :mask-click="false">
       <view class="login-modal">
@@ -48,9 +56,13 @@ import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue
 import getCurriculumByUsernameAndPassword from "@/static/tool"
 import UIcon from "@/uni_modules/uview-ui/components/u-icon/u-icon.vue";
 import UButton from "@/uni_modules/uview-ui/components/u-button/u-button.vue";
+import StatusBar from "@/components/status-bar/status-bar.vue";
+import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
 
 export default {
   components: {
+    UniNavBar,
+    StatusBar,
     UButton,
     UIcon,
     UniPopup,
@@ -76,8 +88,7 @@ export default {
         width: '50rpx',
         backgroundColor: "#FFF0F5"
       },
-      currentWeek: 1,
-      week: 1,
+      week: 0,
       timeSlots: [
         {
           index: '1',
@@ -145,6 +156,10 @@ export default {
     // #endif
   },
   onLoad() {
+    this.week = this.calculateCurrentWeek()
+    //#ifdef H5
+    this.loadSchedule()
+    // #endif
     try {
       let temp = uni.getStorageSync('curriculum');
       console.log(temp)
@@ -186,9 +201,13 @@ export default {
       // uni.getStorageSync('curriculum');
 
       // this.schedules = curriculum;
-      const temp = this.schedules
+      let temp = this.schedules
+      //#ifdef H5
+      temp = [[],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":1},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":1},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":1},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":1},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":1},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":1},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":1},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":1},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":2},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":2},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":2},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":2},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":2},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":2},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":2},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":2},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":3},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":3},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":3},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":3},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":3},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":3},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":3},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":3},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":4},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":4},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":4},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":4},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":4},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":4},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":4},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":4},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":5},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":5},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":5},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":5},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":5},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":5},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":5},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":6},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":6},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":6},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":6},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":6},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":6},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":6},"classroom":"西A202"}],[{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":7},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":7},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":7},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":7},"classroom":"西A302"}],[{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":8},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":8},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":8},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":8},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":8},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":8},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":9},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":9},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":9},"classroom":"西A302"},{"name":"人工智能","teacher":"卢 阿丽","time":{"weekday":4,"timeArray":[3,4],"week":9},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":9},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":9},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":10},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":10},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":10},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":10},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":10},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":10},"classroom":"西A302"}],[],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":12},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":12},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":12},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":12},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":12},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":12},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":" 岳红原","time":{"weekday":2,"timeArray":[1,2],"week":13},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":13},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":13},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":13},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":13},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐 梦溪","time":{"weekday":3,"timeArray":[3,4],"week":13},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":14},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":14},"classroom":"南A209"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":14},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":14},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":15},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":15},"classroom":"南A209"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":16},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":16},"classroom":"南A209"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":17},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":17},"classroom":"南A209"}]]
+      //#endif
       for (let i = 1; i < temp.length; i++) {
         const weekCourses = temp[i];
+        console.log(weekCourses)
         for (let j = 0; j < weekCourses.length; j++) {
           const course = weekCourses[j];
           const time = course.time;
@@ -200,15 +219,17 @@ export default {
           for (let m = 0; m < courseTime.length; m++) {
             const value = name + '@' + classroom;
             this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
+            this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
           }
         }
       }
-
-      this.week = this.calculateCurrentWeek()
       uni.hideLoading();
       clearTimeout(this.wait);
     },
     handleCourseClick(e){
+      if (e.name === '' || e.classroom === ''){
+        return;
+      }
       uni.showModal({
         title: '详细信息',
         content: `${e.name}`
@@ -366,6 +387,7 @@ export default {
       }, 1000);
     },
     update() {
+      console.log('update')
       if (this.webviewJS === null || this.webviewJS === '' || this.webviewJS === undefined) {
         this.getJS().then(res => {
           if(res !== null && res !== '' && res !== undefined){
@@ -485,6 +507,9 @@ export default {
 </script>
 
 <style lang="scss">
+.y-tabs__sticky{
+  height: 0% !important;
+}
 $modal-width: 90vw;
 .login-modal {
   width: $modal-width;
@@ -538,25 +563,27 @@ $modal-width: 90vw;
 }
 
 .header {
-  padding: 20rpx;
+  height: 100%;
+  width: 100%;
   background: #fff;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
 
+
   .icon-left {
     margin-right: 50rpx;
     /* 调整这个值控制间距 */
     position: relative;
-    top: -6rpx
+    //top: -6rpx
   }
 
   .icon-right {
     margin-left: 50rpx;
     /* 调整这个值控制间距 */
     position: relative;
-    top: -6rpx
+    //top: -6rpx
   }
 
 
@@ -565,7 +592,6 @@ $modal-width: 90vw;
     text-align: center;
     font-size: 36rpx;
     color: #333;
-    margin-bottom: 20rpx;
   }
 }
 </style>

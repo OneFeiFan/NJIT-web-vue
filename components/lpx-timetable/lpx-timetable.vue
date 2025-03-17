@@ -5,6 +5,7 @@
     </view>
 
     <view class="main">
+      <scroll-view  scroll-y="true" class="scroll-Y">
       <view class="row" v-for="(item,index) in timetableType" :key="index">
         <view class="time-item" >
           <view class="index">{{ item.index }}</view>
@@ -15,10 +16,11 @@
       <view class="course-container">
         <view class="week" v-for="(week, weekIndex) in courseData" :key="weekIndex">
           <view class="courseList" v-for="(course, courseIndex) in week" :key="courseIndex">
-            <view @click="handleCourseClick(course, weekIndex, courseIndex)" class="course" :style="{ height: (course.length * 75) + 'px', background: course.backgroundColor }" v-if="course.length > 0">{{ course.name }}</view>
+            <view @click="handleCourseClick(course, weekIndex, courseIndex)" class="course" :style="{ height: (course.length * 150) + 'rpx', background: course.backgroundColor }" v-if="course.length > 0">{{ course.name }}</view>
           </view>
         </view>
       </view>
+      </scroll-view>
     </view>
   </view>
 </template>
@@ -154,8 +156,12 @@
 
   .main{
     position: relative;
+    height: calc(100vh - 56rpx - 44px - var(--window-bottom) - var(--status-bar-height) - 2px);
+    .scroll-Y{
+      height: 100%;
+    }
     .row{
-      height: 75px;
+      height: 150rpx;
       position: relative;
       &:after{
         content: '';
@@ -172,11 +178,22 @@
         width: 88rpx;
         text-align: center;
         background: #F5F7FA;
+        display: flex;
+        flex-direction: column;
 
         .index{
+          flex: 1;
           color: #909399;
-          padding-bottom: 8rpx;
-          padding-top: 16rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .time{
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28rpx;
         }
       }
     }
@@ -203,10 +220,11 @@
 
           .course{
             // padding: 8rpx;
-			    align-items: center;
-			display: flex;
+			      align-items: center;
+			      display: flex;
             border-radius: 16rpx;
             text-align: center;
+            font-size: 30rpx;
           }
         }
       }

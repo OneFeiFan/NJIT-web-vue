@@ -1,4 +1,14 @@
 <script>
+	// #ifdef APP
+	import {
+	initUM,UMonKillProcess,
+	UMonProfileSignIn,UMonProfileSignIns,UMonPageStart,UMonPageEnd,UMuserProfileMobile,
+	UMonEventObject,UMonProfileSignOff,UMuserProfileEMail,UMuserProfile
+	,UMsubmitPolicyGrantResult,UMenableImsiCollection,UMenableIccidCollection,
+	UMenableImeiCollection,UMenableWiFiMacCollection,onUMgetOaid,
+	getUMIDString
+	} from "@/uni_modules/xtf-umeng"
+	// #endif
 export default {
   onLaunch: function () {
     console.log('App Launch')
@@ -7,6 +17,7 @@ export default {
 // 应用程序版本号
 // 条件编译，只在APP渲染
 // #ifdef APP
+	initUM("67d77c8948ac1b4f87e98e5f","android");
     let version_number = systemInfo.appWgtVersion;
     uni.request({
       url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
@@ -42,10 +53,22 @@ export default {
   },
   onHide: function () {
     console.log('App Hide')
+  },
+  beforeDestroy: function () {
+    console.log('App Before Destroy')
+  },
+  destroyed: function () {
+    console.log('App Destroyed')
   }
 }
 </script>
 
 <style>
 /*每个页面公共css */
+.uni-navbar__header-container{
+  padding: 0 !important;
+}
+.uni-navbar__header{
+  padding: 0 !important;
+}
 </style>

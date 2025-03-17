@@ -131,7 +131,7 @@ export default function getCurriculumByUsernameAndPassword(rawData) {
         courses.forEach(course => {
             result[course.time.week].push(course);
         });
-        console.log(JSON.stringify(result))
+
         return result;
     } catch (error) {
         console.log(error)
