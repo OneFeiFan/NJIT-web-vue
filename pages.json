@@ -42,6 +42,14 @@
         "navigationBarTitleText": "隐私政策",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/classroom/classroom",
+      "style": {
+        "navigationBarTitleText": "空教室查询",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
     }
   ],
   "tabBar": {

@@ -1,17 +1,13 @@
 <template>
   <view class="container">
-	<status-bar></status-bar>
-    <web-view v-if="app" :webview-styles="webviewStyles" :src=URL @message="handlePostMessage"/>
+    <status-bar></status-bar>
     <!-- 头部控制栏 -->
     <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="rgb(248, 248, 248)">
       <view class="header">
-        <u-button :customStyle="btnStyle" text="更新" size="small" shape="circle"
-                  @click="update"></u-button>
-<!--        <u-icon name="arrow-left" class="icon-left" @click="handlePrevWeek"></u-icon>-->
+        <uni-icons type="bars" size="50rpx" @click="showMenu" class="icon-left"/>
         <text class="title" v-if="week>0">第{{ week }}周课表</text>
         <text class="title" v-if="week===0">学期课表</text>
-<!--        <u-icon name="arrow-right" class="icon-right" @click="handleNextWeek"></u-icon>-->
-        <u-button :customStyle="btnStyle" text="复位" size="small" shape="circle" @click="reSet"></u-button>
+        <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}" />
       </view>
     </uni-nav-bar>
 
@@ -45,6 +41,21 @@
         </view>
       </view>
     </uni-popup>
+    <uni-popup ref="menu" :mask-click="false">
+        <view class="menu">
+          <status-bar></status-bar>
+          <uni-icons type="closeempty" size="50rpx" @click="closeMenu" class="close-icon"/>
+          <fui-list>
+            <fui-list-cell arrow @click="jump(`classroom`)">
+              <text>空教室查询</text>
+            </fui-list-cell>
+          </fui-list>
+        </view>
+    </uni-popup>
+    <sv-intercept-back
+        :show="menu"
+        :beforeIntercept="closeMenu"
+    />
   </view>
 </template>
 
@@ -53,16 +64,20 @@ import Timetable from '@/components/lpx-timetable/lpx-timetable'
 import moment from 'moment';
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import getCurriculumByUsernameAndPassword from "@/static/tool"
+import getCurriculumByUsernameAndPassword from "@/static/util/tool"
 import UIcon from "@/uni_modules/uview-ui/components/u-icon/u-icon.vue";
 import UButton from "@/uni_modules/uview-ui/components/u-button/u-button.vue";
 import StatusBar from "@/components/status-bar/status-bar.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
 import YTabs from "@/uni_modules/y-tabs/components/y-tabs/y-tabs.vue";
 import YTab from "@/uni_modules/y-tabs/components/y-tab/y-tab.vue";
+import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
+import FuiListCell from "@/components/fui-list-cell/fui-list-cell.vue";
 
 export default {
   components: {
+    FuiListCell,
+    UniIcons,
     YTab,
     YTabs,
     UniNavBar,
@@ -75,23 +90,16 @@ export default {
   },
   data() {
     return {
-      app:false,
+      menu: false,
+      loading: false,
+      app: false,
       check: null,
-      wait:null,
+      wait: null,
       loginPage: null,
-      URL: "http://127.0.0.1",
       captchaImg: null,
       username: '',
       password: '',
       captcha: '',
-      webviewStyles: {
-        progress: false,
-        height: "0px"
-      },
-      btnStyle: {
-        width: '50rpx',
-        backgroundColor: "#FFF0F5"
-      },
       week: 0,
       timeSlots: [
         {
@@ -134,7 +142,10 @@ export default {
           index: '10',
           name: '19:25\n20:10'
         },
-
+        {
+          index: '11',
+          name: '20:20\n21:05'
+        }
       ],
 
       timetableData: Array.from({
@@ -153,10 +164,16 @@ export default {
   },
   created() {
     // #ifdef APP-PLUS
-    this.app = true;
-    this.getJS().then(res => {
-      this.webviewJS = res;
-    });
+    this.loginPage = plus.webview.getWebviewById("webviewInside");
+    plus.globalEvent.addEventListener('plusMessage', this.handlePostMessage)
+    // this.loginPage.setStyle({
+    //   top: 100,
+    //   height: "30%",
+    //   width: "100%"
+    // })
+    // var currentWebview = this.$scope.$getAppWebview(); //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效
+    // currentWebview.append(this.loginPage);
+
     // #endif
   },
   onLoad() {
@@ -166,25 +183,52 @@ export default {
     // #endif
     try {
       let temp = uni.getStorageSync('curriculum');
-      if(temp !== null && temp !== ''){
+      if (temp !== null && temp !== '') {
         this.schedules = temp;
         this.loadSchedule();
       }
-    }catch (e) {
+    } catch (e) {
       console.error(e)
     }
   },
   onReady() {
     // #ifdef APP-PLUS
-    setTimeout(() => {
-      this.loginPage = this.$scope.$getAppWebview().children()[0];// 获取内置页面webview
-      // this.loginPage.setStyle({
-      //   top: 200
-      // })
-    }, 1000); //如果是页面初始化调用时，需要延时一下
+    this.loginPage.onerror = (e)=>{
+      uni.showToast({
+        title: '加载失败',
+        icon: 'error',
+        duration: 2000
+      });
+    }
     // #endif
   },
   methods: {
+    showMenu(){
+      this.menu = true;
+      uni.hideTabBar({
+        animation: true
+      });
+      this.$refs.menu.open("left");
+    },
+    closeMenu(){
+      this.$refs.menu.close();
+      uni.showTabBar({
+        animation: true
+      });
+      this.menu = false;
+    },
+    jump(page) {
+      this.menu = false;
+      this.$refs.menu.close();
+      uni.showTabBar({
+        animation: true
+      });
+      setTimeout(() => {
+      uni.navigateTo({
+        url: `/pages/${page}/${page}`
+      });
+      }, 250);
+    },
     calculateCurrentWeek() {
       const today = new Date(); // 当前日期
       today.setHours(0, 0, 0, 0); // 重置时间部分
@@ -201,12 +245,459 @@ export default {
       return Math.floor(diff / 7) + 1; // 计算周数
     },
     loadSchedule() {
-      // uni.getStorageSync('curriculum');
-
-      // this.schedules = curriculum;
       let temp = this.schedules
       //#ifdef H5
-      temp = [[],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":1},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":1},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":1},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":1},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":1},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":1},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":1},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":1},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":2},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":2},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":2},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":2},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":2},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":2},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":2},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":2},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":3},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":3},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":3},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":3},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":3},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":3},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":3},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":3},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":4},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":4},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":4},"classroom":"东A402"},{"name":"大学生职业发展与就业指导Ⅱ","teacher":"黄玮","time":{"weekday":5,"timeArray":[5,6],"week":4},"classroom":"东202"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":4},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":4},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":4},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":4},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":5},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":5},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":5},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":5},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":5},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":5},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":5},"classroom":"西A202"}],[{"name":"形势与政策","teacher":"苏红","time":{"weekday":4,"timeArray":[7,8],"week":6},"classroom":"西C302"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":6},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":6},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":6},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":6},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":6},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":6},"classroom":"西A202"}],[{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":7},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":7},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":7},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":7},"classroom":"西A302"}],[{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":1,"timeArray":[1,2],"week":8},"classroom":"东A402"},{"name":"虚拟现实","teacher":"陈钧","time":{"weekday":3,"timeArray":[1,2],"week":8},"classroom":"东A402"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":8},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":8},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":8},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":8},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":9},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":9},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":9},"classroom":"西A302"},{"name":"人工智能","teacher":"卢 阿丽","time":{"weekday":4,"timeArray":[3,4],"week":9},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":9},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":9},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":10},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":10},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":10},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":10},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":10},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":10},"classroom":"西A302"}],[],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":12},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":12},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":12},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":12},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":12},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":12},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":" 岳红原","time":{"weekday":2,"timeArray":[1,2],"week":13},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":13},"classroom":"南A209"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":2,"timeArray":[3,4],"week":13},"classroom":"西A302"},{"name":"人工智能","teacher":"卢阿丽","time":{"weekday":4,"timeArray":[3,4],"week":13},"classroom":"西A302"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":13},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐 梦溪","time":{"weekday":3,"timeArray":[3,4],"week":13},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":14},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":14},"classroom":"南A209"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":1,"timeArray":[3,4],"week":14},"classroom":"西A101"},{"name":"人机交互技术","teacher":"徐梦溪","time":{"weekday":3,"timeArray":[3,4],"week":14},"classroom":"西A302"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":15},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":15},"classroom":"南A209"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":16},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":16},"classroom":"南A209"}],[{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":2,"timeArray":[1,2],"week":17},"classroom":"南A209"},{"name":"计算机视觉","teacher":"岳红原","time":{"weekday":4,"timeArray":[1,2],"week":17},"classroom":"南A209"}]]
+      temp = [[], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 1},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 1},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 1},
+        "classroom": "东A402"
+      }, {
+        "name": "大学生职业发展与就业指导Ⅱ",
+        "teacher": "黄玮",
+        "time": {"weekday": 5, "timeArray": [5, 6], "week": 1},
+        "classroom": "东202"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 1},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 1},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 1},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 1},
+        "classroom": "西A202"
+      }], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 2},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 2},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 2},
+        "classroom": "东A402"
+      }, {
+        "name": "大学生职业发展与就业指导Ⅱ",
+        "teacher": "黄玮",
+        "time": {"weekday": 5, "timeArray": [5, 6], "week": 2},
+        "classroom": "东202"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 2},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 2},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 2},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 2},
+        "classroom": "西A202"
+      }], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 3},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 3},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 3},
+        "classroom": "东A402"
+      }, {
+        "name": "大学生职业发展与就业指导Ⅱ",
+        "teacher": "黄玮",
+        "time": {"weekday": 5, "timeArray": [5, 6], "week": 3},
+        "classroom": "东202"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 3},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 3},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 3},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 3},
+        "classroom": "西A202"
+      }], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 4},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 4},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 4},
+        "classroom": "东A402"
+      }, {
+        "name": "大学生职业发展与就业指导Ⅱ",
+        "teacher": "黄玮",
+        "time": {"weekday": 5, "timeArray": [5, 6], "week": 4},
+        "classroom": "东202"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 4},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 4},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 4},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 4},
+        "classroom": "西A202"
+      }], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 5},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 5},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 5},
+        "classroom": "东A402"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 5},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 5},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 5},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 5},
+        "classroom": "西A202"
+      }], [{
+        "name": "形势与政策",
+        "teacher": "苏红",
+        "time": {"weekday": 4, "timeArray": [7, 8], "week": 6},
+        "classroom": "西C302"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 6},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 6},
+        "classroom": "东A402"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 6},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 6},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 6},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 6},
+        "classroom": "西A202"
+      }], [{
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 7},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 7},
+        "classroom": "东A402"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 7},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 7},
+        "classroom": "西A302"
+      }], [{
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 1, "timeArray": [1, 2], "week": 8},
+        "classroom": "东A402"
+      }, {
+        "name": "虚拟现实",
+        "teacher": "陈钧",
+        "time": {"weekday": 3, "timeArray": [1, 2], "week": 8},
+        "classroom": "东A402"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 8},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 8},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 8},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 8},
+        "classroom": "西A302"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 9},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 9},
+        "classroom": "南A209"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 9},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢 阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 9},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 9},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 9},
+        "classroom": "西A302"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 10},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 10},
+        "classroom": "南A209"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 10},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 10},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 10},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 10},
+        "classroom": "西A302"
+      }], [], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 12},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 12},
+        "classroom": "南A209"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 12},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 12},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 12},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 12},
+        "classroom": "西A302"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": " 岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 13},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 13},
+        "classroom": "南A209"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 13},
+        "classroom": "西A302"
+      }, {
+        "name": "人工智能",
+        "teacher": "卢阿丽",
+        "time": {"weekday": 4, "timeArray": [3, 4], "week": 13},
+        "classroom": "西A302"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 13},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐 梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 13},
+        "classroom": "西A302"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 14},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 14},
+        "classroom": "南A209"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 1, "timeArray": [3, 4], "week": 14},
+        "classroom": "西A101"
+      }, {
+        "name": "人机交互技术",
+        "teacher": "徐梦溪",
+        "time": {"weekday": 3, "timeArray": [3, 4], "week": 14},
+        "classroom": "西A302"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 15},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 15},
+        "classroom": "南A209"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 16},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 16},
+        "classroom": "南A209"
+      }], [{
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 2, "timeArray": [1, 2], "week": 17},
+        "classroom": "南A209"
+      }, {
+        "name": "计算机视觉",
+        "teacher": "岳红原",
+        "time": {"weekday": 4, "timeArray": [1, 2], "week": 17},
+        "classroom": "南A209"
+      }]]
       //#endif
       for (let i = 1; i < temp.length; i++) {
         const weekCourses = temp[i];
@@ -225,31 +716,19 @@ export default {
           }
         }
       }
+      this.loading = false;
       uni.hideLoading();
+      this.week = this.calculateCurrentWeek()
       clearTimeout(this.wait);
     },
-    handleCourseClick(e){
-      if (e.name === '' || e.classroom === ''){
+    handleCourseClick(e) {
+      if (e.name === '' || e.classroom === '') {
         return;
       }
       uni.showModal({
         title: '详细信息',
         content: `${e.name}`
       });
-    },
-    handlePrevWeek() {
-
-      if (this.week > 1) {
-        this.week--;
-      }
-      console.log(this.week)
-    },
-    handleNextWeek() {
-
-      if (this.week < 20) {
-        this.week++;
-      }
-
     },
     inputUserName(e) {
       this.loginPage.evalJS(
@@ -266,17 +745,8 @@ export default {
           `document.querySelector("#captchaResponse").value = "${e}"`
       )
     },
-    updateCaptchaImg(){
-      this.loginPage.evalJS(
-          `document.querySelector("#captchaImg").click();`
-      );
-      setTimeout(() => {
-        this.loginPage.evalJS(`
-            var script = document.createElement('script');
-            script.textContent = ${this.webviewJS};
-            document.body.appendChild(script);
-          `);
-        this.loginPage.evalJS(`
+    getCaptchaImg() {
+      this.loginPage.evalJS(`
             function getBase64FromImg(imgElement, type = 'image/png') {
               const canvas = document.createElement('canvas');
               canvas.width = imgElement.naturalWidth;
@@ -285,14 +755,22 @@ export default {
               ctx.drawImage(imgElement, 0, 0);
               return canvas.toDataURL(type); // 返回完整的Base64字符串（包含MIME类型）
             }
-            var _pngBase64 = getBase64FromImg(document.querySelector("#captchaImg"));
-            uni.postMessage({
-              data: {
-                captchaImg: _pngBase64
+            plus.webview.postMessageToUniNView({
+              type: "CAPTCHAIMAGEBASE64",
+              args: {
+                data: getBase64FromImg(document.querySelector("#captchaImg"))
               }
-            });
+            }, "__uniapp__service");
           `)
-      },500);
+    },
+    updateCaptchaImg() {
+      this.loginPage.evalJS(
+          `document.querySelector("#captchaImg").click();`
+      );
+      setTimeout(() => {
+        // this.injectJS();
+        this.getCaptchaImg();
+      }, 500);
 
       console.log("updateCaptchaImg")
     },
@@ -314,171 +792,113 @@ export default {
       uni.showLoading({
         title: '登录中'
       });
-      this.wait = setTimeout(()=>{
-        this.URL = "http://127.0.0.1";
-        uni.hideLoading();
-        uni.showToast({
-          title: '登录失败',
-          icon: 'error',
-          duration: 2000
-        });
-        clearInterval(this.check);
-      }, 10000);
+
       // #ifdef APP-PLUS
+      this.loginPage.onloaded = ()=>{
+        this.loginPage.onloaded = () => {}
+        uni.hideLoading();
+        this.loading = false;
+        setTimeout(() => {
+          if (this.loginPage.getURL() !== "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
+            uni.hideLoading();
+            uni.showToast({
+              title: '登录失败',
+              icon: 'error',
+              duration: 2000
+            });
+            return;
+          }
+          uni.showToast({
+            title: '登录成功，现在你可以继续操作',
+            icon: 'none',
+            duration: 2000
+          });
+        },100)
+      }
       this.loginPage.evalJS(
           'document.querySelector("#load").click();'
       )
-      this.check = setInterval(() => {
-        console.log('check')
-        if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-          clearInterval(this.check);
-          clearTimeout(this.wait);
-          uni.hideLoading();
-          this.getData();
-        }
-      }, 500)
       // #endif
-    },
-    async getJS() {
-      try {
-        let result = await uni.request({
-          url: 'https://gitcode.net/dcloud/uni-app/-/raw/dev/dist/uni.webview.1.5.6.js',
-          header: {
-            "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-            "Accept": "*/*",
-            "Host": "gitcode.net",
-            "Connection": "keep-alive"
-          }
-        });
-        if(result.data){
-          return result.data;
-        }else {
-          return null;
-        }
-      } catch (err) {
-        // 处理错误
-        console.error(err);
-      }
-    },
-    reSet() {
-      uni.showToast({
-        title: '请等待',
-        icon: 'loading',
-        duration: 500
-      });
-      this.URL = "http://127.0.0.1";
-      if (this.webviewJS === null || this.webviewJS === '' || this.webviewJS === undefined) {
-        this.getJS().then(res => {
-          if(res !== null && res !== '' && res !== undefined){
-            this.webviewJS = res;
-          }else {
-            uni.showToast({
-              title: '网络错误？',
-              icon: 'error',
-              duration: 1000
-            });
-          }
-        });
-      }
-      setTimeout(() => {
-        uni.showToast({
-          title: '重置成功，请重新尝试更新数据',
-          icon: 'none',
-          duration: 2000
-        });
-      }, 1000);
     },
     update() {
       console.log('update')
-      if (this.webviewJS === null || this.webviewJS === '' || this.webviewJS === undefined) {
-        this.getJS().then(res => {
-          if(res !== null && res !== '' && res !== undefined){
-            this.webviewJS = res;
-            this.update();
-          }else {
-            uni.showToast({
-              title: '网络错误？',
-              icon: 'error',
-              duration: 1000
-            });
-          }
-        });
-        return;
-      }
+      this.loading = true;
       uni.showToast({
-        title: '验证登录数据',
+        title: '验证信息',
         icon: 'loading',
-        duration: 1000
+        duration: 2000
       });
-      this.URL = "https://casb.njit.edu.cn/http/webvpnea5e00498bb033e68046c95dbdf6e09fbc127bea836184c80a0792b662ced92f/authserver/login?service=http://ehall.njit.edu.cn/login?service=http://ehall.njit.edu.cn/new/index.html";
-      setTimeout(() => {
-        if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-          this.getData();
-          return;
-        }
+      this.loginPage.loadURL(`https://casb.njit.edu.cn/http/webvpnea5e00498bb033e68046c95dbdf6e09fbc127bea836184c80a0792b662ced92f/authserver/login?service=http://ehall.njit.edu.cn/login?service=http://ehall.njit.edu.cn/new/index.html&time=${Math.random()}`)
+      this.loginPage.onloaded = ()=>{
+        this.loginPage.onloaded = () => {}
+        setTimeout(() => {
+          if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
+            this.initJWXT();
+            return;
+          }
+          uni.showToast({
+            title: '请先登录',
+            icon: 'error',
+            duration: 2000
+          });
 
-        this.$refs.loginModal.open('center');
-
-        // setTimeout(() => {
-        //
-        // },250);
-        this.loginPage.evalJS(`
-            var script = document.createElement('script');
-            script.textContent = ${this.webviewJS};
-            document.body.appendChild(script);
-          `);
-        this.loginPage.evalJS(`
-            function getBase64FromImg(imgElement, type = 'image/png') {
-              const canvas = document.createElement('canvas');
-              canvas.width = imgElement.naturalWidth;
-              canvas.height = imgElement.naturalHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(imgElement, 0, 0);
-              return canvas.toDataURL(type); // 返回完整的Base64字符串（包含MIME类型）
-            }
-            var _pngBase64 = getBase64FromImg(document.querySelector("#captchaImg"));
-            uni.postMessage({
-              data: {
-                captchaImg: _pngBase64
-              }
-            });
-          `)
-        uni.showToast({
-          title: '登录数据异常',
-          icon: 'error',
-          duration: 1000
-        });
-      }, 1000); //延时等待webview加载完成
-    },
-    handlePostMessage(event) {
-      if (event.detail.data[0].captchaImg) {
-        this.captchaImg = event.detail.data[0].captchaImg;
-      } else {
-        this.schedules = getCurriculumByUsernameAndPassword(JSON.parse(event.detail.data[0].res));
-        this.loadSchedule();
-        uni.setStorageSync('curriculum', this.schedules)
+          this.$refs.loginModal.open('center');
+          this.getCaptchaImg();
+        },100)
       }
     },
-    getData() {
-      this.wait = setTimeout( ()=> {
+    initJWXT() {
+      uni.showLoading({
+        title: '加载教务信息'
+      });
+      this.check = setTimeout(() => {
         uni.hideLoading();
         uni.showToast({
-          title: '获取数据失败',
+          title: '加载信息失败',
           icon: 'error',
           duration: 2000
         });
-      }, 10000);
+      },5000);
+      this.loginPage.evalJS(
+          `var myHeaders = new Headers();
+                  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+                  myHeaders.append("Accept", "*/*");
+                  myHeaders.append("Host", "casb.njit.edu.cn");
+                  myHeaders.append("Connection", "keep-alive");
+                  var requestOptions = {
+                     method: 'GET',
+                     headers: myHeaders,
+                     redirect: 'follow'
+                  };
+              fetch("https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/appShow?appId=5904538791462728", requestOptions)
+                  .then(result => {
+                    plus.webview.postMessageToUniNView({
+                      type: "jwxtOK",
+                      args: {}
+                    }, "__uniapp__service");
+                  })
+                  .catch(error => {
+                    plus.webview.postMessageToUniNView({
+                      type: "jwxtBad",
+                      args: {}
+                    }, "__uniapp__service");
+                  });`
+      );
+    },
+    getTimeTable() {
       uni.showLoading({
         title: '获取课表数据'
       });
-      setTimeout(() => {
-        this.URL = "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/appShow?appId=5904538791462728";
-        this.loginPage.evalJS(`
-              var script = document.createElement('script');
-              script.textContent = ${this.webviewJS};
-              document.body.appendChild(script);
-            `);
-        this.loginPage.evalJS(`
+      this.wait = setTimeout(() => {
+        this.loading = false;
+        uni.hideLoading();
+        uni.showToast({
+          title: '获取课表失败',
+          icon: 'error',
+          duration: 2000
+        });
+      }, 5000);
+      this.loginPage.evalJS(`
               var myHeaders = new Headers();
               myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
               myHeaders.append("Accept", "*/*");
@@ -490,28 +910,46 @@ export default {
                  redirect: 'follow'
               };
               fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/kbcx/xskbqr_cxXskbqrIndex.html?doType=query&gnmkdm=N2158&enlink-vpn&xnm=2024&xqm=12&_search=false&nd=1725346567148&queryModel.showCount=200&queryModel.currentPage=1&queryModel.sortName=&queryModel.sortOrder=asc&time=1", requestOptions)
-                 .then(response => response.text())
-                 .then(result => {
-                 uni.postMessage({
-                   data: {
-                      res: result
-                   }
-                 })
-                 }).catch(error => console.log('error', error));
-            `);
-      }, 500);
+                  .then(response => response.text())
+                  .then(result => {
+                    plus.webview.postMessageToUniNView({
+                      type: "GETTIMETABLE",
+                      args: {
+                        data: result
+                      }
+                    }, "__uniapp__service");
+                  }).catch(error => console.log('error', error));`
+      );
     },
     cancel() {
       this.$refs.loginModal.close();
-    }
+    },
+    handlePostMessage({data}) {
+      console.log(data)
+      if (data.type === "subscribeHandler") {
+        return
+      }
+      let {args} = data;
+      if (data.type === "CAPTCHAIMAGEBASE64") {
+        this.captchaImg = args.data;
+      } else if (data.type === "jwxtOK") {
+        clearTimeout(this.check);
+        this.getTimeTable();
+      } else if (data.type === "GETTIMETABLE") {
+        this.schedules = getCurriculumByUsernameAndPassword(JSON.parse(args.data));
+        this.loadSchedule();
+        uni.setStorageSync('curriculum', this.schedules)
+      }
+    },
   }
 };
 </script>
 
 <style lang="scss">
-.y-tabs__sticky{
+.y-tabs__sticky {
   height: 0% !important;
 }
+
 $modal-width: 90vw;
 .login-modal {
   width: $modal-width;
@@ -556,7 +994,7 @@ $modal-width: 90vw;
 }
 
 .container {
-  height: calc(100vh - var(--tabbar-height) - var(--statusbar-height));
+  //height: calc(100vh - var(--window-bottom) - var(--status-bar-height) - 44px);
   background: #f5f5f5;
 }
 
@@ -571,29 +1009,55 @@ $modal-width: 90vw;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-  justify-content: center;
+  //justify-content: center;
 
 
   .icon-left {
-    margin-right: 50rpx;
+    margin-left: 50rpx;
+
     /* 调整这个值控制间距 */
     position: relative;
     //top: -6rpx
   }
-
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .rotate {
+    animation: rotate 1s linear infinite;
+    display: inline-block;
+  }
   .icon-right {
-    margin-left: 50rpx;
+    margin-right: 50rpx;
     /* 调整这个值控制间距 */
     position: relative;
+    will-change: transform;
     //top: -6rpx
   }
 
 
   .title {
+    margin: 0 auto;
     display: block;
     text-align: center;
     font-size: 36rpx;
     color: #333;
+  }
+}
+.menu{
+  height: 100vh;
+  width: 100vw;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  .close-icon{
+    margin-top: 20rpx;
+    margin-left: auto;
+    margin-right: 20rpx;
   }
 }
 </style>
