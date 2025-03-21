@@ -16,5 +16,8 @@
             "通用组件"
         ]
     },
-    "displayName": "List 列表（fui-list）"
+    "displayName": "List 列表（fui-list）",
+    "dependencies": {
+        "moment": "^2.30.1"
+    }
 }

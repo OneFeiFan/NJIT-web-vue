@@ -16,8 +16,8 @@
 
 
     <y-tabs v-model="week" :swipeable="true" :hide="true">
-      <y-tab class="y-tab-virtual" v-for="tab in timetableData">
-        <timetable :timetables="tab" :timetableType="timeSlots" @courseClick="handleCourseClick"></timetable>
+      <y-tab class="y-tab-virtual" v-for="(tab,index) in timetableData">
+        <timetable :timetables="tab" :timetableType="timeSlots" :weekStartDate="weekStartDate" :thisWeek="index" @courseClick="handleCourseClick"></timetable>
       </y-tab>
     </y-tabs>
 
@@ -48,6 +48,9 @@
           <fui-list>
             <fui-list-cell arrow @click="jump(`classroom`)">
               <text>空教室查询</text>
+            </fui-list-cell>
+            <fui-list-cell arrow @click="jump(`evaluate`)">
+              <text>快速评价</text>
             </fui-list-cell>
           </fui-list>
         </view>

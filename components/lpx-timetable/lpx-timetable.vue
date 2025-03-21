@@ -1,7 +1,7 @@
 <template>
   <view class="timetable">
     <view class="header">
-      <view class="header-item" v-for="(item,index) in week" :key="item" :style="{ color: todayWeekIndex === index ? '#4070FF' : 'unset' }">{{ item }}</view>
+      <view class="header-item" v-for="(item,index) in week" :key="item" :style="{ color: todayWeekIndex === index ? '#4070FF' : 'unset' }">{{item}}<br/>{{getDateOfWeek(item)}}</view>
     </view>
 
     <view class="main">
@@ -26,9 +26,16 @@
 </template>
 
 <script>
+import moment from 'moment';
   export default {
     name: 'Timetable',
     props: {
+      weekStartDate:{
+        type: Date,
+        default: () => {
+          return new Date('2000-01-01')
+        }
+      },
       timetableType: {
         type: Array,
         default: () => {
@@ -47,6 +54,10 @@
             { index: '12', name: '21:40\n22:20' }
           ]
         }
+      },
+      thisWeek:{
+        type: Number|String,
+        default:1
       },
       week: {
         type: Array,
@@ -69,6 +80,15 @@
     },
     data () {
       return {
+        text2num: {
+          '一':1,
+          '二':2,
+          '三':3,
+          '四':4,
+          '五':5,
+          '六':6,
+          '日':7
+        },
         allPalette: [...this.palette, '#f05261', '#48a8e4', '#ffd061', '#52db9a', '#70d3e6', '#52db9a', '#3f51b5', '#f3d147', '#4adbc3', '#673ab7', '#f3db49', '#76bfcd', '#b495e1', '#ff9800', '#8bc34a']
       }
     },
@@ -119,6 +139,26 @@
       }
     },
     methods: {
+      getDateOfWeek(y) {
+        let x = this.thisWeek;
+        if(x==0){
+          return ''
+        }
+        y = this.text2num[y];
+        // startDate 是第一周的周一日期，格式为 'YYYY-MM-DD'
+        let date = new Date(this.weekStartDate);
+        // 计算第 x 周的周一的日期
+        date.setDate(date.getDate() + (x - 1) * 7);
+        // 调整到第 x 周的周 y 的日期，y 的范围是 1（周一）到 7（周日）
+        date.setDate(date.getDate() + y - 1);
+
+        // 格式化为 'YYYY-MM-DD' 的字符串
+        // let year = date.getFullYear();
+        let month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
+        let day = String(date.getDate()).padStart(2, '0');
+
+        return `${month}/${day}`;
+      },
       handleCourseClick (course, weekIndex, courseIndex) {
         const data = {
           index: courseIndex + 1,
@@ -151,6 +191,7 @@
 
     .header-item{
       flex: 1;
+      font-size: 24rpx;
       text-align: center;
     }
   }
