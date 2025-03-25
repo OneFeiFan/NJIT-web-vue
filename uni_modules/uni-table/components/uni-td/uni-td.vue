@@ -79,6 +79,7 @@
 	$border-color:#EBEEF5;
 
 	.uni-table-td {
+    height: 100%;
 		display: table-cell;
 		padding: 8px 10px;
 		font-size: 14px;

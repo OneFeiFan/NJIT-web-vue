@@ -18,6 +18,9 @@
     },
     "displayName": "List 列表（fui-list）",
     "dependencies": {
-        "moment": "^2.30.1"
+        "css-select": "^5.1.0",
+        "moment": "^2.30.1",
+        "parse5": "^7.2.1",
+        "parse5-htmlparser2-tree-adapter": "^7.1.0"
     }
 }

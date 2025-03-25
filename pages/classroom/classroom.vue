@@ -137,18 +137,18 @@ export default {
         "经管楼": "JGL001",
         "文理楼": "WLL001",
         "设计楼": "SJl001",
-        "教学楼": "JXL001",
-        "北大活": "BDH001",
-        "图书馆": "TSG001",
-        "体育中心": "TY001",
-        "体育公园": "TYG001",
+        // "教学楼": "JXL001",
+        // "北大活": "BDH001",
+        // "图书馆": "TSG001",
+        // "体育中心": "TY001",
+        // "体育公园": "TYG001",
         "工程中心": "GCZ001",
-        "科创中心": "KC001",
-        "实验楼": "SYL001",
-        "基础实验楼": "JCS001",
-        "江宁校区实验楼": "JN001",
-        "无楼号": "wlh",
-        "无": "W001"
+        // "科创中心": "KC001",
+        // "实验楼": "SYL001",
+        // "基础实验楼": "JCS001",
+        // "江宁校区实验楼": "JN001",
+        // "无楼号": "wlh",
+        // "无": "W001"
       },
       num2text: {
         1: '一',
@@ -183,6 +183,7 @@ export default {
         this.zcd += Math.pow(2, newVal[newValKey] - 1);
       }
       console.log(this.zcd)
+      this.getClassRoom();
     },
     coursesSelected(newVal, oldVal) {
       this.jcd = 0;
@@ -190,10 +191,12 @@ export default {
         this.jcd += Math.pow(2, newVal[newValKey] - 1);
       }
       console.log(this.jcd)
+      this.getClassRoom();
     },
     daysSelected(newVal, oldVal) {
       this.xqj = newVal.join(',')
       console.log(this.xqj)
+      this.getClassRoom();
     }
   },
   created() {
@@ -236,7 +239,6 @@ export default {
       } else {
         arr.push(item)
       }
-      this.getClassRoom();
     },
     uniqueSelect(arr, arr2) {
       if (arr.length === arr2.length) {
@@ -245,9 +247,11 @@ export default {
         arr.splice(0, arr.length)
         arr.push(...arr2)
       }
-      this.getClassRoom();
     },
     selectBuilding(value) {
+      if(this.lh === value&&value !== ''&&value !== null){
+        return;
+      }
       this.lh = value;
       console.log(this.lh)
       this.getClassRoom();
@@ -436,9 +440,12 @@ export default {
     },
     getClassRoom(){
       if(this.lh === '' || this.zcd === 0 || this.jcd === 0 || this.xqj === '' || this.xnm === '' || this.xqm === ''){
-        console.log('请选择完整信息')
+        console.log('请选择完整信息',this.xqj === '')
+        this.tableData = [];
         return;
       }
+      console.log('getClassRoom')
+      console.log(this.lh,this.zcd,this.jcd,this.xqj,this.xnm,this.xqm)
       this.loginPage.evalJS(
             `var myHeaders = new Headers();
             myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36");
@@ -492,7 +499,7 @@ export default {
     );
     },
     handlePostMessage_({data}) {
-      console.log(data)
+      // console.log(data)
       if (data.type === "subscribeHandler") {
         return
       }

@@ -375,9 +375,9 @@ export default {
           icon: 'success',
           duration: 2000
         });
-        setTimeout(()=>{
-          this.update();
-        },2000);
+        // setTimeout(()=>{
+        //   this.update();
+        // },2000);
         return;
       }
 
@@ -472,7 +472,7 @@ export default {
 
     },
     evaluate_({data}) {
-      console.log(data)
+      // console.log(data)
       if (data.type === "subscribeHandler") {
         return
       }

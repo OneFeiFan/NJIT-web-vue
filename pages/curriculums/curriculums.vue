@@ -5,9 +5,10 @@
     <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="rgb(248, 248, 248)">
       <view class="header">
         <uni-icons type="bars" size="50rpx" @click="showMenu" class="icon-left"/>
-        <text class="title" v-if="week>0">第{{ week }}周课表</text>
-        <text class="title" v-if="week===0">学期课表</text>
-        <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}" />
+        <picker class="title" @change="change" :value="week" :range="range">
+          <view class="title">{{ range[week] }}</view>
+        </picker>
+        <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}"/>
       </view>
     </uni-nav-bar>
 
@@ -17,7 +18,8 @@
 
     <y-tabs v-model="week" :swipeable="true" :hide="true">
       <y-tab class="y-tab-virtual" v-for="(tab,index) in timetableData">
-        <timetable :timetables="tab" :timetableType="timeSlots" :weekStartDate="weekStartDate" :thisWeek="index" @courseClick="handleCourseClick"></timetable>
+        <timetable :timetables="tab" :timetableType="timeSlots" :weekStartDate="weekStartDate" :thisWeek="index"
+                   @courseClick="handleCourseClick"></timetable>
       </y-tab>
     </y-tabs>
 
@@ -42,18 +44,21 @@
       </view>
     </uni-popup>
     <uni-popup ref="menu" :mask-click="false">
-        <view class="menu">
-          <status-bar></status-bar>
-          <uni-icons type="closeempty" size="50rpx" @click="closeMenu" class="close-icon"/>
-          <fui-list>
-            <fui-list-cell arrow @click="jump(`classroom`)">
-              <text>空教室查询</text>
-            </fui-list-cell>
-            <fui-list-cell arrow @click="jump(`evaluate`)">
-              <text>快速评价</text>
-            </fui-list-cell>
-          </fui-list>
-        </view>
+      <view class="menu">
+        <status-bar></status-bar>
+        <uni-icons type="closeempty" size="50rpx" @click="closeMenu" class="close-icon"/>
+        <fui-list>
+          <fui-list-cell arrow @click="jump(`classroom`)">
+            <text>空教室查询</text>
+          </fui-list-cell>
+          <fui-list-cell arrow @click="jump(`evaluate`)">
+            <text>快速评价</text>
+          </fui-list-cell>
+          <fui-list-cell arrow @click="jump(`scores`)">
+            <text>成绩查询</text>
+          </fui-list-cell>
+        </fui-list>
+      </view>
     </uni-popup>
     <sv-intercept-back
         :show="menu"
@@ -150,7 +155,28 @@ export default {
           name: '20:20\n21:05'
         }
       ],
-
+      range: [
+        "总课表",
+        "第一周",
+        "第二周",
+        "第三周",
+        "第四周",
+        "第五周",
+        "第六周",
+        "第七周",
+        "第八周",
+        "第九周",
+        "第十周",
+        "第十一周",
+        "第十二周",
+        "第十三周",
+        "第十四周",
+        "第十五周",
+        "第十六周",
+        "第十七周",
+        "第十八周",
+        "第十九周",
+      ],
       timetableData: Array.from({
             length: 20
           }, () =>
@@ -196,7 +222,7 @@ export default {
   },
   onReady() {
     // #ifdef APP-PLUS
-    this.loginPage.onerror = (e)=>{
+    this.loginPage.onerror = (e) => {
       uni.showToast({
         title: '加载失败',
         icon: 'error',
@@ -206,14 +232,17 @@ export default {
     // #endif
   },
   methods: {
-    showMenu(){
+    change(e) {
+      this.week = e.detail.value;
+    },
+    showMenu() {
       this.menu = true;
       uni.hideTabBar({
         animation: true
       });
       this.$refs.menu.open("left");
     },
-    closeMenu(){
+    closeMenu() {
       this.$refs.menu.close();
       uni.showTabBar({
         animation: true
@@ -227,9 +256,9 @@ export default {
         animation: true
       });
       setTimeout(() => {
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      });
+        uni.navigateTo({
+          url: `/pages/${page}/${page}`
+        });
       }, 250);
     },
     calculateCurrentWeek() {
@@ -797,8 +826,9 @@ export default {
       });
 
       // #ifdef APP-PLUS
-      this.loginPage.onloaded = ()=>{
-        this.loginPage.onloaded = () => {}
+      this.loginPage.onloaded = () => {
+        this.loginPage.onloaded = () => {
+        }
         uni.hideLoading();
         this.loading = false;
         setTimeout(() => {
@@ -812,11 +842,11 @@ export default {
             return;
           }
           uni.showToast({
-            title: '登录成功，现在你可以继续操作',
+            title: '登录成功，现在再点击刷新即可获取课表',
             icon: 'none',
             duration: 2000
           });
-        },100)
+        }, 100)
       }
       this.loginPage.evalJS(
           'document.querySelector("#load").click();'
@@ -832,8 +862,9 @@ export default {
         duration: 2000
       });
       this.loginPage.loadURL(`https://casb.njit.edu.cn/http/webvpnea5e00498bb033e68046c95dbdf6e09fbc127bea836184c80a0792b662ced92f/authserver/login?service=http://ehall.njit.edu.cn/login?service=http://ehall.njit.edu.cn/new/index.html&time=${Math.random()}`)
-      this.loginPage.onloaded = ()=>{
-        this.loginPage.onloaded = () => {}
+      this.loginPage.onloaded = () => {
+        this.loginPage.onloaded = () => {
+        }
         setTimeout(() => {
           if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
             this.initJWXT();
@@ -847,7 +878,7 @@ export default {
 
           this.$refs.loginModal.open('center');
           this.getCaptchaImg();
-        },100)
+        }, 100)
       }
     },
     initJWXT() {
@@ -861,7 +892,7 @@ export default {
           icon: 'error',
           duration: 2000
         });
-      },5000);
+      }, 5000);
       this.loginPage.evalJS(
           `var myHeaders = new Headers();
                   myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
@@ -928,7 +959,7 @@ export default {
       this.$refs.loginModal.close();
     },
     handlePostMessage({data}) {
-      console.log(data)
+      // console.log(data)
       if (data.type === "subscribeHandler") {
         return
       }
@@ -1022,6 +1053,7 @@ $modal-width: 90vw;
     position: relative;
     //top: -6rpx
   }
+
   @keyframes rotate {
     from {
       transform: rotate(0deg);
@@ -1030,10 +1062,12 @@ $modal-width: 90vw;
       transform: rotate(360deg);
     }
   }
+
   .rotate {
     animation: rotate 1s linear infinite;
     display: inline-block;
   }
+
   .icon-right {
     margin-right: 50rpx;
     /* 调整这个值控制间距 */
@@ -1042,8 +1076,8 @@ $modal-width: 90vw;
     //top: -6rpx
   }
 
-
   .title {
+    width: 50%;
     margin: 0 auto;
     display: block;
     text-align: center;
@@ -1051,13 +1085,15 @@ $modal-width: 90vw;
     color: #333;
   }
 }
-.menu{
+
+.menu {
   height: 100vh;
   width: 100vw;
   background: #fff;
   display: flex;
   flex-direction: column;
-  .close-icon{
+
+  .close-icon {
     margin-top: 20rpx;
     margin-left: auto;
     margin-right: 20rpx;

@@ -170,3 +170,23 @@ export function getClassroom(rawData) {
     }
     return classrooms;
 }
+
+export function getScores(raw){
+    let result = [];
+    let item = raw.items;
+    for (const element of item) {
+        result.push({
+            cj:element.cj,
+            jd:element.jd,
+            xf:element.xf,
+            jsxm:element.jsxm,
+            jxb_id:element.jxb_id,
+            xnm:element.xnm,
+            xqm:element.xqm,
+            kcmc:element.kcmc,
+            xnmmc:element.xnmmc,
+            xqmmc:element.xqmmc,
+        })
+    }
+    return result.reverse();
+}

@@ -58,6 +58,14 @@
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/scores/scores",
+      "style": {
+        "navigationBarTitleText": "成绩查询",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
     }
   ],
   "tabBar": {
