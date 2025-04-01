@@ -1,5 +1,5 @@
 <template>
-  <view :style="{'background-color': backgroundColor,'width': '100%','height': 'var(--status-bar-height)'}">
+  <view :style="{'background-color': backgroundColor,'width': '100vw','height': 'var(--status-bar-height)'}">
     <!-- 这里是状态栏占位 -->
   </view>
 </template>

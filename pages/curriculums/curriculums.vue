@@ -1,16 +1,26 @@
 <template>
+  <page-meta :page-style="theme"></page-meta>
   <view class="container">
-    <status-bar></status-bar>
     <!-- 头部控制栏 -->
-    <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="rgb(248, 248, 248)">
+    <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
       <view class="header">
         <uni-icons type="bars" size="50rpx" @click="showMenu" class="icon-left"/>
+
         <picker class="title" @change="change" :value="week" :range="range">
           <view class="title">{{ range[week] }}</view>
         </picker>
+
         <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}"/>
       </view>
-    </uni-nav-bar>
+    </material-nav-bar>
+    <!--    <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="#fff">-->
+    <!--      <touch-ripple class="header" color="#000"-->
+    <!--                    :opacity="0.4"-->
+    <!--                    transition="ease-out"-->
+    <!--                    :duration="250">-->
+
+    <!--    </touch-ripple>-->
+    <!--    </uni-nav-bar>-->
 
     <!--		<u-picker @cancel="show = false" @close="show = false" :show="show" :columns="weekdays" @confirm="localConfirm"-->
     <!--			title="请选择周次" closeOnClickOverlay ref="uPicker"></u-picker>-->
@@ -43,27 +53,35 @@
         </view>
       </view>
     </uni-popup>
-    <uni-popup ref="menu" :mask-click="false">
+    <smm-drawer ref="menu">
       <view class="menu">
-        <status-bar></status-bar>
-        <uni-icons type="closeempty" size="50rpx" @click="closeMenu" class="close-icon"/>
-        <fui-list>
-          <fui-list-cell arrow @click="jump(`classroom`)">
+        <touch-ripple color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250">
+        <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
+        <view class="menu-content">
+          <view class="container">
+            <image src="@/static/logo.png" class="logo"></image>
+            <text class="text">你的门户<br/>Made By OneFeiFan</text>
+          </view>
+        </view>
+        </touch-ripple>
+        <material-list>
+          <material-list-cell @click="jump(`classroom`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
             <text>空教室查询</text>
-          </fui-list-cell>
-          <fui-list-cell arrow @click="jump(`evaluate`)">
+          </material-list-cell>
+          <material-list-cell @click="jump(`evaluate`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
             <text>快速评价</text>
-          </fui-list-cell>
-          <fui-list-cell arrow @click="jump(`scores`)">
+          </material-list-cell>
+          <material-list-cell @click="jump(`scores`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
             <text>成绩查询</text>
-          </fui-list-cell>
-        </fui-list>
+          </material-list-cell>
+        </material-list>
       </view>
-    </uni-popup>
+    </smm-drawer>
     <sv-intercept-back
         :show="menu"
         :beforeIntercept="closeMenu"
     />
+    <material-tab-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)"/>
   </view>
 </template>
 
@@ -80,11 +98,20 @@ import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-
 import YTabs from "@/uni_modules/y-tabs/components/y-tabs/y-tabs.vue";
 import YTab from "@/uni_modules/y-tabs/components/y-tab/y-tab.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import FuiListCell from "@/components/fui-list-cell/fui-list-cell.vue";
+import SvInterceptBack from "@/uni_modules/sv-intercept-back/components/sv-intercept-back/sv-intercept-back.vue";
+import TouchRipple from "@/components/material-uni/ripple/component.vue";
+import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
+import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
+import MaterialList from "@/components/material-uni/material-list/material-list.vue";
+import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 
 export default {
   components: {
-    FuiListCell,
+    MaterialListCell,
+    MaterialList,
+    MaterialTabBar,
+    MaterialNavBar,
+    SvInterceptBack,
     UniIcons,
     YTab,
     YTabs,
@@ -94,7 +121,8 @@ export default {
     UIcon,
     UniPopup,
     UniEasyinput,
-    Timetable
+    Timetable,
+    TouchRipple
   },
   data() {
     return {
@@ -232,6 +260,9 @@ export default {
     // #endif
   },
   methods: {
+    print1() {
+      console.log('打印')
+    },
     change(e) {
       this.week = e.detail.value;
     },
@@ -240,21 +271,22 @@ export default {
       uni.hideTabBar({
         animation: true
       });
-      this.$refs.menu.open("left");
+      this.$refs.menu.open();
     },
     closeMenu() {
       this.$refs.menu.close();
-      uni.showTabBar({
-        animation: true
-      });
+      // uni.showTabBar({
+      //   animation: true
+      // });
       this.menu = false;
     },
     jump(page) {
+      console.log(page)
       this.menu = false;
       this.$refs.menu.close();
-      uni.showTabBar({
-        animation: true
-      });
+      // uni.showTabBar({
+      //   animation: true
+      // });
       setTimeout(() => {
         uni.navigateTo({
           url: `/pages/${page}/${page}`
@@ -562,7 +594,7 @@ export default {
       }], [{
         "name": "计算机视觉",
         "teacher": "岳红原",
-        "time": {"weekday": 2, "timeArray": [1, 2], "week": 9},
+        "time": {"weekday": 2, "timeArray": [3, 4], "week": 9},
         "classroom": "南A209"
       }, {
         "name": "计算机视觉",
@@ -743,9 +775,20 @@ export default {
           const name = course.name;
           for (let m = 0; m < courseTime.length; m++) {
             const value = name + '@' + classroom;
-            this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
-            this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
+            if(this.timetableData[week][weekday - 1][courseTime[m] - 1].indexOf(value)==-1 && this.timetableData[week][weekday - 1][courseTime[m] - 1]!=''){
+              this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, (this.timetableData[week][weekday - 1][courseTime[m] - 1])+"!"+value)
+              this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, (this.timetableData[week][weekday - 1][courseTime[m] - 1])+"!"+value)
+            }
+            else{
+              this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
+              this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
+            }
           }
+          // for (let m = 0; m < courseTime.length; m++) {
+          //   const value = name + '@' + classroom;
+          //   this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
+          //   this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
+          // }
         }
       }
       this.loading = false;
@@ -1039,8 +1082,8 @@ $modal-width: 90vw;
 .header {
   height: 100%;
   width: 100%;
-  background: #fff;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  //background: #fff;
+
   display: flex;
   align-items: center;
   //justify-content: center;
@@ -1077,7 +1120,7 @@ $modal-width: 90vw;
   }
 
   .title {
-    width: 50%;
+    padding: 10rpx;
     margin: 0 auto;
     display: block;
     text-align: center;
@@ -1088,8 +1131,8 @@ $modal-width: 90vw;
 
 .menu {
   height: 100vh;
-  width: 100vw;
-  background: #fff;
+  width: 100%;
+  background: var(--md-sys-color-surface);
   display: flex;
   flex-direction: column;
 
@@ -1097,6 +1140,30 @@ $modal-width: 90vw;
     margin-top: 20rpx;
     margin-left: auto;
     margin-right: 20rpx;
+  }
+}
+.menu-content {
+  background-color: var(--md-sys-color-tertiary);
+  height: 280rpx;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .container{
+    background-color: var(--md-sys-color-tertiary);
+    width: calc(100% - 72rpx);
+    height: calc(100% - 72rpx);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .logo{
+      height: 100rpx;
+      width: 100rpx;
+    }
+    .text{
+      color: var(--md-sys-color-on-tertiary);
+      font-weight: bold;
+    }
   }
 }
 </style>

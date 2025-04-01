@@ -3,6 +3,9 @@
     "name": "List 列表（fui-list）",
     "version": "v2.3.0",
     "description": "FirstUI List 列表，常用的布局组件。 List提供了fui-list和fui-list-cell两个组件来进行布局，可独立使用。",
+    "scripts": {
+        "svgicon": "node ./uni_modules/zui-svg-icon/tools/generate-svg-icon.js"
+    },
     "keywords": [
         "List",
         "列表",
@@ -21,6 +24,7 @@
         "css-select": "^5.1.0",
         "moment": "^2.30.1",
         "parse5": "^7.2.1",
-        "parse5-htmlparser2-tree-adapter": "^7.1.0"
+        "parse5-htmlparser2-tree-adapter": "^7.1.0",
+        "svgo": "^3.3.2"
     }
 }

@@ -1,4 +1,5 @@
 <template>
+   <page-meta :page-style="theme"></page-meta>
   <view class="content">
     <status-bar></status-bar>
     <view class="header">
@@ -32,6 +33,7 @@
         </fui-list-cell>
       </fui-list>
     </view>
+    <material-tab-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)"/>
   </view>
 </template>
 
@@ -42,9 +44,10 @@ import FuiList from "@/components/fui-list/fui-list.vue";
 import UniLink from "@/uni_modules/uni-link/components/uni-link/uni-link.vue";
 import StatusBar from "@/components/status-bar/status-bar.vue";
 import FuiListCell from "@/components/fui-list-cell/fui-list-cell.vue";
+import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 
 export default {
-  components: {FuiListCell, StatusBar, UniLink, FuiList, ZeroMarkdownView},
+  components: {MaterialTabBar, FuiListCell, StatusBar, UniLink, FuiList, ZeroMarkdownView},
   data() {
     return {
       content: `<p align="center">不晓得为啥,没获取到数据QAQ</p>`,
