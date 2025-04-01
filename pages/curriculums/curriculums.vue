@@ -211,7 +211,7 @@ export default {
               Array.from({
                     length: 7
                   }, () =>
-                      Array(10).fill("")
+                      Array(11).fill("")
               )
       ),
       schedules: [],
@@ -762,6 +762,541 @@ export default {
         "time": {"weekday": 4, "timeArray": [1, 2], "week": 17},
         "classroom": "南A209"
       }]]
+      // temp = [
+      //   [],
+      //   [
+      //     {
+      //       "name": "大学英语综合Ⅱ",
+      //       "teacher": "王琳",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "文理B101"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "大学生职业发展规划",
+      //       "teacher": "孙亮",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "经管D105"
+      //     },
+      //     {
+      //       "name": "思想道德与法治",
+      //       "teacher": "陆小云",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           7,
+      //           8
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "东201"
+      //     },
+      //     {
+      //       "name": "思想道德与法治",
+      //       "teacher": "陆小云",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "西C301"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "大学物理实验AⅠ",
+      //       "teacher": "周爱平",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           5,
+      //           6,
+      //           7,
+      //           8
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "上课地点未定"
+      //     },
+      //     {
+      //       "name": "羽毛球-Ⅱ",
+      //       "teacher": "黄昕",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 4
+      //       },
+      //       "classroom": "体育中心辅馆羽毛球1"
+      //     }
+      //   ],
+      //   [
+      //     {
+      //       "name": "大学英语综合Ⅱ",
+      //       "teacher": "王琳",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "文理B101"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "大学生职业发展规划",
+      //       "teacher": "孙亮",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西C101"
+      //     },
+      //     {
+      //       "name": "大学生职业发展规划",
+      //       "teacher": "孙亮",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "经管D105"
+      //     },
+      //     {
+      //       "name": "思想道德与法治",
+      //       "teacher": "陆小云",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           7,
+      //           8
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "东201"
+      //     },
+      //     {
+      //       "name": "思想道德与法治",
+      //       "teacher": "陆小云",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "西C301"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "MY 产品创意设计鉴赏与实践",
+      //       "teacher": "包光旋",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           9,
+      //           10,
+      //           11
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "文理A315"
+      //     },
+      //     {
+      //       "name": "羽毛球-Ⅱ",
+      //       "teacher": "黄昕",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 5
+      //       },
+      //       "classroom": "体育中心辅馆羽毛球1"
+      //     }
+      //   ],
+      //   [
+      //     {
+      //       "name": "大学英语综合Ⅱ",
+      //       "teacher": "王琳",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "文理B101"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "大学物理AⅠ",
+      //       "teacher": "陈国强",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           5,
+      //           6
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "西B302"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "电路分析A",
+      //       "teacher": "田丽鸿",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "西A102"
+      //     },
+      //     {
+      //       "name": "人工智能导论",
+      //       "teacher": "何睿清",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           9,
+      //           10
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "经管D201"
+      //     },
+      //     {
+      //       "name": "思想道德与法治",
+      //       "teacher": "陆小云",
+      //       "time": {
+      //         "weekday": 2,
+      //         "timeArray": [
+      //           7,
+      //           8
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "东201"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 3,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "高等数学AⅡ",
+      //       "teacher": "李宇尘",
+      //       "time": {
+      //         "weekday": 5,
+      //         "timeArray": [
+      //           1,
+      //           2
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "东C402"
+      //     },
+      //     {
+      //       "name": "MY 产品创意设计鉴赏与实践",
+      //       "teacher": "包光旋",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           9,
+      //           10,
+      //           11
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "文理A315"
+      //     },
+      //     {
+      //       "name": "大学物理实验AⅠ",
+      //       "teacher": "周爱平",
+      //       "time": {
+      //         "weekday": 1,
+      //         "timeArray": [
+      //           5,
+      //           6,
+      //           7,
+      //           8
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "上课地点未定"
+      //     },
+      //     {
+      //       "name": "羽毛球-Ⅱ",
+      //       "teacher": "黄昕",
+      //       "time": {
+      //         "weekday": 4,
+      //         "timeArray": [
+      //           3,
+      //           4
+      //         ],
+      //         "week": 6
+      //       },
+      //       "classroom": "体育中心辅馆羽毛球1"
+      //     }
+      //   ]
+      // ]
       //#endif
       for (let i = 1; i < temp.length; i++) {
         const weekCourses = temp[i];

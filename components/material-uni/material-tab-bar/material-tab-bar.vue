@@ -112,8 +112,11 @@ export default {
     align-items: center;
 
     .wrap {
+      height: 80%;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
       .material-tab-bar-icon {
         width: 40rpx;
