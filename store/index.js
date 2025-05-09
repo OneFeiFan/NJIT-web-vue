@@ -8,7 +8,8 @@ import {tabActiveColor, tabInactiveColor} from "@/store/first_blue_light";
 const store = new Vuex.Store({
   state: {
     currentTheme: "defaultTheme",
-    themes: themes
+    themes: themes,
+    startDate: new Date('2025-02-17')
   },
   getters: {
     theme(state) {
@@ -16,7 +17,9 @@ const store = new Vuex.Store({
     },
 	currentTheme: state => state.currentTheme,
     tabInactiveColor: state => state.themes[state.currentTheme].tabInactiveColor,
-    tabActiveColor: state => state.themes[state.currentTheme].tabActiveColor
+    tabActiveColor: state => state.themes[state.currentTheme].tabActiveColor,
+    _colorMap: state => state.themes[state.currentTheme]._colorMap,
+    startDate:state=> state.startDate
   },
   mutations: {
     changeTheme(state, themeName = "defaultTheme") {

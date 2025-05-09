@@ -12,7 +12,8 @@ export default {
         ...mapGetters({
           theme: "theme",
           tabInactiveColor: "tabInactiveColor",
-          tabActiveColor: "tabActiveColor"
+          tabActiveColor: "tabActiveColor",
+          _colorMap: "_colorMap"
         })
       }
     })

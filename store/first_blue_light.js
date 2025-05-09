@@ -1,4 +1,4 @@
-let colorMap = {
+export const _colorMap = {
   "--md-sys-color-primary": "rgb(65 95 145)",
   "--md-sys-color-surface-tint": "rgb(65 95 145)",
   "--md-sys-color-on-primary": "rgb(255 255 255)",
@@ -52,10 +52,10 @@ let colorMap = {
 
 export default (()=>{
   let theme = ''
-  for(let key in colorMap){
-    theme += `${key}:${colorMap[key]};`
+  for(let key in _colorMap){
+    theme += `${key}:${_colorMap[key]};`
   }
   return theme;
 })()
-export const tabActiveColor = colorMap['--md-sys-color-on-surface'];
-export const tabInactiveColor = colorMap['--md-sys-color-surface-dim'];
+export const tabActiveColor = _colorMap['--md-sys-color-on-surface'];
+export const tabInactiveColor = _colorMap['--md-sys-color-surface-dim'];

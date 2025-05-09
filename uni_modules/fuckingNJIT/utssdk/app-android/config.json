@@ -1,0 +1,6 @@
+{
+  "minSdkVersion": "26",
+  "dependencies": [
+  	  "androidx.security:security-crypto:1.0.0"
+  	  ]
+}

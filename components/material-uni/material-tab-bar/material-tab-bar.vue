@@ -1,10 +1,10 @@
 <template>
   <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition"
-                :style="{'height': '100rpx',position: 'fixed',left: '0',bottom: '0',width: '100%'}">
+                :style="{'height': '12.5vmin',position: 'fixed',left: '0',bottom: '0',width: '100%'}">
     <view class="material-tab-bar" :style="{'background-color': backgroundColor}">
       <view class="material-tab-bar-item" v-for="(value, key) in pages" @click="changePage(key)">
         <view class="wrap">
-          <zui-svg-icon class="material-tab-bar-icon" width="40rpx" height="40rpx" :icon="value.icon"
+          <zui-svg-icon class="material-tab-bar-icon" width="5vmin" height="5vmin" :icon="value.icon"
                         :color="value.active ? tabActiveColor : tabInactiveColor"/>
           <text class="material-tab-bar-name" :style="{color:value.active ? tabActiveColor : tabInactiveColor}">{{ value.name }}</text>
         </view>
@@ -98,10 +98,10 @@ export default {
 
 <style scoped lang="scss">
 .material-tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  height: 100rpx;
+  //position: fixed;
+  //bottom: 0;
+  //left: 0;
+  height: 12.5vmin;
   width: 100%;
   display: flex;
 
@@ -119,12 +119,12 @@ export default {
       align-items: center;
 
       .material-tab-bar-icon {
-        width: 40rpx;
-        height: 40rpx;
+        width: 5vmin;
+        height: 5vmin;
       }
 
       .material-tab-bar-name {
-        font-size: 18rpx;
+        font-size: 2vmin;
         color: #000;
       }
     }

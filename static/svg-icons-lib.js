@@ -6,7 +6,7 @@
  *
  * !!! DO NOT MODIFY MANUALLY !!!
  *
- * @datetime 2025/3/31 23:03:27
+ * @datetime 2025/5/6 08:34:16
  *
  */
 
@@ -14,12 +14,20 @@
 const collections = {
   default: {
     "icons": {
+      "md-event_available": [
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" filter=\"none\"><path fill=\"rgba(255,255,255,1)\" d=\"M16.53 11.06 15.47 10l-4.88 4.88-2.12-2.12-1.06 1.06L10.59 17zM19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V8h14z\"/></svg>",
+        0
+      ],
       "md-event_note": [
         "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" filter=\"none\" viewBox=\"0 0 24 24\"><path fill=\"rgba(255,255,255,1)\" d=\"M17 10H7v2h10zm2-7h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V8h14zm-5-5H7v2h7z\"/></svg>",
         0
       ],
       "md-keyboard_arrow_right": [
         "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"25\" height=\"25\" filter=\"none\" viewBox=\"0 0 24 24\"><path fill=\"rgba(255,255,255,1)\" d=\"m8.59 16.34 4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z\"/></svg>",
+        0
+      ],
+      "md-location": [
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" filter=\"none\"><path fill=\"rgba(255,255,255,1)\" d=\"M18 8c0-3.31-2.69-6-6-6S6 4.69 6 8c0 4.5 6 11 6 11s6-6.5 6-11m-8 0c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 0 1-4 0M5 20v2h14v-2z\"/></svg>",
         0
       ],
       "md-report": [

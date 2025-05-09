@@ -1,7 +1,7 @@
 <template>
     <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition">
       <status-bar :background-color="backgroundColor"/>
-      <view class="nav-bar" :style="{'background-color': backgroundColor,'width': '100vw','height': '88rpx'}">
+      <view class="nav-bar" :style="{'background-color': backgroundColor,'width': '100vw','height': '10vmin'}">
         <slot></slot>
       </view>
     </touch-ripple>

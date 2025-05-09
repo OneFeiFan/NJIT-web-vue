@@ -13,8 +13,11 @@
 </template>
 
 <script>
+import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
+
 export default {
   name: "smm-drawer",
+  components: {UniPopup},
   data() {
     return {
       mask: false,

@@ -73,6 +73,14 @@
         "navigationBarTitleText": "uni-app",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/usermanager/usermanager",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
     }
   ],
   "tabBar": {

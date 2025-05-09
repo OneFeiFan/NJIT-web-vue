@@ -75,8 +75,8 @@ export default {
   onHide: function () {
     console.log('App Hide')
   },
-  methods:{
-    test(){
+  methods: {
+    test() {
       console.log('test')
     }
   }
@@ -92,5 +92,48 @@ export default {
 
 .uni-navbar__header {
   padding: 0 !important;
+}
+.uni-table-text.empty-border{
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.nav-bar {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  //justify-content: center;
+
+
+  .icon-left {
+    margin-left: 6vmin;
+    /* 调整这个值控制间距 */
+    position: relative;
+    //top: -6rpx
+  }
+
+  .rotate {
+    animation: rotate 1s linear infinite;
+    display: inline-block;
+  }
+
+  .icon-right {
+    margin-right: 6vmin;
+    /* 调整这个值控制间距 */
+    position: relative;
+    will-change: transform;
+    //top: -6rpx
+  }
+
+
+  .title {
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    font-size: 5vmin;
+    color: var(--md-sys-color-on-surface);
+  }
 }
 </style>

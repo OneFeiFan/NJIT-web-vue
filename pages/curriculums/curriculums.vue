@@ -3,56 +3,22 @@
   <view class="container">
     <!-- 头部控制栏 -->
     <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
-      <view class="header">
-        <uni-icons type="bars" size="50rpx" @click="showMenu" class="icon-left"/>
+      <view class="nav-bar">
+        <uni-icons type="bars" size="6vmin" @click="showMenu" color="var(--md-sys-color-on-surface)" class="icon-left"/>
 
         <picker class="title" @change="change" :value="week" :range="range">
           <view class="title">{{ range[week] }}</view>
         </picker>
 
-        <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}"/>
+        <uni-icons type="loop" size="6vmin" @click="update" class="icon-right" color="var(--md-sys-color-on-surface)" :class="{'rotate': loading}"/>
       </view>
     </material-nav-bar>
-    <!--    <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="#fff">-->
-    <!--      <touch-ripple class="header" color="#000"-->
-    <!--                    :opacity="0.4"-->
-    <!--                    transition="ease-out"-->
-    <!--                    :duration="250">-->
-
-    <!--    </touch-ripple>-->
-    <!--    </uni-nav-bar>-->
-
-    <!--		<u-picker @cancel="show = false" @close="show = false" :show="show" :columns="weekdays" @confirm="localConfirm"-->
-    <!--			title="请选择周次" closeOnClickOverlay ref="uPicker"></u-picker>-->
-
-
     <y-tabs v-model="week" :swipeable="true" :hide="true">
       <y-tab class="y-tab-virtual" v-for="(tab,index) in timetableData">
         <timetable :timetables="tab" :timetableType="timeSlots" :weekStartDate="weekStartDate" :thisWeek="index"
                    @courseClick="handleCourseClick"></timetable>
       </y-tab>
     </y-tabs>
-
-    <uni-popup ref="loginModal" type="message" :mask-click="false">
-      <view class="login-modal">
-        <view class="wrap">
-          <uni-easyinput class="input" v-model="username" placeholder="请输入账号"
-                         @input="inputUserName"/>
-          <uni-easyinput class="input" v-model="password" placeholder="请输入密码"
-                         @input="inputPassWord"/>
-          <view class="captcha">
-            <uni-easyinput class="input" v-model="captcha" placeholder="请输入验证码" @input="inputCaptcha"/>
-            <image class="captcha-img"
-                   :src=captchaImg
-                   mode="aspectFill" @click="updateCaptchaImg"/>
-          </view>
-          <view class="btn-wrap">
-            <button class="login-btn" type="default" @click="cancel">取消</button>
-            <button class="login-btn" type="primary" @click="login">登录</button>
-          </view>
-        </view>
-      </view>
-    </uni-popup>
     <smm-drawer ref="menu">
       <view class="menu">
         <touch-ripple color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250">
@@ -65,14 +31,20 @@
         </view>
         </touch-ripple>
         <material-list>
-          <material-list-cell @click="jump(`classroom`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+          <material-list-cell rightIcon @click="jump(`classroom`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
             <text>空教室查询</text>
           </material-list-cell>
-          <material-list-cell @click="jump(`evaluate`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
-            <text>快速评价</text>
-          </material-list-cell>
-          <material-list-cell @click="jump(`scores`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+<!--          <material-list-cell rightIcon @click="jump(`evaluate`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
+<!--            <text>快速评价</text>-->
+<!--          </material-list-cell>-->
+          <material-list-cell rightIcon @click="jump(`scores`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
             <text>成绩查询</text>
+          </material-list-cell>
+<!--          <material-list-cell rightIcon @click="jump(`curriculums_test`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
+<!--            <text>测试</text>-->
+<!--          </material-list-cell>-->
+          <material-list-cell rightIcon @click="jump(`usermanager`)" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+            <text>用户管理</text>
           </material-list-cell>
         </material-list>
       </view>
@@ -104,9 +76,13 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
-
+import SmmDrawer from "@/components/smm-drawer/smm-drawer.vue";
+// #ifdef APP
+import {DemoWidget} from "@/uni_modules/widget-demo";
+// #endif
 export default {
   components: {
+    SmmDrawer,
     MaterialListCell,
     MaterialList,
     MaterialTabBar,
@@ -131,11 +107,6 @@ export default {
       app: false,
       check: null,
       wait: null,
-      loginPage: null,
-      captchaImg: null,
-      username: '',
-      password: '',
-      captcha: '',
       week: 0,
       timeSlots: [
         {
@@ -216,21 +187,12 @@ export default {
       ),
       schedules: [],
       weekStartDate: new Date('2025-02-17'),
-      webviewJS: null
+      webviewJS: null,
+	    demoWidget: null
     };
   },
   created() {
     // #ifdef APP-PLUS
-    this.loginPage = plus.webview.getWebviewById("webviewInside");
-    plus.globalEvent.addEventListener('plusMessage', this.handlePostMessage)
-    // this.loginPage.setStyle({
-    //   top: 100,
-    //   height: "30%",
-    //   width: "100%"
-    // })
-    // var currentWebview = this.$scope.$getAppWebview(); //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效
-    // currentWebview.append(this.loginPage);
-
     // #endif
   },
   onLoad() {
@@ -250,19 +212,10 @@ export default {
   },
   onReady() {
     // #ifdef APP-PLUS
-    this.loginPage.onerror = (e) => {
-      uni.showToast({
-        title: '加载失败',
-        icon: 'error',
-        duration: 2000
-      });
-    }
+	this.demoWidget = new DemoWidget()
     // #endif
   },
   methods: {
-    print1() {
-      console.log('打印')
-    },
     change(e) {
       this.week = e.detail.value;
     },
@@ -1328,8 +1281,55 @@ export default {
       }
       this.loading = false;
       uni.hideLoading();
-      this.week = this.calculateCurrentWeek()
+      this.week = this.calculateCurrentWeek();
       clearTimeout(this.wait);
+      // #ifdef APP
+      this.demoWidget.createWidget(this.parseCourseSchedule(this.timetableData[this.week][this.todayWeekIndex()]))
+      // #endif
+
+    },
+    todayWeekIndex() {
+      let weekIndex = new Date().getDay() - 1
+      if (weekIndex === -1) {
+        weekIndex = 6
+      }
+      return weekIndex
+    },
+    parseCourseSchedule(courseArray) {
+      const result = [];
+      let i = 0;
+
+      while (i < courseArray.length) {
+        if (!courseArray[i] || courseArray[i] === "") {
+          i++;
+          continue;
+        }
+
+        // 解析当前课程信息
+        const [course_name, location] = courseArray[i].split('@');
+        let startIndex = i;
+        let endIndex = i;
+
+        // 检查后续连续时间段是否同一门课程
+        while (endIndex + 1 < courseArray.length &&
+        courseArray[endIndex + 1] === courseArray[i]) {
+          endIndex++;
+        }
+
+        // 获取时间范围
+        const startTime = this.timeSlots[startIndex].name.split('\n')[0]; // 取第一节课的开始时间
+        const endTime = this.timeSlots[endIndex].name.split('\n')[1];    // 取最后一节课的结束时间
+
+        result.push({
+          course_name,
+          location,
+          "time": `${startTime}-${endTime}`
+        });
+
+        i = endIndex + 1;
+      }
+
+      return result;
     },
     handleCourseClick(e) {
       if (e.name === '' || e.classroom === '') {
@@ -1340,164 +1340,9 @@ export default {
         content: `${e.name}`
       });
     },
-    inputUserName(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#mobileUsername").value = "${e}"`
-      )
-    },
-    inputPassWord(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#mobilePassword").value = "${e}"`
-      )
-    },
-    inputCaptcha(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#captchaResponse").value = "${e}"`
-      )
-    },
-    getCaptchaImg() {
-      this.loginPage.evalJS(`
-            function getBase64FromImg(imgElement, type = 'image/png') {
-              const canvas = document.createElement('canvas');
-              canvas.width = imgElement.naturalWidth;
-              canvas.height = imgElement.naturalHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(imgElement, 0, 0);
-              return canvas.toDataURL(type); // 返回完整的Base64字符串（包含MIME类型）
-            }
-            plus.webview.postMessageToUniNView({
-              type: "CAPTCHAIMAGEBASE64",
-              args: {
-                data: getBase64FromImg(document.querySelector("#captchaImg"))
-              }
-            }, "__uniapp__service");
-          `)
-    },
-    updateCaptchaImg() {
-      this.loginPage.evalJS(
-          `document.querySelector("#captchaImg").click();`
-      );
-      setTimeout(() => {
-        // this.injectJS();
-        this.getCaptchaImg();
-      }, 500);
-
-      console.log("updateCaptchaImg")
-    },
-    login() {
-      if (this.username === '' || this.password === '' || this.captcha === '') {
-        uni.showToast({
-          title: '输入错误',
-          icon: 'error',
-          duration: 1000
-        });
-        return;
-      }
-      console.log('login')
-      this.$refs.loginModal.close();
-      this.captchaImg = null;
-      this.captcha = '';
-      this.username = '';
-      this.password = '';
-      uni.showLoading({
-        title: '登录中'
-      });
-
-      // #ifdef APP-PLUS
-      this.loginPage.onloaded = () => {
-        this.loginPage.onloaded = () => {
-        }
-        uni.hideLoading();
-        this.loading = false;
-        setTimeout(() => {
-          if (this.loginPage.getURL() !== "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-            uni.hideLoading();
-            uni.showToast({
-              title: '登录失败',
-              icon: 'error',
-              duration: 2000
-            });
-            return;
-          }
-          uni.showToast({
-            title: '登录成功，现在再点击刷新即可获取课表',
-            icon: 'none',
-            duration: 2000
-          });
-        }, 100)
-      }
-      this.loginPage.evalJS(
-          'document.querySelector("#load").click();'
-      )
-      // #endif
-    },
     update() {
       console.log('update')
       this.loading = true;
-      uni.showToast({
-        title: '验证信息',
-        icon: 'loading',
-        duration: 2000
-      });
-      this.loginPage.loadURL(`https://casb.njit.edu.cn/http/webvpnea5e00498bb033e68046c95dbdf6e09fbc127bea836184c80a0792b662ced92f/authserver/login?service=http://ehall.njit.edu.cn/login?service=http://ehall.njit.edu.cn/new/index.html&time=${Math.random()}`)
-      this.loginPage.onloaded = () => {
-        this.loginPage.onloaded = () => {
-        }
-        setTimeout(() => {
-          if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-            this.initJWXT();
-            return;
-          }
-          uni.showToast({
-            title: '请先登录',
-            icon: 'error',
-            duration: 2000
-          });
-
-          this.$refs.loginModal.open('center');
-          this.getCaptchaImg();
-        }, 100)
-      }
-    },
-    initJWXT() {
-      uni.showLoading({
-        title: '加载教务信息'
-      });
-      this.check = setTimeout(() => {
-        uni.hideLoading();
-        uni.showToast({
-          title: '加载信息失败',
-          icon: 'error',
-          duration: 2000
-        });
-      }, 5000);
-      this.loginPage.evalJS(
-          `var myHeaders = new Headers();
-                  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-                  myHeaders.append("Accept", "*/*");
-                  myHeaders.append("Host", "casb.njit.edu.cn");
-                  myHeaders.append("Connection", "keep-alive");
-                  var requestOptions = {
-                     method: 'GET',
-                     headers: myHeaders,
-                     redirect: 'follow'
-                  };
-              fetch("https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/appShow?appId=5904538791462728", requestOptions)
-                  .then(result => {
-                    plus.webview.postMessageToUniNView({
-                      type: "jwxtOK",
-                      args: {}
-                    }, "__uniapp__service");
-                  })
-                  .catch(error => {
-                    plus.webview.postMessageToUniNView({
-                      type: "jwxtBad",
-                      args: {}
-                    }, "__uniapp__service");
-                  });`
-      );
-    },
-    getTimeTable() {
       uni.showLoading({
         title: '获取课表数据'
       });
@@ -1510,49 +1355,14 @@ export default {
           duration: 2000
         });
       }, 5000);
-      this.loginPage.evalJS(`
-              var myHeaders = new Headers();
-              myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-              myHeaders.append("Accept", "*/*");
-              myHeaders.append("Host", "casb.njit.edu.cn");
-              myHeaders.append("Connection", "keep-alive");
-              var requestOptions = {
-                 method: 'POST',
-                 headers: myHeaders,
-                 redirect: 'follow'
-              };
-              fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/kbcx/xskbqr_cxXskbqrIndex.html?doType=query&gnmkdm=N2158&enlink-vpn&xnm=2024&xqm=12&_search=false&nd=1725346567148&queryModel.showCount=200&queryModel.currentPage=1&queryModel.sortName=&queryModel.sortOrder=asc&time=1", requestOptions)
-                  .then(response => response.text())
-                  .then(result => {
-                    plus.webview.postMessageToUniNView({
-                      type: "GETTIMETABLE",
-                      args: {
-                        data: result
-                      }
-                    }, "__uniapp__service");
-                  }).catch(error => console.log('error', error));`
-      );
-    },
-    cancel() {
-      this.$refs.loginModal.close();
-    },
-    handlePostMessage({data}) {
-      // console.log(data)
-      if (data.type === "subscribeHandler") {
-        return
-      }
-      let {args} = data;
-      if (data.type === "CAPTCHAIMAGEBASE64") {
-        this.captchaImg = args.data;
-      } else if (data.type === "jwxtOK") {
-        clearTimeout(this.check);
-        this.getTimeTable();
-      } else if (data.type === "GETTIMETABLE") {
-        this.schedules = getCurriculumByUsernameAndPassword(JSON.parse(args.data));
+      this.$manager.getCurriculum().then(res=>{
+        this.schedules = getCurriculumByUsernameAndPassword(JSON.parse(res));
         this.loadSchedule();
         uni.setStorageSync('curriculum', this.schedules)
-      }
-    },
+      }).catch(res=>{
+        console.log(res)
+      })
+    }
   }
 };
 </script>
@@ -1614,10 +1424,9 @@ $modal-width: 90vw;
   witdh: 20rpx
 }
 
-.header {
+.nav-bar {
   height: 100%;
   width: 100%;
-  //background: #fff;
 
   display: flex;
   align-items: center;
@@ -1625,20 +1434,10 @@ $modal-width: 90vw;
 
 
   .icon-left {
-    margin-left: 50rpx;
-
+    margin-left: 6vmin;
     /* 调整这个值控制间距 */
     position: relative;
     //top: -6rpx
-  }
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
   }
 
   .rotate {
@@ -1647,20 +1446,20 @@ $modal-width: 90vw;
   }
 
   .icon-right {
-    margin-right: 50rpx;
+    margin-right: 6vmin;
     /* 调整这个值控制间距 */
     position: relative;
     will-change: transform;
     //top: -6rpx
   }
 
+
   .title {
-    padding: 10rpx;
     margin: 0 auto;
     display: block;
     text-align: center;
-    font-size: 36rpx;
-    color: #333;
+    font-size: 5vmin;
+    color: var(--md-sys-color-on-surface);
   }
 }
 

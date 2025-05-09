@@ -1,67 +1,49 @@
 <template>
   <view>
-    <smm-drawer ref="drawer">
-      <view>
-        <view class="listView">
-          菜单
-        </view>
-        <view class="listView">
-          我的收藏
-        </view>
-        <view class="listView">
-          我的作品
-        </view>
-        <view class="listView">
-          我的频道
-        </view>
-      </view>
-    </smm-drawer>
-    <view class="content" @click="openDrawer">
-      Hello word
-    </view>
+
   </view>
+
 </template>
 
 <script>
+import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
+
 export default {
+  components: {UPicker},
   data() {
     return {
-      text: '首页',
-      user: {
-        name: 'smmMax',
-        userId: '10010101',
-        img: 'https://img.xjh.me/img/62973578_p15_master1200.jpg'
-      },
-      imgs: 'https://api.vvhan.com/static/img/background-1.png'
+      show: true,
+      columns: [
+        ['中国', '美国'],
+        ['深圳', '厦门', '上海', '拉萨']
+      ],
+      columnData: [
+        ['深圳', '厦门', '上海', '拉萨'],
+        ['得州', '华盛顿', '纽约', '阿拉斯加']
+      ]
     }
   },
   methods: {
-    openDrawer(e){
-      this.$refs.drawer.open()
+    changeHandler(e) {
+      const {
+        columnIndex,
+        value,
+        values, // values为当前变化列的数组内容
+        index,
+        // 微信小程序无法将picker实例传出来，只能通过ref操作
+        picker = this.$refs.uPicker
+      } = e
+      // 当第一列值发生变化时，变化第二列(后一列)对应的选项
+      if (columnIndex === 0) {
+        // picker为选择器this实例，变化第二列对应的选项
+        picker.setColumnValues(1, this.columnData[index])
+      }
+    },
+    // 回调参数为包含columnIndex、value、values
+    confirm(e) {
+      console.log('confirm', e)
+      this.show = false
     }
   }
 }
 </script>
-
-<style lang="scss">
-.listView {
-  position: relative;
-  height: 120rpx;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 20rpx 30rpx;
-  font-size: 35rpx;
-  display: flex;
-  align-items: center;
-  border-bottom: 2rpx solid #ccc;
-
-  &::after {
-    content: '>';
-    transform: rotate(90deg) scale(1, 2);
-    font-size: 30rpx;
-    position: absolute;
-    right: 30rpx;
-    top: 35%;
-  }
-}
-</style>
