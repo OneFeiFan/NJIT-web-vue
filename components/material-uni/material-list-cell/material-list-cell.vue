@@ -1,12 +1,12 @@
 <template>
   <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition">
     <view class="material-list-cell" :style="{'background-color': backgroundColor}" @click="handleClick">
-      <view class="left-text" v-if="showLeftText">
+      <view class="left-text" :style="{'color': fontColor}" v-if="showLeftText">
         <slot></slot>
       </view>
       <slot v-else></slot>
       <view class="right-icon" v-if="rightIcon">
-        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap['--md-sys-color-on-surface']"></zui-svg-icon>
+        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap[fontColor.split('var(')[1].split(')')[0]]"></zui-svg-icon>
       </view>
       <view class="ripple-fix" v-if="!rightIcon"></view>
     </view>
@@ -51,6 +51,10 @@ export default {
       type: Boolean,
       default: true
     },
+    fontColor: {
+      type: String,
+      default: "var(--md-sys-color-on-surface)"
+    }
   },
   methods: {
     handleClick(e) {
@@ -73,7 +77,6 @@ export default {
   .left-text{
     margin-left: 5vmin;
     font-size: 4vmin;
-    color: var(--md-sys-color-on-surface);
   }
   .right-icon{
     margin-right: 34rpx;

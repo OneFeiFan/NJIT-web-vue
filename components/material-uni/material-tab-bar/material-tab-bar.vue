@@ -54,7 +54,7 @@ export default {
     }
   },
   created() {
-    uni.hideTabBar();
+    uni.hideTabBar();uni.hideTabBar();
 
   },
   mounted() {

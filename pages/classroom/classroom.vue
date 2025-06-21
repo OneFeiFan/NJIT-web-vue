@@ -234,6 +234,16 @@ export default {
       this.heigth = systemInfo.windowHeight - data[0].bottom;
     })
   },
+  onResize(){
+    const systemInfo = uni.getSystemInfoSync();
+    let dom = uni.createSelectorQuery().in(this);
+    dom.select("#select").boundingClientRect()
+
+    dom.exec((data) => {
+      console.log(data[0].bottom)
+      this.heigth = systemInfo.windowHeight - data[0].bottom;
+    })
+  },
   onShow() {
   },
   methods: {
