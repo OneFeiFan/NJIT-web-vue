@@ -1,60 +1,87 @@
 <template>
+  <page-meta :page-style="theme"></page-meta>
   <view>
-    <status-bar></status-bar>
-    <!-- 头部控制栏 -->
-    <uni-nav-bar leftWidth="0" rightWidth="0" :border="false" background-color="rgb(248, 248, 248)">
-      <view class="header">
-        <uni-icons type="left" size="50rpx" @click="back" class="icon-left"/>
+    <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
+                      backgroundColor="var(--md-sys-color-surface-container)">
+      <view class="nav-bar">
+        <uni-icons type="left" size="6vmin" @click="back" class="icon-left"/>
         <text class="title">成绩查询</text>
-        <uni-icons type="loop" size="50rpx" @click="update" class="icon-right" :class="{'rotate': loading}"/>
+        <uni-icons type="loop" size="6vmin" @click="update" class="icon-right"/>
       </view>
-    </uni-nav-bar>
-    <scroll-view scroll-y="true" class="scroll-table">
-      <uni-table ref="table" border stripe emptyText="暂无更多数据">
-        <uni-tr>
-          <uni-th width="1" align="center">详情</uni-th>
-          <uni-th width="1" align="center">学年</uni-th>
-          <uni-th width="1" align="center">学期</uni-th>
-          <uni-th width="1" align="center">课程</uni-th>
-          <uni-th width="1" align="center">成绩</uni-th>
-          <uni-th width="1" align="center">学分</uni-th>
-          <uni-th width="1" align="center">教师</uni-th>
-        </uni-tr>
-        <uni-tr v-for="(item, index) in tableData" :key="index">
-          <uni-td align="center">
-            <button type="default" class="btn-evaluate" @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
-              详情
-            </button>
-          </uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xnmmc }}</uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xqmmc }}</uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.kcmc }}</uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.cj }}</uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xf }}</uni-td>
-          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.jsxm }}</uni-td>
-        </uni-tr>
-      </uni-table>
-    </scroll-view>
-    <uni-popup ref="loginModal" type="message" :mask-click="false">
-      <view class="login-modal">
-        <view class="wrap">
-          <uni-easyinput class="input" v-model="username" placeholder="请输入账号"
-                         @input="inputUserName"/>
-          <uni-easyinput class="input" v-model="password" placeholder="请输入密码"
-                         @input="inputPassWord"/>
-          <view class="captcha">
-            <uni-easyinput class="input" v-model="captcha" placeholder="请输入验证码" @input="inputCaptcha"/>
-            <image class="captcha-img"
-                   :src=captchaImg
-                   mode="aspectFill" @click="updateCaptchaImg"/>
-          </view>
-          <view class="btn-wrap">
-            <button class="login-btn" type="default" @click="cancel">取消</button>
-            <button class="login-btn" type="primary" @click="login">登录</button>
-          </view>
+    </material-nav-bar>
+    <scroll-view scroll-y="true" class="scroll-table" :style="{'height': heigth + 'px'}">
+      <slot v-for="(item, index) in tableData">
+        <view class="content">
+          <material-card width="100%" height="35vmin" color="var(--md-sys-color-primary-fixed)" :opacity="0.4"
+                         transition="ease-out" :duration="250"
+                         :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'" @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
+            <view class="card-content" :style="{color: item.jd === `0.00`?'var(--md-sys-color-on-tertiary-container)':'var(--md-sys-color-on-primary-container)'}">
+              <view class="time">
+                {{item.xnmmc}}
+                <uni-icons v-if="item.jd !== `0.00`" type="checkbox-filled" size="6vmin" color="var(--md-sys-color-on-primary-container)" @click="update" class="icon-right"/>
+                <uni-icons v-if="item.jd === `0.00`" type="clear" size="6vmin" color="var(--md-sys-color-on-tertiary-container)" @click="update" class="icon-right"/>
+              </view>
+              <view class="name">
+                {{ item.kcmc }}
+              </view>
+              <view class="score">
+                成绩：{{ item.cj }}{{" "}}学分：{{ item.xf }}
+              </view>
+
+              <view class="teacher">
+                {{ item.jsxm }}
+              </view>
+            </view>
+          </material-card>
         </view>
-      </view>
-    </uni-popup>
+
+      </slot>
+
+<!--      <uni-table ref="table" border stripe emptyText="暂无更多数据">-->
+<!--        <uni-tr>-->
+<!--          <uni-th width="1" align="center">详情</uni-th>-->
+<!--          <uni-th width="1" align="center">学年</uni-th>-->
+<!--          <uni-th width="1" align="center">学期</uni-th>-->
+<!--          <uni-th width="1" align="center">课程</uni-th>-->
+<!--          <uni-th width="1" align="center">成绩</uni-th>-->
+<!--          <uni-th width="1" align="center">学分</uni-th>-->
+<!--          <uni-th width="1" align="center">教师</uni-th>-->
+<!--        </uni-tr>-->
+<!--        <uni-tr v-for="(item, index) in tableData" :key="index">-->
+<!--          <uni-td align="center">-->
+<!--            <button type="default" class="btn-evaluate" @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">-->
+<!--              详情-->
+<!--            </button>-->
+<!--          </uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xnmmc }}</uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xqmmc }}</uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.kcmc }}</uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.cj }}</uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.xf }}</uni-td>-->
+<!--          <uni-td align="center" :class="{'color-red': item.jd === `0.00`}">{{ item.jsxm }}</uni-td>-->
+<!--        </uni-tr>-->
+<!--      </uni-table>-->
+    </scroll-view>
+<!--    <uni-popup ref="loginModal" type="message" :mask-click="false">-->
+<!--      <view class="login-modal">-->
+<!--        <view class="wrap">-->
+<!--          <uni-easyinput class="input" v-model="username" placeholder="请输入账号"-->
+<!--                         @input="inputUserName"/>-->
+<!--          <uni-easyinput class="input" v-model="password" placeholder="请输入密码"-->
+<!--                         @input="inputPassWord"/>-->
+<!--          <view class="captcha">-->
+<!--            <uni-easyinput class="input" v-model="captcha" placeholder="请输入验证码" @input="inputCaptcha"/>-->
+<!--            <image class="captcha-img"-->
+<!--                   :src=captchaImg-->
+<!--                   mode="aspectFill" @click="updateCaptchaImg"/>-->
+<!--          </view>-->
+<!--          <view class="btn-wrap">-->
+<!--            <button class="login-btn" type="default" @click="cancel">取消</button>-->
+<!--            <button class="login-btn" type="primary" @click="login">登录</button>-->
+<!--          </view>-->
+<!--        </view>-->
+<!--      </view>-->
+<!--    </uni-popup>-->
     <uni-popup ref="detail">
       <view class="detail-modal" :mask-click="false">
         <view class="name">{{className}}</view>
@@ -87,11 +114,15 @@ import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue
 import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
+import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
+import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 const parse5 = require('parse5');
 const htmlparser2Adapter = require('parse5-htmlparser2-tree-adapter');
 const cssSelect = require('css-select');
 export default {
-  components: {UniTh, UniTd, UniTr, UniTable, StatusBar, UniNavBar, UniPopup, UniEasyinput, UniIcons},
+  components: {
+    MaterialNavBar,
+    MaterialCard, UniTh, UniTd, UniTr, UniTable, StatusBar, UniNavBar, UniPopup, UniEasyinput, UniIcons},
   data() {
     return {
       className:'test',
@@ -110,8 +141,8 @@ export default {
   },
   created() {
     // #ifdef APP-PLUS
-    this.loginPage = plus.webview.getWebviewById("webviewInside");
-    plus.globalEvent.addEventListener('plusMessage', this.scores_)
+    // this.loginPage = plus.webview.getWebviewById("webviewInside");
+    // plus.globalEvent.addEventListener('plusMessage', this.scores_)
     // this.loginPage.setStyle({
     //   top: 550,
     //   height: "25%",
@@ -125,308 +156,1124 @@ export default {
   onLoad() {
 
   },
+  onResize(){
+    const systemInfo = uni.getSystemInfoSync();
+    let dom = uni.createSelectorQuery().in(this);
+    dom.select("#nav-bar").boundingClientRect()
+
+    dom.exec((data) => {
+      this.heigth = systemInfo.windowHeight - data[0].bottom;
+    })
+  },
   onReady() {
     // this.$refs.detail.open("center")
-    // try {
-    //   let temp = uni.getStorageSync('SCOREDATA_SCORES');
-    //   if (temp !== null && temp !== '') {
-    //     this.tableData = temp;
-    //   }else {
-    //
-    //   }
-    // } catch (e) {
-    //   console.error(e)
-    //   this.update();
-    // }
-    this.update();
+    const systemInfo = uni.getSystemInfoSync();
+    let dom = uni.createSelectorQuery().in(this);
+    dom.select("#nav-bar").boundingClientRect()
+
+    dom.exec((data) => {
+      this.heigth = systemInfo.windowHeight - data[0].bottom;
+    })
+    // #ifdef H5
+    this.tableData = [
+      {
+        "cj": "65",
+        "jd": "2.00",
+        "xf": "3.0",
+        "jsxm": "姚军财",
+        "jxb_id": "1B62664DD61FAA19E06365CBA8C04E61",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "操作系统A",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "徐梦溪",
+        "jxb_id": "19920255E4C89095E06365CBA8C09EE9",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "多媒体技术项目训练",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "卢阿丽",
+        "jxb_id": "19927017C99CB3C2E06365CBA8C05493",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "数字图像处理技术项目实训",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "79",
+        "jd": "3.00",
+        "xf": "3.0",
+        "jsxm": "卢阿丽",
+        "jxb_id": "19927017CA62B3C2E06365CBA8C05493",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "数字图像处理技术",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "61",
+        "jd": "1.00",
+        "xf": "3.0",
+        "jsxm": "徐梦溪",
+        "jxb_id": "1991DA80CE0985D2E06365CBA8C076D1",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "多媒体技术 ",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "71",
+        "jd": "2.50",
+        "xf": "3.5",
+        "jsxm": "王兴",
+        "jxb_id": "19A8030A8F712356E06365CBA8C0549A",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "计算机组成与结构",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "通过",
+        "jd": "3.50",
+        "xf": "0.5",
+        "jsxm": "王振宇",
+        "jxb_id": "1B6303F04A981CD5E06365CBA8C0D7DE",
+        "xnm": "2024",
+        "xqm": "3",
+        "kcmc": "体质测试Ⅰ",
+        "xnmmc": "2024-2025",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "99",
+        "jd": "5.00",
+        "xf": "2.0",
+        "jsxm": "超星在线",
+        "jxb_id": "0AB85D6123E34A35E06365CBA8C068A0",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "KX 中国历史人文地理（上）(ZA02)",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "94",
+        "jd": "4.50",
+        "xf": "0.5",
+        "jsxm": "王玉",
+        "jxb_id": "0B86C3985A381708E06365CBA8C0256C",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "武术(拳)-Ⅳ",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "76",
+        "jd": "3.00",
+        "xf": "4.0",
+        "jsxm": "温志萍",
+        "jxb_id": "0D3B90E009315037E06365CBA8C0BD0D",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "数据库原理及应用A",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "83",
+        "jd": "3.50",
+        "xf": "3.5",
+        "jsxm": "王健",
+        "jxb_id": "0D3A82263440B009E06365CBA8C027E9",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "计算机网络A",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "丁宇辰",
+        "jxb_id": "0BFB48EF14A68197E06365CBA8C0940F",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "计算机图形学课程设计",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "温志萍",
+        "jxb_id": "0D39E9667A227D61E06365CBA8C0682A",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "数据库原理及应用课设",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "65",
+        "jd": "2.00",
+        "xf": "3.0",
+        "jsxm": "丁宇辰",
+        "jxb_id": "0BFAD71C35B860FDE06365CBA8C0949A",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "计算机图形学",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "78",
+        "jd": "2.50",
+        "xf": "3.0",
+        "jsxm": "无",
+        "jxb_id": "123EF95158FC947CE06365CBA8C06570",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "大学物理AⅡ",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "63",
+        "jd": "1.00",
+        "xf": "3.0",
+        "jsxm": "张同丽",
+        "jxb_id": "0D3B7462E07D4288E06365CBA8C0D133",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "概率论与数理统计A",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "76",
+        "jd": "3.00",
+        "xf": "2.0",
+        "jsxm": "朱姝颖",
+        "jxb_id": "0AB47129F74E8725E06365CBA8C079E4",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "工程学科英语",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "83",
+        "jd": "3.50",
+        "xf": "0.5",
+        "jsxm": "夏细明",
+        "jxb_id": "1411FE\u0000\u0000\u0000\b\u0000E092CA5479E06365CBA8C00923",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "最美校园-蔬菜种养劳动教育实践项目",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "86",
+        "jd": "4.00",
+        "xf": "3.0",
+        "jsxm": "高登晖",
+        "jxb_id": "0D609BE364DB3C2FE06365CBA8C03ADC",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "习近平新时代中国特色社会主义思想概论",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "88",
+        "jd": "4.00",
+        "xf": "3.0",
+        "jsxm": "高登晖",
+        "jxb_id": "0D518474FE4FBBD2E06365CBA8C0303D",
+        "xnm": "2023",
+        "xqm": "12",
+        "kcmc": "毛泽东思想和中国特色社会主义理论体系概论",
+        "xnmmc": "2023-2024",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "80",
+        "jd": "3.50",
+        "xf": "4.0",
+        "jsxm": "联盟河海",
+        "jxb_id": "03E2C49AE9B986FAE06365CBA8C0F4F3",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "GX 信号与系统",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "100",
+        "jd": "5.00",
+        "xf": "2.0",
+        "jsxm": "顾燕华",
+        "jxb_id": "FAED7F2483D779CFE05365CBA8C01A7F",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "KX 现代自然地理学(ZD52)",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "94",
+        "jd": "4.50",
+        "xf": "0.5",
+        "jsxm": "王玉",
+        "jxb_id": "FA992F91DBAAB6A5E05365CBA8C05DAC",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "武术(拳)-Ⅲ",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "优秀",
+        "jd": "4.50",
+        "xf": "1.0",
+        "jsxm": "潘磊",
+        "jxb_id": "FD704EC81DD225A5E05365CBA8C03BD5",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "数据结构与算法课程设计",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "优秀",
+        "jd": "4.50",
+        "xf": "2.0",
+        "jsxm": "岳红原",
+        "jxb_id": "FC56C4E4F322BFA9E05365CBA8C08481",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "建模与动画技术项目实训",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "90",
+        "jd": "4.50",
+        "xf": "3.0",
+        "jsxm": "庄严",
+        "jxb_id": "FC56C47669E2BFA5E05365CBA8C04F1F",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "数字媒体开发基础",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "3.0",
+        "jsxm": "岳红原",
+        "jxb_id": "FC56631EA9F09DB4E05365CBA8C05BCB",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "JAVA实用开发技术",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "78",
+        "jd": "3.00",
+        "xf": "3.0",
+        "jsxm": "韩磊",
+        "jxb_id": "FD474CBDC15B07CAE05365CBA8C0AC1D",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "离散数学",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "66",
+        "jd": "2.00",
+        "xf": "4.5",
+        "jsxm": "潘磊",
+        "jxb_id": "FD6E667BBD444CF9E05365CBA8C05317",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "数据结构与算法",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "86",
+        "jd": "4.00",
+        "xf": "1.0",
+        "jsxm": "许生慧",
+        "jxb_id": "FC34924D5091B509E05365CBA8C084A7",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "大学物理实验AⅡ",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "56",
+        "jd": "0.00",
+        "xf": "3.0",
+        "jsxm": "刘津升",
+        "jxb_id": "FC2F5C9EAAAE9E90E05365CBA8C0C125",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "大学物理AⅡ",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "64",
+        "jd": "1.00",
+        "xf": "2.0",
+        "jsxm": "王广胜",
+        "jxb_id": "FC6B769EB12E560AE05365CBA8C042CE",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "线性代数A",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "68",
+        "jd": "2.00",
+        "xf": "1.0",
+        "jsxm": "季芸",
+        "jxb_id": "FC5744104E5027C4E05365CBA8C0C971",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "工程英语视听说",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "67",
+        "jd": "2.00",
+        "xf": "2.0",
+        "jsxm": "鲁海燕",
+        "jxb_id": "FC44AF2A0CC76C9DE05365CBA8C0EE29",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "笔译入门",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "86",
+        "jd": "4.00",
+        "xf": "1.5",
+        "jsxm": "倪佳佳",
+        "jxb_id": "FDEB0E031ED0033AE05365CBA8C00C75",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "大学生创新创业教育",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "73",
+        "jd": "2.50",
+        "xf": "3.0",
+        "jsxm": "虞斌龙",
+        "jxb_id": "FD592A45DB6F6223E05365CBA8C08250",
+        "xnm": "2023",
+        "xqm": "3",
+        "kcmc": "马克思主义基本原理",
+        "xnmmc": "2023-2024",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "91",
+        "jd": "4.50",
+        "xf": "0.5",
+        "jsxm": "王玉",
+        "jxb_id": "ED56DDB1DE98BD9FE05365CBA8C0571F",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "武术（拳）-Ⅱ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "88",
+        "jd": "4.00",
+        "xf": "1.0",
+        "jsxm": "吴晓彬",
+        "jxb_id": "ECDA24D0DA1B214BE05365CBA8C0B040",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "企业认识实习",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "优秀",
+        "jd": "4.50",
+        "xf": "2.0",
+        "jsxm": "岳红原",
+        "jxb_id": "ECD8E2649B8F9979E05365CBA8C05062",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "建模与动画基础",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "c\u0000\u0000\u0000\u0000j": "82",
+        "jd": "3.50",
+        "xf": "2.0",
+        "jsxm": "徐梦溪",
+        "jxb_id": "ECD8E2649B819979E05365CBA8C05062",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "UI设计",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "优秀",
+        "jd": "4.50",
+        "xf": "2.0",
+        "jsxm": "杨庆",
+        "jxb_id": "ECDA3321A56B2FBAE05365CBA8C00EC9",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "C/C++程序设计课程设计",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "88",
+        "jd": "4.00",
+        "xf": "3.0",
+        "jsxm": "吴晓彬;张冰",
+        "jxb_id": "ECD8AF4474467E4FE05365CBA8C005B0",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "C/C++程序设计Ⅱ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "84",
+        "jd": "3.50",
+        "xf": "1.5",
+        "jsxm": "李丛杨",
+        "jxb_id": "EED468939A445E47E05365CBA8C0F3D1",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "大学生心理健康教育",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "86",
+        "jd": "4.00",
+        "xf": "1.0",
+        "jsxm": "周爱平",
+        "jxb_id": "EDF2DAE834CB6229E05365CBA8C0B3F9",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "大学物理实验AⅠ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "78",
+        "jd": "3.00",
+        "xf": "3.0",
+        "jsxm": "刘津升",
+        "jxb_id": "ED6AD4D439F77771E05365CBA8C0FD8D",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "大学物理AⅠ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "66",
+        "jd": "2.00",
+        "xf": "4.0",
+        "jsxm": "滑伟",
+        "jxb_id": "EE1EBAC889D25F07E05365CBA8C0CFC5",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "高等数学BⅡ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "76",
+        "jd": "3.00",
+        "xf": "2.0",
+        "jsxm": "郑文宝",
+        "jxb_id": "ED2E57C4890B3867E05365CBA8C013E6",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "中国近现代史纲要",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "72",
+        "jd": "2.50",
+        "xf": "1.0",
+        "jsxm": "季芸",
+        "jxb_id": "ED284F8D2B477A52E05365CBA8C0A8D1",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "中级英语视听说AⅡ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "64",
+        "jd": "1.00",
+        "xf": "2.0",
+        "jsxm": "董晓燕",
+        "jxb_id": "ED2CF20231587E40E05365CBA8C04B1F",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "中级英语Ⅱ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "庄严;丁宇辰",
+        "jxb_id": "ECDCB1F017AD4F64E05365CBA8C0B89B",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "多媒体系统认知与实践（劳动）",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "88",
+        "jd": "4.00",
+        "xf": "1.0",
+        "jsxm": "李丛杨",
+        "jxb_id": "EEBEFCC567CC3244E05365CBA8C00C0F",
+        "xnm": "2022",
+        "xqm": "12",
+        "kcmc": "大学生职业发展与就业指导Ⅰ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "2"
+      },
+      {
+        "cj": "81",
+        "jd": "3.50",
+        "xf": "0.5",
+        "jsxm": "王玉",
+        "jxb_id": "E6173608B7B5111FE05365CBA8C015D1",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "武术（拳）-Ⅰ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "82",
+        "jd": "3.50",
+        "xf": "3.0",
+        "jsxm": "丁宇辰",
+        "jxb_id": "E2B56FB6884C650AE05365CBA8C05F2A",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "计算机科学概论",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "85",
+        "jd": "4.00",
+        "xf": "4.0",
+        "jsxm": "杨庆",
+        "jxb_id": "E2BA69A249FC6400E05365CBA8C0ED50",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "C/C++程序设计Ⅰ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "66",
+        "jd": "2.00",
+        "xf": "4.0",
+        "jsxm": "王广胜",
+        "jxb_id": "E2FB4242A65B01DCE05365CBA8C0483A",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "高等数学BⅠ",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "77",
+        "jd": "3.00",
+        "xf": "3.0",
+        "jsxm": "郑赟",
+        "jxb_id": "DFCF18A9C5C06556E05365CBA8C09B82",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "大学英语综合I",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "91",
+        "jd": "4.50",
+        "xf": "0.5",
+        "jsxm": "李海燕;马群",
+        "jxb_id": "E6A913E36CAC5A82E05365CBA8C0B846",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "体育与健康",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "良好",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "李丛杨",
+        "jxb_id": "E2B700AB730223A5E05365CBA8C001F7",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "军训",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "84",
+        "jd": "3.50",
+        "xf": "1.0",
+        "jsxm": "孙大尉",
+        "jxb_id": "E2C9ABB770670DCBE05365CBA8C0732D",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "军事理论",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "93",
+        "jd": "4.50",
+        "xf": "0.5",
+        "jsxm": "王晓红",
+        "jxb_id": "E2F6F9506DDA2039E05365CBA8C05DFB",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "劳动教育导论",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      },
+      {
+        "cj": "88",
+        "jd": "4.00",
+        "xf": "2.0",
+        "jsxm": "徐丽丽",
+        "jxb_id": "E30DC85540DA9F6EE05365CBA8C0B5B5",
+        "xnm": "2022",
+        "xqm": "3",
+        "kcmc": "思想道德修养与法律基础",
+        "xnmmc": "2022-2023",
+        "xqmmc": "1"
+      }
+    ]
+    // #endif
+    // #ifdef APP-PLUS
+    try {
+      // let temp = uni.getStorageSync('SCOREDATA_SCORES');
+      // if (temp !== null && temp !== '') {
+      //   this.tableData = temp;
+      // }else {
+        this.update();
+      // }
+    } catch (e) {
+      console.error(e)
+      this.update();
+    }
+    // #endif
+    // this.update();
   },
   methods: {
-    getCurrentSchoolYear() {
-      const currentMonth = new Date().getMonth(); // 获取当前月份（1-12）
-      const currentYear = new Date().getFullYear(); // 获取当前年份
-      let schoolYearStart, schoolYearEnd, semester;
-
-      if (currentMonth >= 9) { // 如果当前月份大于或等于9（或以后），则当前学年为今年的年份
-        schoolYearStart = currentYear;
-        schoolYearEnd = currentYear + 1;
-        semester = 3
-      } else { // 否则，当前学年为去年的年份
-        schoolYearStart = currentYear - 1;
-        schoolYearEnd = currentYear;
-        semester = 12
-      }
-
-      return `${schoolYearStart}-${schoolYearEnd}-${semester}`; // 返回学年学期的字符串表示，例如 "2023-2024-12"
-    },
-    inputUserName(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#mobileUsername").value = "${e}"`
-      )
-    },
-    inputPassWord(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#mobilePassword").value = "${e}"`
-      )
-    },
-    inputCaptcha(e) {
-      this.loginPage.evalJS(
-          `document.querySelector("#captchaResponse").value = "${e}"`
-      )
-    },
-    getCaptchaImg() {
-      this.loginPage.evalJS(`
-            function getBase64FromImg(imgElement, type = 'image/png') {
-              const canvas = document.createElement('canvas');
-              canvas.width = imgElement.naturalWidth;
-              canvas.height = imgElement.naturalHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(imgElement, 0, 0);
-              return canvas.toDataURL(type); // 返回完整的Base64字符串（包含MIME类型）
-            }
-            plus.webview.postMessageToUniNView({
-              type: "CAPTCHAIMAGEBASE64_SCORES",
-              args: {
-                data: getBase64FromImg(document.querySelector("#captchaImg"))
-              }
-            }, "__uniapp__service");
-          `)
-    },
-    updateCaptchaImg() {
-      this.loginPage.evalJS(
-          `document.querySelector("#captchaImg").click();`
-      );
-      setTimeout(() => {
-        // this.injectJS();
-        this.getCaptchaImg();
-      }, 500);
-
-      console.log("updateCaptchaImg")
-    },
-    login() {
-      if (this.username === '' || this.password === '' || this.captcha === '') {
-        uni.showToast({
-          title: '输入错误',
-          icon: 'error',
-          duration: 1000
-        });
-        return;
-      }
-      console.log('login')
-      this.$refs.loginModal.close();
-      this.captchaImg = null;
-      this.captcha = '';
-      this.username = '';
-      this.password = '';
-      uni.showLoading({
-        title: '登录中'
-      });
-
-      // #ifdef APP-PLUS
-      this.loginPage.onloaded = () => {
-        this.loginPage.onloaded = () => {
-        }
-        uni.hideLoading();
-        this.loading = false;
-        setTimeout(() => {
-          if (this.loginPage.getURL() !== "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-            uni.hideLoading();
-            uni.showToast({
-              title: '登录失败',
-              icon: 'error',
-              duration: 2000
-            });
-            return;
-          }
-          uni.showToast({
-            title: '登录成功，现在你可以继续操作',
-            icon: 'none',
-            duration: 2000
-          });
-          this.initJWXT();
-        }, 100)
-      }
-      this.loginPage.evalJS(
-          'document.querySelector("#load").click();'
-      )
-      // #endif
-    },
+    // getCurrentSchoolYear() {
+    //   const currentMonth = new Date().getMonth(); // 获取当前月份（1-12）
+    //   const currentYear = new Date().getFullYear(); // 获取当前年份
+    //   let schoolYearStart, schoolYearEnd, semester;
+    //
+    //   if (currentMonth >= 9) { // 如果当前月份大于或等于9（或以后），则当前学年为今年的年份
+    //     schoolYearStart = currentYear;
+    //     schoolYearEnd = currentYear + 1;
+    //     semester = 3
+    //   } else { // 否则，当前学年为去年的年份
+    //     schoolYearStart = currentYear - 1;
+    //     schoolYearEnd = currentYear;
+    //     semester = 12
+    //   }
+    //
+    //   return `${schoolYearStart}-${schoolYearEnd}-${semester}`; // 返回学年学期的字符串表示，例如 "2023-2024-12"
+    // },
+    // inputUserName(e) {
+    //   this.loginPage.evalJS(
+    //       `document.querySelector("#mobileUsername").value = "${e}"`
+    //   )
+    // },
+    // inputPassWord(e) {
+    //   this.loginPage.evalJS(
+    //       `document.querySelector("#mobilePassword").value = "${e}"`
+    //   )
+    // },
+    // inputCaptcha(e) {
+    //   this.loginPage.evalJS(
+    //       `document.querySelector("#captchaResponse").value = "${e}"`
+    //   )
+    // },
+    // getCaptchaImg() {
+    //   this.loginPage.evalJS(`
+    //         function getBase64FromImg(imgElement, type = 'image/png') {
+    //           const canvas = document.createElement('canvas');
+    //           canvas.width = imgElement.naturalWidth;
+    //           canvas.height = imgElement.naturalHeight;
+    //           const ctx = canvas.getContext('2d');
+    //           ctx.drawImage(imgElement, 0, 0);
+    //           return canvas.toDataURL(type); // 返回完整的Base64字符串（包含MIME类型）
+    //         }
+    //         plus.webview.postMessageToUniNView({
+    //           type: "CAPTCHAIMAGEBASE64_SCORES",
+    //           args: {
+    //             data: getBase64FromImg(document.querySelector("#captchaImg"))
+    //           }
+    //         }, "__uniapp__service");
+    //       `)
+    // },
+    // updateCaptchaImg() {
+    //   this.loginPage.evalJS(
+    //       `document.querySelector("#captchaImg").click();`
+    //   );
+    //   setTimeout(() => {
+    //     // this.injectJS();
+    //     this.getCaptchaImg();
+    //   }, 500);
+    //
+    //   console.log("updateCaptchaImg")
+    // },
+    // login() {
+    //   if (this.username === '' || this.password === '' || this.captcha === '') {
+    //     uni.showToast({
+    //       title: '输入错误',
+    //       icon: 'error',
+    //       duration: 1000
+    //     });
+    //     return;
+    //   }
+    //   console.log('login')
+    //   this.$refs.loginModal.close();
+    //   this.captchaImg = null;
+    //   this.captcha = '';
+    //   this.username = '';
+    //   this.password = '';
+    //   uni.showLoading({
+    //     title: '登录中'
+    //   });
+    //
+    //   // #ifdef APP-PLUS
+    //   this.loginPage.onloaded = () => {
+    //     this.loginPage.onloaded = () => {
+    //     }
+    //     uni.hideLoading();
+    //     this.loading = false;
+    //     setTimeout(() => {
+    //       if (this.loginPage.getURL() !== "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
+    //         uni.hideLoading();
+    //         uni.showToast({
+    //           title: '登录失败',
+    //           icon: 'error',
+    //           duration: 2000
+    //         });
+    //         return;
+    //       }
+    //       uni.showToast({
+    //         title: '登录成功，现在你可以继续操作',
+    //         icon: 'none',
+    //         duration: 2000
+    //       });
+    //       this.initJWXT();
+    //     }, 100)
+    //   }
+    //   this.loginPage.evalJS(
+    //       'document.querySelector("#load").click();'
+    //   )
+    //   // #endif
+    // },
     cancel() {
-      this.$refs.loginModal.close();
+      // this.$refs.loginModal.close();
       this.$refs.detail.close();
     },
     back() {
       uni.navigateBack();
     },
     update() {
-      console.log('update')
+    //   console.log('update')
       this.loading = true;
       uni.showToast({
         title: '验证信息',
         icon: 'loading',
         duration: 2000
       });
-      this.loginPage.loadURL(`https://casb.njit.edu.cn/http/webvpnea5e00498bb033e68046c95dbdf6e09fbc127bea836184c80a0792b662ced92f/authserver/login?service=http://ehall.njit.edu.cn/login?service=http://ehall.njit.edu.cn/new/index.html&time=${Math.random()}`)
-      this.loginPage.onloaded = () => {
-        this.loginPage.onloaded = () => {
-        }
-        setTimeout(() => {
-          if (this.loginPage.getURL() === "https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/new/index.html") {
-            this.initJWXT();
-            return;
+
+      this.$manager.getAllSorces().then(res => {
+        console.log(res)
+        this.tableData = JSON.parse(res).data;
+        let first = this.tableData.filter(item => {
+          return item.kcgsmc !== "劳动教育" &&
+              item.kcgsmc !== "跨专业选修" &&
+              item.kcgsmc !== "公选" &&
+              item.kcgsmc !== "劳动选修" &&
+              item.kcgsmc !== "xxx"&& // 如果"xxx"是一个占位符，你可以根据需要替换为实际的课程名称
+              item.kclbmc !== "专业选修课程" &&
+              item.kclbmc !== "大学外语类课程"
+        });
+
+        let second = this.tableData.filter(item => {
+          return item.kclbmc === "专业选修课程" || item.kclbmc === "大学外语类课程";
+        });
+        let secondResult = Object.values(second.reduce((acc, item) => {
+          if (!acc[item.kclbmc] || item.bfzcj > acc[item.kclbmc].bfzcj) {
+            acc[item.kclbmc] = item;
           }
-          uni.showToast({
-            title: '请先登录',
-            icon: 'error',
-            duration: 2000
-          });
-          this.$refs.loginModal.open('center');
-          this.getCaptchaImg();
-        }, 100)
-      }
-    },
-    initJWXT() {
-      uni.showLoading({
-        title: '加载教务信息'
-      });
-      this.check = setTimeout(() => {
-        uni.hideLoading();
+          return acc;
+        }, {}));
+        // console.log([...first, ...secondResult])
+        let temp = [...first, ...secondResult]
+        console.log(this.calculateAverageGPA(this.tableData))
+        uni.setStorageSync('SCOREDATA_SCORES', this.tableData)
+
+        // uni.hideLoading();
+        this.loading = false;
+      }).catch(err => {
+        console.error(err)
+        // uni.hideLoading();
         uni.showToast({
-          title: '加载信息失败',
+          title: '获取成绩失败',
           icon: 'error',
           duration: 2000
         });
-      }, 5000);
-      this.loginPage.evalJS(
-          `var myHeaders = new Headers();
-                  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-                  myHeaders.append("Accept", "*/*");
-                  myHeaders.append("Host", "casb.njit.edu.cn");
-                  myHeaders.append("Connection", "keep-alive");
-                  var requestOptions = {
-                     method: 'GET',
-                     headers: myHeaders,
-                     redirect: 'follow'
-                  };
-              fetch("https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/appShow?appId=5904538791462728", requestOptions)
-                  .then(result => {
-                    plus.webview.postMessageToUniNView({
-                      type: "jwxtOK_SCORES",
-                      args: {}
-                    }, "__uniapp__service");
-                  })
-                  .catch(error => {
-                    plus.webview.postMessageToUniNView({
-                      type: "jwxtBad_",
-                      args: {}
-                    }, "__uniapp__service");
-                  });`
-      );
+        this.loading = false;
+      })
     },
-    getScoreData() {
-      uni.showLoading({
-        title: '加载成绩信息'
-      });
-      this.wait = setTimeout(() => {
-        uni.hideLoading();
-        uni.showToast({
-          title: '加载成绩失败',
-          icon: 'error',
-          duration: 2000
-        });
-      }, 5000);
-      this.loginPage.evalJS(
-          `var myHeaders = new Headers();
-              myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-              myHeaders.append("Accept", "*/*");
-              myHeaders.append("Host", "casb.njit.edu.cn");
-              myHeaders.append("Connection", "keep-alive");
-
-              var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-              };
-
-              fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/cjcx/cjcx_cxXsgrcj.html?doType=query&gnmkdm=N305005&enlink-vpn&xnm=&xqm=&kcbj=&_search=false&nd=${Date.now()}&queryModel.showCount=500&queryModel.currentPage=1&queryModel.sortName=+&queryModel.sortOrder=desc&time=1", requestOptions)
-                  .then(response => response.text())
-                  .then(result => {
-                    plus.webview.postMessageToUniNView({
-                      type: "SCOREDATA_SCORES",
-                      args: {
-                        data: result
-                      }
-                    }, "__uniapp__service");
-                  })
-                  .catch(error => console.log('error', error));`
-      );
-    },
+    calculateAverageGPA(tableData) {
+  let totalCredit = 0; // 总学分
+  let totalCreditPoint = 0; // 总学分绩点
+  console.log(tableData.length)
+  tableData.forEach(item => {
+    totalCredit += parseFloat(item.xf); // 累加课程学分
+    totalCreditPoint += parseFloat(item.xf) * parseFloat(item.jd); // 累加学分绩点
+  });
+  console.log(totalCredit, totalCreditPoint)
+  let averageGPA = totalCreditPoint / totalCredit; // 计算平均学分绩点
+  return parseFloat(averageGPA.toFixed(2)); // 四舍五入保留两位小数
+},
+    // initJWXT() {
+    //   uni.showLoading({
+    //     title: '加载教务信息'
+    //   });
+    //   this.check = setTimeout(() => {
+    //     uni.hideLoading();
+    //     uni.showToast({
+    //       title: '加载信息失败',
+    //       icon: 'error',
+    //       duration: 2000
+    //     });
+    //   }, 5000);
+    //   this.loginPage.evalJS(
+    //       `var myHeaders = new Headers();
+    //               myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+    //               myHeaders.append("Accept", "*/*");
+    //               myHeaders.append("Host", "casb.njit.edu.cn");
+    //               myHeaders.append("Connection", "keep-alive");
+    //               var requestOptions = {
+    //                  method: 'GET',
+    //                  headers: myHeaders,
+    //                  redirect: 'follow'
+    //               };
+    //           fetch("https://casb.njit.edu.cn/http/webvpn0ce64a2014465dfe87dac723232b20edd0da6675d44948234864a5c4ff77b278/appShow?appId=5904538791462728", requestOptions)
+    //               .then(result => {
+    //                 plus.webview.postMessageToUniNView({
+    //                   type: "jwxtOK_SCORES",
+    //                   args: {}
+    //                 }, "__uniapp__service");
+    //               })
+    //               .catch(error => {
+    //                 plus.webview.postMessageToUniNView({
+    //                   type: "jwxtBad_",
+    //                   args: {}
+    //                 }, "__uniapp__service");
+    //               });`
+    //   );
+    // },
+    // getScoreData() {
+    //   uni.showLoading({
+    //     title: '加载成绩信息'
+    //   });
+    //   this.wait = setTimeout(() => {
+    //     uni.hideLoading();
+    //     uni.showToast({
+    //       title: '加载成绩失败',
+    //       icon: 'error',
+    //       duration: 2000
+    //     });
+    //   }, 5000);
+    //   this.loginPage.evalJS(
+    //       `var myHeaders = new Headers();
+    //           myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+    //           myHeaders.append("Accept", "*/*");
+    //           myHeaders.append("Host", "casb.njit.edu.cn");
+    //           myHeaders.append("Connection", "keep-alive");
+    //
+    //           var requestOptions = {
+    //             method: 'GET',
+    //             headers: myHeaders,
+    //             redirect: 'follow'
+    //           };
+    //
+    //           fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/cjcx/cjcx_cxXsgrcj.html?doType=query&gnmkdm=N305005&enlink-vpn&xnm=&xqm=&kcbj=&_search=false&nd=${Date.now()}&queryModel.showCount=500&queryModel.currentPage=1&queryModel.sortName=+&queryModel.sortOrder=desc&time=1", requestOptions)
+    //               .then(response => response.text())
+    //               .then(result => {
+    //                 plus.webview.postMessageToUniNView({
+    //                   type: "SCOREDATA_SCORES",
+    //                   args: {
+    //                     data: result
+    //                   }
+    //                 }, "__uniapp__service");
+    //               })
+    //               .catch(error => console.log('error', error));`
+    //   );
+    // },
     getDetail(id, xnm, xqm, kcmc) {
       uni.showLoading({
         title: '加载详细信息'
       });
       this.className = kcmc;
-      this.loginPage.evalJS(
-          `var myHeaders = new Headers();
-              myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-              myHeaders.append("Accept", "*/*");
-              myHeaders.append("Host", "casb.njit.edu.cn");
-              myHeaders.append("Connection", "keep-alive");
-
-              var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-              };
-
-              fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/cjcx/cjcx_cxCjxqGjh.html?time=1742889638805&gnmkdm=N305005&enlink-vpn&jxb_id=${id}&xnm=${xnm}&xqm=${xqm}&kcmc=${kcmc}", requestOptions)
-                  .then(response => response.text())
-                  .then(result => {
-                    plus.webview.postMessageToUniNView({
-                      type: "SCOREDETAIL_SCORES",
-                      args: {
-                        data: result
-                      }
-                    }, "__uniapp__service");
-                  })
-                  .catch(error => console.log('error', error));`
-      )
-    },
-    scores_({data}) {
-      // console.log(data)
-      if (data.type === "subscribeHandler") {
-        return
-      }
-      let {args} = data;
-      if (data.type === "CAPTCHAIMAGEBASE64_SCORES") {
-        this.captchaImg = args.data;
-      } else if (data.type === "jwxtOK_SCORES") {
-        clearTimeout(this.check);
-        this.getScoreData();
-        // this.getTimeTable();
-      } else if (data.type === "SCOREDATA_SCORES") {
-        clearTimeout(this.wait);
-        this.tableData = getScores(JSON.parse(args.data));
-        // uni.setStorageSync('SCOREDATA_SCORES', this.tableData)
+      this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
+        console.log(res)
+        let detail = JSON.parse(res)
+        this.detail = detail.data
+    // const dom = parse5.parse(res.data,{ treeAdapter: htmlparser2Adapter });
+    //         const table = cssSelect.selectAll('#subtab tbody tr', dom);
+    //          = table.map(row => {
+    //           const tds = cssSelect.selectAll('td', row);
+    //           let scoreItem = tds[0].childNodes[0].data;
+    //           scoreItem = scoreItem.replace('【', '');
+    //           scoreItem = scoreItem.replace('】', '');
+    //           return  {
+    //             scoreItem,
+    //             percentage: tds[1].childNodes[0].data,
+    //             score: tds[2].childNodes[0].data
+    //           }
+    //         });
+            uni.hideLoading();
+            this.$refs.detail.open('center');
+      }).catch(err => {
+        console.error(err)
         uni.hideLoading();
-        this.loading = false;
-      } else if (data.type === "SCOREDETAIL_SCORES") {
-        const dom = parse5.parse(args.data,{ treeAdapter: htmlparser2Adapter });
-        const table = cssSelect.selectAll('#subtab tbody tr', dom);
-        this.detail = table.map(row => {
-          const tds = cssSelect.selectAll('td', row);
-          let scoreItem = tds[0].childNodes[0].data;
-          scoreItem = scoreItem.replace('【', '');
-          scoreItem = scoreItem.replace('】', '');
-          return  {
-            scoreItem,
-            percentage: tds[1].childNodes[0].data,
-            score: tds[2].childNodes[0].data
-          }
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
         });
-        uni.hideLoading();
-        this.$refs.detail.open('center');
-      }
-    }
+      })
+    //   this.loginPage.evalJS(
+    //       `var myHeaders = new Headers();
+    //           myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+    //           myHeaders.append("Accept", "*/*");
+    //           myHeaders.append("Host", "casb.njit.edu.cn");
+    //           myHeaders.append("Connection", "keep-alive");
+    //
+    //           var requestOptions = {
+    //             method: 'GET',
+    //             headers: myHeaders,
+    //             redirect: 'follow'
+    //           };
+    //
+    //           fetch("https://casb.njit.edu.cn/http/webvpn3e1a11b7208e283ab07ade5d2913fc13d6f6fe09d2dc7372db2a51a14aa4167a/jwglxt/cjcx/cjcx_cxCjxqGjh.html?time=1742889638805&gnmkdm=N305005&enlink-vpn&jxb_id=${id}&xnm=${xnm}&xqm=${xqm}&kcmc=${kcmc}", requestOptions)
+    //               .then(response => response.text())
+    //               .then(result => {
+    //                 plus.webview.postMessageToUniNView({
+    //                   type: "SCOREDETAIL_SCORES",
+    //                   args: {
+    //                     data: result
+    //                   }
+    //                 }, "__uniapp__service");
+    //               })
+    //               .catch(error => console.log('error', error));`
+    //   )
+    },
+    // scores_({data}) {
+    //   // console.log(data)
+    //   if (data.type === "subscribeHandler") {
+    //     return
+    //   }
+    //   let {args} = data;
+    //   if (data.type === "CAPTCHAIMAGEBASE64_SCORES") {
+    //     this.captchaImg = args.data;
+    //   } else if (data.type === "jwxtOK_SCORES") {
+    //     clearTimeout(this.check);
+    //     this.getScoreData();
+    //     // this.getTimeTable();
+    //   } else if (data.type === "SCOREDATA_SCORES") {
+    //     clearTimeout(this.wait);
+    //     this.tableData = getScores(JSON.parse(args.data));
+    //     // uni.setStorageSync('SCOREDATA_SCORES', this.tableData)
+    //     uni.hideLoading();
+    //     this.loading = false;
+    //   } else if (data.type === "SCOREDETAIL_SCORES") {
+    //     const dom = parse5.parse(args.data,{ treeAdapter: htmlparser2Adapter });
+    //     const table = cssSelect.selectAll('#subtab tbody tr', dom);
+    //     this.detail = table.map(row => {
+    //       const tds = cssSelect.selectAll('td', row);
+    //       let scoreItem = tds[0].childNodes[0].data;
+    //       scoreItem = scoreItem.replace('【', '');
+    //       scoreItem = scoreItem.replace('】', '');
+    //       return  {
+    //         scoreItem,
+    //         percentage: tds[1].childNodes[0].data,
+    //         score: tds[2].childNodes[0].data
+    //       }
+    //     });
+    //     uni.hideLoading();
+    //     this.$refs.detail.open('center');
+    //   }
+    // }
   }
 }
 </script>
@@ -592,6 +1439,75 @@ $modal-width: 90vw;
   .ok{
     margin: 0 auto;
     width: 90%;
+  }
+}
+.nav-bar {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  //justify-content: center;
+
+
+  .icon-left {
+    margin-left: 6vmin;
+    /* 调整这个值控制间距 */
+    position: relative;
+    //top: -6rpx
+  }
+
+  .rotate {
+    animation: rotate 1s linear infinite;
+    display: inline-block;
+  }
+
+  .icon-right {
+    margin-right: 6vmin;
+    /* 调整这个值控制间距 */
+    position: relative;
+    will-change: transform;
+    //top: -6rpx
+  }
+
+
+  .title {
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    font-size: 5vmin;
+    color: var(--md-sys-color-on-surface);
+  }
+}
+.content{
+  padding-left: 2.5vmin;
+  padding-right: 2.5vmin;
+  margin-top: 2.5vmin;
+  .card-content{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 2.5vmin;
+    .time{
+      display: flex;
+      justify-content: space-between;
+      font-size: 5vmin;
+      font-weight: bold;
+    }
+    .name{
+      font-size: 5vmin;
+      font-weight: bold;
+    }
+    .score{
+      font-weight: bold;
+    }
+    .teacher{
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 }
 </style>
