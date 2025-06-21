@@ -10,6 +10,7 @@ import User from "com.feifan.fuckingnjit.Model.User"
 import Build from "android.os.Build";
 import RequiresApi from "androidx.annotation.RequiresApi"
 import Toast from 'android.widget.Toast';
+import DemoMainWidget from 'com.feifan.fuckingnjit.widget.DemoMainWidget'
 /* 引入 interface.uts 文件中定义的变量 */
 // import { MyApiOptions, MyApiResult, MyApi, MyApiSync } from '../interface.uts';
 
@@ -97,31 +98,72 @@ import Toast from 'android.widget.Toast';
 // }
 
 export class Core {
-	// private manager:Manager
-	// private webService: WebServiceImpl
-	// private userManager: UserManagerImpl
-	constructor(){
-		Manager.init(UTSAndroid.getUniActivity()!)
-		// this.webService = Manager.getWebService()
-		// this.userManager = 
+
+    public showToast(str : string){
+		Manager.showToast(str);
 	}
-	public startLogin(relogin:boolean = false){
-		System.out.println("1234567114")
+		
+	public startLogin(relogin : boolean) {
 		Manager.startLogin(relogin)
 	}
-	
-	public async getCurriculum():Promise<string> {
-		return await Manager.getWebService().getCurriculum()
+
+	public async getCurriculum(refresh:boolean) : Promise<string> {
+		let user = Manager.getUserManager()!!.getCurrentUser()
+		if(user.getId() != ""){
+			let curriculums = user.getCurriculums()
+			if(curriculums !=""&&refresh != true){
+				return curriculums
+			}else{
+				curriculums = await Manager.getWebService().getCurriculum()
+				user.setCurriculums(curriculums)
+				return curriculums
+			}
+		}
+		return "{\"state\":\"error\",\"message\":\"current_user is null\"}"
 	}
-	public getAllUsers():string {
-			return Manager.getUserManager().getAllUsers()
+	
+	public getAllUsers() : string {
+		return Manager.getUserManager()!!.getAllUsers()
+	}
+	
+	public setCurrentUser(id:String){
+		return Manager.getUserManager()!!.setCurrentUser(id)
 	}
 
-	public async deleteUser(id:string): Promise<boolean> {
-	  return await Manager.getUserManager().deleteUser(id)
+	public async deleteUser(id : string) : Promise<boolean> {
+		return await Manager.getUserManager()!!.deleteUser(id)
 	}
-	public async getEmptyClassrooms(dateRange:string,coursePeriod:string,buildingId:string): Promise<string> {
-	  return await Manager.getWebService().getEmptyClassrooms(dateRange,coursePeriod,buildingId)
+	public async getEmptyClassrooms(dateRange : string, coursePeriod : string, buildingId : string) : Promise<string> {
+		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
+	}
+	public async getAllSorces() : Promise<string> {
+		let result = Manager.getUserManager()!!.getCurrentUser().getAllSorces();
+		if (result === "") {
+			result = await Manager.getWebService().getAllSorces()
+			Manager.getUserManager()!!.getCurrentUser().setAllSorces(result)
+			return result
+		}
+		return result
+	}
+	public async getSorcesDetail(classId : String, schoolYear : String, semester : String, courseName : String) : Promise<string> {
+		return await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName)
+	}
+	public async getNoticeInformation() : Promise<string> {
+		return await Manager.getWebService().getNoticeInformation()
+	}
+	
+	public createWidget():string{
+		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).createWidget()
+	}
+	public getWidgetPermission(){
+		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).getPermission()
+	}
+	public isWidgetAlreadyCreated():boolean{
+		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
+	}
+	
+	public goHome(){
+		Manager.goHome()
 	}
 	
 	// public addUser(id:string,password:string){
