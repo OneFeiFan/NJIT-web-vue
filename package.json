@@ -22,7 +22,6 @@
     "displayName": "List 列表（fui-list）",
     "dependencies": {
         "css-select": "^5.1.0",
-        "moment": "^2.30.1",
         "parse5": "^7.2.1",
         "parse5-htmlparser2-tree-adapter": "^7.1.0",
         "pyodide": "^0.27.5",
