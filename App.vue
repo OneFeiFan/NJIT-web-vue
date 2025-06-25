@@ -83,8 +83,8 @@ export default {
 }
 </script>
 
-<style>
-@import '@/components/vue-touch-ripple/style.scss';
+<style lang="scss">
+@import '@/components/material-uni/ripple/style.scss';
 /*每个页面公共css */
 .uni-navbar__header-container {
   padding: 0 !important;
@@ -93,9 +93,8 @@ export default {
 .uni-navbar__header {
   padding: 0 !important;
 }
-.uni-table-text.empty-border{
-  background-color: var(--md-sys-color-secondary-container) !important;
-  color: var(--md-sys-color-on-secondary-container) !important;
+.uni-table-loading{
+  visibility: collapse;
 }
 
 .nav-bar {
@@ -104,14 +103,13 @@ export default {
 
   display: flex;
   align-items: center;
-  //justify-content: center;
 
 
   .icon-left {
-    margin-left: 6vmin;
     /* 调整这个值控制间距 */
     position: relative;
-    //top: -6rpx
+    margin-left:sx(2.5);
+    font-size:sx(8);
   }
 
   .rotate {
@@ -120,19 +118,19 @@ export default {
   }
 
   .icon-right {
-    margin-right: 6vmin;
     /* 调整这个值控制间距 */
     position: relative;
     will-change: transform;
-    //top: -6rpx
+    margin-right:sx(2.5);
+    font-size:sx(8);
   }
 
 
   .title {
     margin: 0 auto;
+    font-size: sx(6.5);
     display: block;
     text-align: center;
-    font-size: 5vmin;
     color: var(--md-sys-color-on-surface);
   }
 }

@@ -1,104 +1,123 @@
 <template>
   <page-meta :page-style="theme"></page-meta>
-  <view class="container">
+  <sx class="container">
     <!-- 头部控制栏 -->
     <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
       <view class="nav-bar">
-        <uni-icons type="left" size="6vmin" @click="back" color="var(--md-sys-color-on-surface)" class="icon-left"/>
-        <text class="title">空教室查询</text>
-        <uni-icons type="loop" size="6vmin" class="icon-right" color="var(--md-sys-color-surface-container)"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-surface)"
+                   class="icon-left"/>
+
+        <view class="title">空教室查询</view>
+
+        <uni-icons type="loop" size="" @click="" class="icon-right"
+                   color="rgba(255, 255, 255, 0)"/>
       </view>
     </material-nav-bar>
     <!-- 选择区 -->
-    <view class="select" id="select">
-      <material-list>
-    <!--   日期选择区     -->
-        <material-list-cell @click="openDatePicker" color="var(--md-sys-color-primary-fixed)" :opacity="0.4"
-                            transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-secondary-container)">
-          <view class="list-content">
-            <zui-svg-icon icon="md-event_available" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
-            <view>日期：{{ dateRange }}</view>
-          </view>
-        </material-list-cell>
-        <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                            :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
-          <view class="list-content">
-            <zui-svg-icon icon="md-location" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
-              <view class="title">地点：{{building}}</view>
-          </view>
-        </material-list-cell>
-        <material-list-cell :showLeftText="false" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                            :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
-          <view class="group">
-            <woTag mult row :options="coursesList" @changeSelect="onChangeTagOne"/>
-          </view>
-        </material-list-cell>
-      </material-list>
+    <view class="main">
+      <view class="select" id="select">
+        <material-list>
+          <!--   日期选择区     -->
+          <material-list-cell @click="openDatePicker" color="var(--md-sys-color-surface-container)" :opacity="0.4"
+                              transition="ease-out" :duration="250"
+                              backgroundColor="var(--md-sys-color-secondary-container)">
+            <view class="list-content">
+              <zui-svg-icon icon="md-event_available" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
+              <view>日期：{{ dateRange }}</view>
+            </view>
+          </material-list-cell>
+          <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-surface-container)" :opacity="0.4"
+                              transition="ease-out"
+                              :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
+            <view class="list-content">
+              <zui-svg-icon icon="md-location" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
+              <view class="title">地点：{{ building }}</view>
+            </view>
+          </material-list-cell>
+          <material-list-cell :showLeftText="false" color="var(--md-sys-color-surface-container)" :opacity="0.4"
+                              transition="ease-out"
+                              :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
+            <view class="group">
+              <woTag mult row :options="coursesList" @changeSelect="onChangeTagOne"
+                     color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
+                     backgroundColor="var(--md-sys-color-secondary)" fontColor="var(--md-sys-color-on-secondary)"
+                     :activateStyle="{'background-color': 'var(--md-sys-color-primary)', 'color': 'var(--md-sys-color-on-primary)'}"/>
+            </view>
+          </material-list-cell>
+        </material-list>
+      </view>
+      <scroll-view scroll-y="true" class="table-container">
+
+        <view class="no-data" v-if="tableData.length <= 0">
+          暂无数据
+        </view>
+
+        <uni-table ref="table" border stripe emptyText="">
+          <slot v-for="(value, key) in tableData">
+            <uni-tr>
+              <uni-th class="table-color" align="center"></uni-th>
+              <uni-th class="table-color" align="center">第{{ key }}周</uni-th>
+              <uni-td class="table-color" align="center"></uni-td>
+            </uni-tr>
+            <uni-tr>
+              <uni-th class="table-color" width="1" align="center">地点</uni-th>
+              <uni-th class="table-color" width="1" align="center">教室</uni-th>
+              <uni-th class="table-color" width="1" align="center">座位</uni-th>
+            </uni-tr>
+
+
+            <uni-tr v-for="(item, index) in value" :key="index">
+              <uni-td class="table-color" align="center">{{ item.jxlmc }}</uni-td>
+              <uni-td class="table-color" align="center">
+                {{ item.cdmc }}
+              </uni-td>
+              <uni-td class="table-color" align="center">
+                {{ item.zws }}
+              </uni-td>
+            </uni-tr>
+          </slot>
+        </uni-table>
+      </scroll-view>
     </view>
-    <scroll-view scroll-y="true" class="scroll-table" :style="{'height': heigth + 'px'}">
-
-      <uni-table ref="table" border stripe emptyText="暂无更多数据">
-        <slot v-for="(value, key) in tableData" >
-          <uni-tr>
-            <uni-th class="table-color" align="center"></uni-th>
-            <uni-th class="table-color" align="center">第{{ key }}周</uni-th>
-            <uni-td class="table-color" align="center"></uni-td>
-          </uni-tr>
-        <uni-tr>
-          <uni-th class="table-color" width="1" align="center">地点</uni-th>
-          <uni-th class="table-color" width="1" align="center">教室</uni-th>
-          <uni-th class="table-color" width="1" align="center">座位</uni-th>
-        </uni-tr>
-
-
-        <uni-tr v-for="(item, index) in value" :key="index">
-          <uni-td class="table-color" align="center">{{ item.jxlmc }}</uni-td>
-          <uni-td class="table-color" align="center">
-            {{ item.cdmc }}
-          </uni-td>
-          <uni-td class="table-color" align="center">
-            {{ item.zws }}
-          </uni-td>
-        </uni-tr>
-        </slot>
-      </uni-table>
-    </scroll-view>
     <v-md-date-range-picker :autoApply="false" showYearSelect ref="datePicker" @change="dateChange"/>
-    <u-picker :show="pickBuilding" @change="selectBuilding" :columns="buildings" @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm" :closeOnClickOverlay="true"/>
-  </view>
+    <u-picker style="position: absolute;" :show="pickBuilding" @change="selectBuilding" :columns="buildings"
+              @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm"
+              :closeOnClickOverlay="true"/>
+<!--    <footer class="footer"/>-->
+  </sx>
 </template>
 
 <script>
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import getCurriculumByUsernameAndPassword, {calculateCurrentWeek, getClassroom} from "@/static/util/tool";
-import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
-import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import StatusBar from "@/components/status-bar/status-bar.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
+import {getClassroom} from "@/static/util/tool";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import zuiSvgIcon from "@/uni_modules/zui-svg-icon/components/zui-svg-icon/zui-svg-icon.vue";
 import VMdDateRangePicker from '@/components/material-uni/material-date-range-picker/components/Picker.vue'
-import moment from 'moment';
-import WoTag from "@/uni_modules/wo-tag/components/wo-tag/wo-tag.vue";
+import WoTag from "@/components/material-uni/tag-list/tag-list.vue";
+import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
+import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
+import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
+import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
+import sx from "@/components/material-uni/sx.vue"
 
 export default {
   components: {
+    sx,
     UPicker,
+    UniTd,
+    UniTh,
+    UniTr,
+    UniTable,
     WoTag,
     VMdDateRangePicker,
     zuiSvgIcon,
     MaterialList,
     MaterialListCell,
-    MaterialNavBar, UniTh, UniTd, UniTr, UniTable, StatusBar, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialNavBar, UniIcons
   },
   data() {
     return {
@@ -216,40 +235,35 @@ export default {
       captcha: '',
       loading: false,
       heigth: 0,
-      tableData: {},
-      weekAndDay:{
-
-      }
+      tableData: [],
+      weekAndDay: {},
+      footer: null
     }
   },
   onLoad() {
+    // uni.onWindowResize(this.refreshScrollHeight)
   },
   onReady() {
-    // this.update();
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#select").boundingClientRect()
-
-    dom.exec((data) => {
-      this.heigth = systemInfo.windowHeight - data[0].bottom;
-    })
-  },
-  onResize(){
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#select").boundingClientRect()
-
-    dom.exec((data) => {
-      console.log(data[0].bottom)
-      this.heigth = systemInfo.windowHeight - data[0].bottom;
-    })
+    // this.footer = uni.createSelectorQuery().select('.footer')
+    // this.refreshScrollHeight();
   },
   onShow() {
   },
   methods: {
+    refreshScrollHeight() {
+      const {safeArea: {height}, windowHeight, deviceOrientation} = uni.getSystemInfoSync();
+      const headerHeight = parseInt(this.mx(deviceOrientation === "landscape" ? 10.05 : 55.05));
+      const derta = height - headerHeight - windowHeight;
+
+      this.$nextTick(() => {
+        this.footer.boundingClientRect((rect) => {
+          this.heigth = derta + rect.top;
+        }).exec();
+      });
+    },
     onChangeTagOne(e) {
       console.log(e)
-          // [{"value":1,"label":"第一节"}]
+      // [{"value":1,"label":"第一节"}]
       this.jcd = 0;
       for (let key in e) {
         this.jcd += Math.pow(2, e[key].value - 1);
@@ -266,7 +280,7 @@ export default {
     },
     buildingConfirm() {
       this.pickBuilding = false;
-      if(this.lh === this.buildingsMap[this.building]){
+      if (this.lh === this.buildingsMap[this.building]) {
         return;
       }
       this.lh = this.buildingsMap[this.building];
@@ -285,7 +299,7 @@ export default {
         this.tableData = [];
         return;
       }
-      this.$manager.getEmptyClassrooms(this.dateRange,String(this.jcd),this.lh).then(res=>{
+      this.$manager.getEmptyClassrooms(this.dateRange, String(this.jcd), this.lh).then(res => {
         let data = JSON.parse(res);
         let result = {};
         for (let key in data) {
@@ -299,9 +313,11 @@ export default {
 </script>
 
 <style lang="scss">
-.container{
+.container {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  background-color: var(--md-sys-color-surface-container);
+  background-color: var(--md-sys-color-secondary-container);
 }
 
 .select {
@@ -315,46 +331,51 @@ export default {
     width: 100%;
   }
 }
-.table-color{
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--md-sys-color-on-secondary-container);
+  font-weight: bold;
+}
+
+.table-color {
   background-color: var(--md-sys-color-secondary-container);
   color: var(--md-sys-color-on-secondary-container);
 }
-.nav-bar {
-  height: 100%;
-  width: 100%;
 
-  display: flex;
-  align-items: center;
-  //justify-content: center;
+.main {
+  flex: 1;
 
-
-  .icon-left {
-    margin-left: 6vmin;
-    /* 调整这个值控制间距 */
-    position: relative;
-    //top: -6rpx
+  .table-container{
+    height: calc(100vh - var(--status-bar-height) - sx(55));
   }
+  @media (orientation: landscape) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* 根据需要调整 */
 
-  .rotate {
-    animation: rotate 1s linear infinite;
-    display: inline-block;
+    .table-container{
+      height: calc(100vh - var(--status-bar-height) - sx(10));
+    }
+
+    .select {
+      width: 50%;
+      height: 100%;
+
+    }
+    scroll-view {
+      flex: 1;
+    }
   }
+}
 
-  .icon-right {
-    margin-right: 6vmin;
-    /* 调整这个值控制间距 */
-    position: relative;
-    will-change: transform;
-    //top: -6rpx
-  }
-
-
-  .title {
-    margin: 0 auto;
-    display: block;
-    text-align: center;
-    font-size: 5vmin;
-    color: var(--md-sys-color-on-surface);
-  }
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 0;
 }
 </style>

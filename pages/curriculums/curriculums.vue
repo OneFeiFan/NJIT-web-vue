@@ -1,19 +1,19 @@
 <template>
 	<page-meta :page-style="theme"></page-meta>
-	<view class="container">
+	<sx class="container">
 		<!-- 头部控制栏 -->
 		<material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
 			backgroundColor="var(--md-sys-color-surface-container)">
 			<view class="nav-bar">
-				<uni-icons type="bars" size="6vmin" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
-					class="icon-left" />
+				<uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
+					class="icon-left"/>
 
 				<picker class="title" @change="change" :value="week" :range="range">
 					<view class="title">{{ range[week] }}</view>
 				</picker>
 
-				<uni-icons type="loop" size="6vmin" @click="update" class="icon-right"
-					color="var(--md-sys-color-on-surface)" :class="{'rotate': loading}" />
+				<uni-icons type="loop" size="" @click="update" class="icon-right"
+					color="var(--md-sys-color-on-surface)" :class="{'rotate': loading}"/>
 			</view>
 		</material-nav-bar>
 		<y-tabs v-model="week" :swipeable="true" :hide="true">
@@ -22,10 +22,10 @@
 					@courseClick="handleCourseClick"></timetable>
 			</y-tab>
 		</y-tabs>
-    <Drawer :value="isDrawerOpen" @onClose="() => { isDrawerOpen = false }">
-      <view class="menu" @click.stop="">
+    <Drawer :value="isDrawerOpen" @onClose="() => { isDrawerOpen = false }" @longpress="closeMenu">
+      <view class="menu" >
         <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)" :opacity="0.4"
-                      transition="ease-out" :duration="250">
+                      transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-tertiary)">
           <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
           <view class="menu-content">
             <view class="container">
@@ -69,7 +69,7 @@
 		<sv-intercept-back :show="menu" :beforeIntercept="closeMenu" />
 		<material-tab-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
 			backgroundColor="var(--md-sys-color-surface-container)" />
-	</view>
+	</sx>
 </template>
 
 <script>
@@ -80,7 +80,7 @@
 	import getCurriculumByUsernameAndPassword from "@/static/util/tool"
 	import UIcon from "@/uni_modules/uview-ui/components/u-icon/u-icon.vue";
 	import UButton from "@/uni_modules/uview-ui/components/u-button/u-button.vue";
-	import StatusBar from "@/components/status-bar/status-bar.vue";
+	// import StatusBar from "@/components/status-bar/status-bar.vue";
 	import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
 	import YTabs from "@/uni_modules/y-tabs/components/y-tabs/y-tabs.vue";
 	import YTab from "@/uni_modules/y-tabs/components/y-tab/y-tab.vue";
@@ -91,11 +91,13 @@
 	import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 	import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 	import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
-	import SmmDrawer from "@/components/smm-drawer/smm-drawer.vue";
   import Drawer from '@/components/material-uni/drawer/drawer.vue';
+  import sx from "@/components/material-uni/sx.vue"
+  import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
 	export default {
 		components: {
-			SmmDrawer,
+      StatusBar,
+      sx,
 			MaterialListCell,
 			MaterialList,
 			MaterialTabBar,
@@ -105,7 +107,7 @@
 			YTab,
 			YTabs,
 			UniNavBar,
-			StatusBar,
+			// StatusBar,
 			UButton,
 			UIcon,
 			UniPopup,
@@ -275,11 +277,11 @@
 				this.$refs.menu.open();
 			},
 			closeMenu() {
-				this.$refs.menu.close();
+				// this.$refs.menu.close();
 				// uni.showTabBar({
 				//   animation: true
 				// });
-				this.menu = false;
+				// this.isDrawerOpen = false;
 			},
 			jump(page) {
 				console.log(page)
@@ -1870,44 +1872,7 @@
 		witdh: 20rpx
 	}
 
-	.nav-bar {
-		height: 100%;
-		width: 100%;
 
-		display: flex;
-		align-items: center;
-		//justify-content: center;
-
-
-		.icon-left {
-			margin-left: 6vmin;
-			/* 调整这个值控制间距 */
-			position: relative;
-			//top: -6rpx
-		}
-
-		.rotate {
-			animation: rotate 1s linear infinite;
-			display: inline-block;
-		}
-
-		.icon-right {
-			margin-right: 6vmin;
-			/* 调整这个值控制间距 */
-			position: relative;
-			will-change: transform;
-			//top: -6rpx
-		}
-
-
-		.title {
-			margin: 0 auto;
-			display: block;
-			text-align: center;
-			font-size: 5vmin;
-			color: var(--md-sys-color-on-surface);
-		}
-	}
 
 	.menu {
 
@@ -1966,7 +1931,7 @@
 			}
 
 			.menu-content {
-				background-color: var(--md-sys-color-tertiary);
+				background-color: #ffffff00;
 				height: 20vmin;
 				width: 100%;
 				display: flex;
@@ -1974,7 +1939,7 @@
 				align-items: center;
 
 				.container {
-					background-color: var(--md-sys-color-tertiary);
+					background-color: #ffffff00;
 					width: calc(100% - 7vmin);
 					height: calc(100% - 7vmin);
 					display: flex;

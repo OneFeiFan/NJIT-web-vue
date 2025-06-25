@@ -17,9 +17,13 @@
 
 <script>
 import TouchRipple from "@/components/material-uni/ripple/component.vue";
+import sx from "@/components/material-uni/sx.vue"
+
 export default {
+  mixins: [sx],
   name: "material-card",
   components: {
+    sx,
     TouchRipple
   },
   props: {
@@ -63,10 +67,10 @@ export default {
 
 <style scoped lang="scss">
 .card {
-  border-radius: 1vmin;
-  box-shadow:
-      0 3px 5px 0 rgba(0,0,0,0.2),
-      0 1px 18px rgba(0,0,0,0.2),
-      0 6px 10px rgba(0,0,0,0.2);
+  background-color: #ffffff00;
+  border-radius: sx(2);
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2),
+  0 1px 18px rgba(0, 0, 0, 0.2),
+  0 6px 10px rgba(0, 0, 0, 0.2);
 }
 </style>

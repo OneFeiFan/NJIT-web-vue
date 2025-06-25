@@ -3,30 +3,26 @@
     class="md-button"
     :class="[`md-${type}`, `md-${shape}`, `md-${size}`]"
     :disabled="disabled"
-    :style="{ 'background-color': type !== 'text' ? backgroundColor : 'rgba(0,0,0,0)', color: fontColor }"
+    :style="{color: fontColor }"
     :color="color"
     :opacity="opacity"
     :duration="duration"
     :transition="transition"
+    :background-color="backgroundColor"
     @click="handleClick"
   >
-    <!-- 图标插槽结构已注释，如果需要可以恢复 -->
-    <!-- <span class="icon-wrapper" v-if="$slots.iconLeft">
-      <slot name="iconLeft"/>
-    </span> -->
     <slot></slot>
-    <!-- <span class="icon-wrapper" v-if="$slots.iconRight">
-      <slot name="iconRight"/>
-    </span> -->
   </touch-ripple>
 </template>
 
 <script>
 import TouchRipple from "@/components/material-uni/ripple/component.vue";
+import sx from "@/components/material-uni/sx.vue";
 
 export default {
   name: "material-button",
   components: {
+    sx,
     TouchRipple
   },
   props: {
@@ -91,9 +87,10 @@ export default {
   // 基础变量
   --md-primary-color: #6750A4;
   --md-on-primary: #FFFFFF;
-  --md-container-height: 8vmin;
+  $md-container-height: sx(12);
   --md-state-layer-opacity: 0;
 
+  background-color: #ffffff00;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -112,18 +109,18 @@ export default {
 
   // 尺寸控制
   &.md-small {
-    padding: 0 3vmin;
-    height: calc(var(--md-container-height) * 0.75);
-    font-size: 3vmin;
+    padding: 0 sx(3);
+    height: calc($md-container-height * 0.75);
+    font-size: sx(4);
   }
   &.md-medium {
     padding: 0 24px;
-    height: var(--md-container-height);
+    height: var($md-container-height);
     font-size: 16px;
   }
   &.md-large {
     padding: 0 32px;
-    height: calc(var(--md-container-height) * 1.25);
+    height: calc($md-container-height * 1.25);
     font-size: 18px;
   }
 

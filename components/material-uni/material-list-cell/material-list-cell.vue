@@ -1,31 +1,37 @@
 <template>
-  <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition">
-    <view class="material-list-cell" :style="{'background-color': backgroundColor}" @click="handleClick">
+  <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition" :background-color="backgroundColor">
+    <sx class="material-list-cell" @click="handleClick">
       <view class="left-text" :style="{'color': fontColor}" v-if="showLeftText">
         <slot></slot>
       </view>
       <slot v-else></slot>
       <view class="right-icon" v-if="rightIcon">
-        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap[fontColor.split('var(')[1].split(')')[0]]"></zui-svg-icon>
+        <uni-icons type="right" size="" :color="fontColor"/>
+        <!--        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap[fontColor.split('var(')[1].split(')')[0]]"></zui-svg-icon>-->
       </view>
       <view class="ripple-fix" v-if="!rightIcon"></view>
-    </view>
+    </sx>
   </touch-ripple>
 </template>
 
 <script>
 import TouchRipple from "../ripple/component.vue";
 import zuiSvgIcon from "@/uni_modules/zui-svg-icon/components/zui-svg-icon/zui-svg-icon.vue";
+import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
+import sx from "@/components/material-uni/sx.vue"
+
 export default {
   name: "material-list-cell",
   components: {
+    sx,
+    UniIcons,
     zuiSvgIcon,
     TouchRipple
   },
   props: {
-    rightIcon:{
-      type:Boolean,
-      default:false
+    rightIcon: {
+      type: Boolean,
+      default: false
     },
     backgroundColor: {
       type: String,
@@ -59,7 +65,7 @@ export default {
   methods: {
     handleClick(e) {
       setTimeout(() => {
-      this.$emit('click', e);
+        this.$emit('click', e);
       }, 200);
     }
   }
@@ -67,21 +73,25 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.material-list-cell{
-  width: 100%;
-  height: 15vmin;
-  border-bottom: 0.25vmin solid var(--md-sys-color-outline);
+.material-list-cell {
+  background-color: #ffffff00;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .left-text{
-    margin-left: 5vmin;
-    font-size: 4vmin;
+  height: sx(15);
+  border-bottom: max(sx(0.25), 0.5px) solid var(--md-sys-color-outline-variant);
+
+  .left-text {
+    font-size: sx(5);
+    margin-left: sx(6.5);
   }
-  .right-icon{
-    margin-right: 34rpx;
+
+  .right-icon {
+    margin-right: sx(6.5);
+    font-size: sx(5);
   }
-  .ripple-fix{
+
+  .ripple-fix {
     width: 0;
     height: 0;
   }

@@ -1,13 +1,13 @@
 <template>
   <page-meta :page-style="theme"></page-meta>
-  <view class="container">
+  <sx class="container">
     <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
                       :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
       <view class="nav-bar">
-        <uni-icons type="left" size="6vmin" @click="back" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">小部件管理</text>
-        <uni-icons type="loop" size="6vmin" color="var(--md-sys-color-surface-container)" class="icon-right"/>
+        <uni-icons type="loop" size="" color="#ffffff00" class="icon-right"/>
       </view>
     </material-nav-bar>
     <material-list>
@@ -26,12 +26,12 @@
       <text>
         为什么没法自动开启小部件？
         <br>
-        厂商限制，小米系统需要手动授予桌面快捷方式权限。其他系统请自行尝试。也可以在桌面手动创建小部件。
+        不同手机厂商机制不同，比如小米系统需要手动授予桌面快捷方式权限。其他系统请自行尝试，存在不能自动创建小部件的情况，此时可以尝试在桌面手动创建小部件。
         <br>
         <uni-link href="https://www.baidu.cn" text="手动创建教程：点这儿"></uni-link>
       </text>
     </view>
-  </view>
+  </sx>
 </template>
 
 <script>
@@ -40,7 +40,6 @@ import getCurriculumByUsernameAndPassword, {getClassroom, getScores} from "@/sta
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import StatusBar from "@/components/status-bar/status-bar.vue";
 import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
 import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
@@ -49,12 +48,14 @@ import MaterialCard from "@/components/material-uni/material-card/material-card.
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
+import sx from "@/components/material-uni/sx.vue"
 
 export default {
   components: {
+    sx,
     MaterialListCell, MaterialList,
     MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, StatusBar, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
   },
   data() {
     return {
@@ -143,61 +144,21 @@ export default {
   background-color: var(--md-sys-color-primary-container);
   height: 100vh;
 }
-
-.nav-bar {
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  //justify-content: center;
-
-
-  .icon-left {
-    margin-left: 6vmin;
-    /* 调整这个值控制间距 */
-    position: relative;
-    //top: -6rpx
-  }
-
-  .rotate {
-    animation: rotate 1s linear infinite;
-    display: inline-block;
-  }
-
-  .icon-right {
-    margin-right: 6vmin;
-    /* 调整这个值控制间距 */
-    position: relative;
-    will-change: transform;
-    //top: -6rpx
-  }
-
-
-  .title {
-    margin: 0 auto;
-    display: block;
-    text-align: center;
-    font-size: 5vmin;
-    color: var(--md-sys-color-on-surface);
-  }
-}
-
 .content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-left: 5vmin;
-  margin-right: 5vmin;
-  font-size: 4vmin;
+  margin-left: sx(6.5);
+  margin-right: sx(6.5);
+  font-size: sx(5);
   color: var(--md-sys-color-on-primary-container);
 }
 .tips{
-  margin-top: 5vmin;
-  margin-left: 5vmin;
-  margin-right: 5vmin;
-  font-size: 3vmin;
+  margin-top: sx(6.5);
+  margin-left: sx(6.5);
+  margin-right: sx(6.5);
+  font-size: sx(4);
   color: var(--md-sys-color-on-tertiary-container);
 }
 

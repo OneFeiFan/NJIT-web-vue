@@ -1,17 +1,18 @@
 <template>
-    <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition">
-      <status-bar :background-color="backgroundColor"/>
-      <view class="nav-bar" :style="{'background-color': backgroundColor,'width': '100vw','height': '10vmin'}">
-        <slot></slot>
-      </view>
-    </touch-ripple>
+  <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition" :backgroundColor="backgroundColor">
+    <status-bar :background-color="backgroundColor"/>
+    <view class="nav-bar-container" :style="{'width': '100vw'}">
+      <slot></slot>
+    </view>
+  </touch-ripple>
 </template>
 <script>
 import TouchRipple from "../ripple/component.vue";
 import StatusBar from "../status-bar/status-bar.vue";
+
 export default {
   name: "material-nav-bar",
-  components: {StatusBar,TouchRipple},
+  components: {StatusBar, TouchRipple},
   props: {
     backgroundColor: {
       type: String,
@@ -43,4 +44,8 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+.nav-bar-container {
+  background-color: #ffffff00;
+  height: sx(10);
+}
 </style>

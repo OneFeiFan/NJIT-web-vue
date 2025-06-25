@@ -1,5 +1,3 @@
-import moment from "moment/moment";
-
 export default function getCurriculumByUsernameAndPassword(rawData) {
     const weekdayMap = {
         "星期一": 1,
@@ -194,20 +192,4 @@ export function getScores(raw){
         })
     }
     return result.reverse();
-}
-
-export function calculateCurrentWeek(startDate,currentDate) {
-    const today = new Date(currentDate);// 当前日期
-    today.setHours(0, 0, 0, 0); // 重置时间部分
-
-    const start = new Date(startDate); // 学期开始日期
-    start.setHours(0, 0, 0, 0); // 重置时间部分
-
-    const momentDate1 = moment(start); // 使用 moment 处理学期开始日期
-    const momentDate2 = moment(today); // 使用 moment 处理当前日期
-    const diff = momentDate2.diff(momentDate1, 'days'); // 计算日期差（天数）
-    if (diff < 0) {
-        return 1;
-    }
-    return Math.floor(diff / 7) + 1
 }
