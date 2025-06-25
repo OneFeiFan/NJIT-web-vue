@@ -37,6 +37,7 @@ export default {
       stateMoved: false,
       trx: 0,
       startX: 0,
+      startY: 0, // 新增Y坐标
       correct: 0,
       speedSwipe: 0,
       startMoveTime: 0,
@@ -55,7 +56,7 @@ export default {
         opacity: 0.001,
         visibility: 'hidden'
       },
-      isNoSelect: false // 新增控制是否禁止选择的标志
+      isVerticalSwipe: null  // 新
     };
   },
   mounted() {
@@ -69,13 +70,37 @@ export default {
   },
   methods: {
     onStart(e) {
+      if (!this.opened) {
+        this.drawerStarted = false;
+        return;
+      }
       this.drawerStarted = true;
       this.startX = e.changedTouches[0].pageX;
+      this.startY = e.changedTouches[0].pageY; // 新增Y坐标记录
       this.startMoveTime = new Date();
       this.correct = this.width + this.startX;
+      this.isVerticalSwipe = null; // 新增滑动方向标志
     },
     onMovedMobile(e) {
-      const moveX = this.opened ? this.startX - e.changedTouches[0].pageX : this.correct - e.changedTouches[0].pageX;
+      // 如果抽屉未打开，直接返回
+      if (!this.opened || !this.drawerStarted) return;
+      const currentX = e.changedTouches[0].pageX;
+      const currentY = e.changedTouches[0].pageY;
+
+      // 初始滑动方向判断（仅第一次移动时判断）
+      if (this.isVerticalSwipe === null) {
+        const dx = Math.abs(currentX - this.startX);
+        const dy = Math.abs(currentY - this.startY);
+        // 45度角分界线：如果dy/dx > 1则为垂直滑动
+        this.isVerticalSwipe = dy > dx;
+      }
+
+      // 如果是垂直滑动，则阻止抽屉移动
+      if (this.isVerticalSwipe) {
+        return;
+      }
+
+      const moveX = this.opened ? this.startX - currentX : this.correct - currentX;
       this.move(moveX, e);
     },
     onEnd(e) {
