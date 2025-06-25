@@ -1,6 +1,8 @@
 <template>
-  <view class="v-touch-ripple" @longpress="handleLongPress" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
-    <slot></slot>
+  <view class="v-touch-ripple" :style="{'background-color': backgroundColor}" @longpress.stop="handleLongPress" @mousedown.stop="handleMouseDown" @mouseup.stop="handleMouseUp">
+    <slot>
+
+    </slot>
     <view class="ripples">
       <view
           v-for="(value, key) in ripples"
@@ -14,10 +16,9 @@
             width: `${value.size}px`,
             height: `${value.size}px`,
             transform: `scale(${value.scale})`,
-            // 'z-index': 999,
             'background-color': config.color,
           }"
-      ></view>
+      />
     </view>
   </view>
 </template>
@@ -174,24 +175,25 @@ export default {
 </script>
 
 <style scoped>
-.v-touch-ripple {
-  position: relative;
-  overflow: hidden;
-}
+//.v-touch-ripple {
+//
+//}
 
-.ripples {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  //z-index: 1;
-}
+//.ripples {
+//  position: absolute;
+//  width: 100%;
+//  height: 100%;
+//  top: 0;
+//  left: 0;
+//  pointer-events: none;
+//  //z-index: 1;
+//}
 
-.ripple-item {
-  position: absolute;
-  border-radius: 50%;
-  transition: opacity 300ms ease;
-}
+//.ripple-item {
+//  position: absolute;
+//  border-radius: 50%;
+//  transition: opacity 300ms ease;
+//  pointer-events: none;
+//  z-index: -1; // 修改为负值
+//}
 </style>

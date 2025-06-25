@@ -1,6 +1,10 @@
 import Vue from 'vue'
 
 export const props = {
+  backgroundColor: {
+    type: String,
+    default: '#000'
+  },
   color: {
     type: String,
     default: undefined
