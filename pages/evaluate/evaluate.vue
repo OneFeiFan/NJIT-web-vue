@@ -59,13 +59,12 @@ import getCurriculumByUsernameAndPassword, {getClassroom} from "@/static/util/to
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import StatusBar from "@/components/status-bar/status-bar.vue";
 import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
 import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 export default {
-  components: {UniTh, UniTd, UniTr, UniTable, StatusBar, UniNavBar, UniPopup, UniEasyinput, UniIcons},
+  components: {UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons},
   data() {
     return {
       loginPage: null,

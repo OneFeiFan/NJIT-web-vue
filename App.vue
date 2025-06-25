@@ -75,15 +75,16 @@ export default {
   onHide: function () {
     console.log('App Hide')
   },
-  methods:{
-    test(){
+  methods: {
+    test() {
       console.log('test')
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '@/components/material-uni/ripple/style.scss';
 /*每个页面公共css */
 .uni-navbar__header-container {
   padding: 0 !important;
@@ -91,5 +92,46 @@ export default {
 
 .uni-navbar__header {
   padding: 0 !important;
+}
+.uni-table-loading{
+  visibility: collapse;
+}
+
+.nav-bar {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+
+  .icon-left {
+    /* 调整这个值控制间距 */
+    position: relative;
+    margin-left:sx(2.5);
+    font-size:sx(8);
+  }
+
+  .rotate {
+    animation: rotate 1s linear infinite;
+    display: inline-block;
+  }
+
+  .icon-right {
+    /* 调整这个值控制间距 */
+    position: relative;
+    will-change: transform;
+    margin-right:sx(2.5);
+    font-size:sx(8);
+  }
+
+
+  .title {
+    margin: 0 auto;
+    font-size: sx(6.5);
+    display: block;
+    text-align: center;
+    color: var(--md-sys-color-on-surface);
+  }
 }
 </style>

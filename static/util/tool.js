@@ -176,6 +176,9 @@ export function getScores(raw){
     let item = raw.items;
     for (const element of item) {
         result.push({
+            bfzcj:element.bfzcj,
+            kclbmc:element.kclbmc,
+            kcgsmc:element.kcgsmc||"",
             cj:element.cj,
             jd:element.jd,
             xf:element.xf,

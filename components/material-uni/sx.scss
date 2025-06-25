@@ -1,0 +1,3 @@
+@function sx($num) {
+  @return calc(#{$num} * var(--base-ratio) * 1px);
+}

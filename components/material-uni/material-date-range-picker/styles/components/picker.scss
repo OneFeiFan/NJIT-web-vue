@@ -1,0 +1,91 @@
+// 合并重复注释块，提取公共变量
+$panel-class: mdrp__panel !default;
+
+
+// 基础样式
+.mdrp-root {
+  position: relative;
+  display: inline-block;
+}
+
+.#{$panel-class} {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: inherit;
+  background-color: #fff;
+
+  &.show-calendar .calendar-table {
+    // 确保在此处添加必要的样式以避免未定义的布局问题
+  }
+}
+
+// 响应式布局优化
+@mixin orientation-styles($orientation) {
+  @if $orientation == landscape or $orientation == portrait {
+    @media (orientation: $orientation) {
+      .#{$panel-class} {
+        @content;
+      }
+    }
+  } @else {
+    @warn "Unsupported orientation #{$orientation}. Please use 'landscape' or 'portrait'.";
+  }
+}
+
+// 横屏样式
+@include orientation-styles(landscape) {
+  height: 85vmin;
+  width: 102vmin;
+  border-radius: 5vmin;
+
+  .wrapper {
+    font-size: 2.5vmin;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    justify-content: space-between;
+
+    .edit {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 20%;
+    }
+
+    .calendar-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+}
+
+// 竖屏样式 (移除非常规单位rpx)
+@include orientation-styles(portrait) {
+  width: 90vw;
+  height: calc(90vw * 1.2);
+  border-radius: 2.5vw;
+
+  .wrapper {
+    width: 85%;
+    height: 85%;
+
+    .edit {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 5%;
+    }
+
+    .calendar-wrap {
+      height: 95%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+}
+
