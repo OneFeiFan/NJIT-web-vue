@@ -108,7 +108,7 @@ export class Core {
 	}
 
 	public async getCurriculum(refresh:boolean) : Promise<string> {
-		let user = Manager.getUserManager()!!.getCurrentUser()
+		let user = Manager.getUserManager()!.getCurrentUser()
 		if(user.getId() != ""){
 			let curriculums = user.getCurriculums()
 			if(curriculums !=""&&refresh != true){
@@ -123,24 +123,24 @@ export class Core {
 	}
 	
 	public getAllUsers() : string {
-		return Manager.getUserManager()!!.getAllUsers()
+		return Manager.getUserManager()!.getAllUsers()
 	}
 	
 	public setCurrentUser(id:String){
-		return Manager.getUserManager()!!.setCurrentUser(id)
+		return Manager.getUserManager()!.setCurrentUser(id)
 	}
 
 	public async deleteUser(id : string) : Promise<boolean> {
-		return await Manager.getUserManager()!!.deleteUser(id)
+		return await Manager.getUserManager()!.deleteUser(id)
 	}
 	public async getEmptyClassrooms(dateRange : string, coursePeriod : string, buildingId : string) : Promise<string> {
 		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
 	}
 	public async getAllSorces() : Promise<string> {
-		let result = Manager.getUserManager()!!.getCurrentUser().getAllSorces();
+		let result = Manager.getUserManager()!.getCurrentUser().getAllSorces();
 		if (result === "") {
 			result = await Manager.getWebService().getAllSorces()
-			Manager.getUserManager()!!.getCurrentUser().setAllSorces(result)
+			Manager.getUserManager()!.getCurrentUser().setAllSorces(result)
 			return result
 		}
 		return result
@@ -164,6 +164,15 @@ export class Core {
 	
 	public goHome(){
 		Manager.goHome()
+	}
+	
+	
+	public setPasswordStorageEnabled(enable: boolean) {
+	    Manager.getUserManager()!.setPasswordStorageEnabled(enable)
+	}
+	
+	public isPasswordStorageEnabled(): boolean {
+		return Manager.getUserManager()!.isPasswordStorageEnabled()
 	}
 	
 	// public addUser(id:string,password:string){

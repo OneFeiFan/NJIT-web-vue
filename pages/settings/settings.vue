@@ -16,6 +16,11 @@
                             backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
           <text>小部件管理</text>
         </material-list-cell>
+        <material-list-cell rightIcon @click="jump(`safetymanager`)" color="var(--md-sys-color-on-primary)"
+                            :opacity="0.4" transition="ease-out" :duration="250"
+                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+          <text>安全管理</text>
+        </material-list-cell>
         <material-list-cell rightIcon @click="jump(`dev`)" color="var(--md-sys-color-on-primary)"
                             :opacity="0.4" transition="ease-out" :duration="250"
                             backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
