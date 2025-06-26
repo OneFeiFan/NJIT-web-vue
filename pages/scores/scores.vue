@@ -898,34 +898,37 @@ export default {
     update() {
       //   console.log('update')
       this.loading = true;
-      uni.showToast({
-        title: '验证信息',
-        icon: 'loading',
-        duration: 2000
-      });
+      // uni.showToast({
+      //   title: '验证信息',
+      //   icon: 'loading',
+      //   duration: 2000
+      // });
 
       this.$manager.getAllSorces().then(res => {
-        console.log(res)
         this.tableData = JSON.parse(res).data;
-        let first = this.tableData.filter(item => {
-          return item.kcgsmc !== "劳动教育" &&
-              item.kcgsmc !== "跨专业选修" &&
-              item.kcgsmc !== "公选" &&
-              item.kcgsmc !== "劳动选修" &&
-              item.kcgsmc !== "xxx" && // 如果"xxx"是一个占位符，你可以根据需要替换为实际的课程名称
-              item.kclbmc !== "专业选修课程" &&
-              item.kclbmc !== "大学外语类课程"
-        });
-
-        let second = this.tableData.filter(item => {
-          return item.kclbmc === "专业选修课程" || item.kclbmc === "大学外语类课程";
-        });
-        let secondResult = Object.values(second.reduce((acc, item) => {
-          if (!acc[item.kclbmc] || item.bfzcj > acc[item.kclbmc].bfzcj) {
-            acc[item.kclbmc] = item;
-          }
-          return acc;
-        }, {}));
+        // if(this.tableData instanceof Array){
+          this.tableData = this.tableData.reverse()
+          console.log(this.tableData)
+        // }
+        // let first = this.tableData.filter(item => {
+        //   return item.kcgsmc !== "劳动教育" &&
+        //       item.kcgsmc !== "跨专业选修" &&
+        //       item.kcgsmc !== "公选" &&
+        //       item.kcgsmc !== "劳动选修" &&
+        //       item.kcgsmc !== "xxx" && // 如果"xxx"是一个占位符，你可以根据需要替换为实际的课程名称
+        //       item.kclbmc !== "专业选修课程" &&
+        //       item.kclbmc !== "大学外语类课程"
+        // });
+        //
+        // let second = this.tableData.filter(item => {
+        //   return item.kclbmc === "专业选修课程" || item.kclbmc === "大学外语类课程";
+        // });
+        // let secondResult = Object.values(second.reduce((acc, item) => {
+        //   if (!acc[item.kclbmc] || item.bfzcj > acc[item.kclbmc].bfzcj) {
+        //     acc[item.kclbmc] = item;
+        //   }
+        //   return acc;
+        // }, {}));
         // console.log([...first, ...secondResult])
         // let temp = [...first, ...secondResult]
         // console.log(this.calculateAverageGPA(this.tableData))
