@@ -317,6 +317,9 @@ export default {
       if (diff < 0) {
         return 1;
       }
+      if(Math.floor(diff / 7) + 1 > 19){
+        return 0;
+      }
       return Math.floor(diff / 7) + 1; // 计算周数
     },
     loadSchedule() {

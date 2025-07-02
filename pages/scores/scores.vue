@@ -1209,6 +1209,11 @@ margin-top: sx(2.5);
     .name {
       font-size:sx(6.5);
       font-weight: bold;
+      display: inline-block;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow:ellipsis;
     }
 
     .score {
