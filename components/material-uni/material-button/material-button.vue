@@ -1,15 +1,15 @@
 <template>
   <touch-ripple
-    class="md-button"
-    :class="[`md-${type}`, `md-${shape}`, `md-${size}`]"
-    :disabled="disabled"
-    :style="dynamicStyle"
-    :color="effectiveColor"
-    :opacity="opacity"
-    :duration="duration"
-    :transition="transition"
-    :background-color="backgroundColor"
-    @click="handleClick"
+      class="md-button"
+      :class="[`md-${type}`, `md-${shape}`, `md-${size}`]"
+      :disabled="disabled"
+      :style="dynamicStyle"
+      :color="effectiveColor"
+      :opacity="opacity"
+      :duration="duration"
+      :transition="transition"
+      :background-color="backgroundColor"
+      @click="handleClick"
   >
     <slot></slot>
   </touch-ripple>
@@ -80,8 +80,8 @@ export default {
 
       // 形状样式
       const shapeStyle = this.shape === 'pill'
-        ? { borderRadius: '999px' }
-        : { borderRadius: '8px' };
+          ? { borderRadius: '999px' }
+          : { borderRadius: '8px' };
 
       // 尺寸样式
       const sizeStyle = {
@@ -107,7 +107,7 @@ export default {
         filled: {
           backgroundColor: this.backgroundColor,
           color: this.fontColor,
-          boxShadow: '0px 1px 3px 1px rgba(0, 0, 0, 0.15)'
+          // boxShadow: '0px 1px 3px 1px rgba(0, 0, 0, 0.15)'
         },
         outlined: {
           background: 'transparent',
@@ -121,7 +121,7 @@ export default {
         elevated: {
           backgroundColor: 'var(--md-surface-container-low)',
           color: 'var(--md-primary)',
-          boxShadow: '0px 1px 3px 1px rgba(0, 0, 0, 0.15)'
+          // boxShadow: '0px 1px 3px 1px rgba(0, 0, 0, 0.15)'
         },
         tonal: {
           backgroundColor: 'var(--md-secondary-container)',

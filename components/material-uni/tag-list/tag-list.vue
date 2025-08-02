@@ -22,6 +22,7 @@
 <script>
 import materialButton from "@/components/material-uni/material-button/material-button.vue";
 import {mx} from "@/components/material-uni/sx";
+import {DEFAULT_RIPPLE_PROPS} from "@/components/material-uni/ripple/config";
 export default {
   name: 'tag-list',
   components: {
@@ -83,30 +84,7 @@ export default {
       type: Number,
       default: undefined
     },
-    backgroundColor: {
-      type: String,
-      default: '#fff'
-    },
-    color: {
-      type: String,
-      default: '#000'
-    },
-    opacity: {
-      type: Number,
-      default: "1"
-    },
-    duration: {
-      type: Number,
-      default: "500"
-    },
-    transition: {
-      type: String,
-      default: "ease"
-    },
-    fontColor:{
-      type: String,
-      default: '#000'
-    }
+    ...DEFAULT_RIPPLE_PROPS
   },
   data() {
     return {

@@ -1,7 +1,6 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
-    <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar id="nav-bar">
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">用户管理</text>
@@ -11,14 +10,15 @@
 
     <scroll-view scroll-y="true" :style="{'height': scrollHeight + 'px'}">
       <view class="content">
-        <material-card width="100%" :height="mx(25)" :color="user.current? 'var(--md-sys-color-on-primary)':'var(--md-sys-color-primary-fixed)'" :opacity="0.4"
-                       transition="ease-out" :duration="250"
-                       :backgroundColor="user.current? 'var(--md-sys-color-primary-container)':'var(--md-sys-color-surface-container)'" v-for="(user, id) in users"
+        <material-card width="100%" :height="mx(25)"
+                       :color="user.current? 'var(--md-sys-color-on-primary)':'var(--md-sys-color-primary-fixed)'"
+                       :backgroundColor="user.current? 'var(--md-sys-color-primary-container)':'var(--md-sys-color-surface-container)'"
+                       v-for="(user, id) in users"
                        :key="id">
           <view class="user"
                 :style="{color: user.current? 'var(--md-sys-color-on-primary-container)':'var(--md-sys-color-on-secondary-container)'}">
             <view class="data" @click="update(id)">
-              <text class="id">{{ id }}{{"  "}}GPA:{{ user.gPA }}</text>
+              <text class="id">{{ id }}{{ "  " }}GPA:{{ user.gPA }}</text>
               <text class="name">{{ user.name }}</text>
             </view>
             <view class="delete">
@@ -125,7 +125,7 @@ export default {
               }
             }
           });
-        },300);
+        }, 300);
       }
     },
     deleteUser(id) {
@@ -147,7 +147,7 @@ export default {
               }
             }
           });
-        },300);
+        }, 300);
       }
     }
   }

@@ -1,8 +1,6 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
-    <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                      :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar>
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">小部件管理</text>
@@ -11,7 +9,6 @@
     </material-nav-bar>
     <material-list>
       <material-list-cell :rightIcon="false" :showLeftText="false" color="var(--md-sys-color-on-primary)"
-                          :opacity="0.4" transition="ease-out" :duration="250"
                           backgroundColor="var(--md-sys-color-primary-container)">
         <view class="content">
 
@@ -148,6 +145,7 @@ export default {
   background-color: var(--md-sys-color-primary-container);
   height: 100vh;
 }
+
 .content {
   display: flex;
   justify-content: space-between;
@@ -158,7 +156,8 @@ export default {
   font-size: sx(5);
   color: var(--md-sys-color-on-primary-container);
 }
-.tips{
+
+.tips {
   margin-top: sx(6.5);
   margin-left: sx(6.5);
   margin-right: sx(6.5);

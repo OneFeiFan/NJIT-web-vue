@@ -1,8 +1,7 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
     <!-- 头部控制栏 -->
-    <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar>
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-surface)"
                    class="icon-left"/>
@@ -18,28 +17,25 @@
       <view class="select" id="select">
         <material-list>
           <!--   日期选择区     -->
-          <material-list-cell @click="openDatePicker" color="var(--md-sys-color-surface-container)" :opacity="0.4"
-                              transition="ease-out" :duration="250"
+          <material-list-cell @click="openDatePicker" color="var(--md-sys-color-surface-container)"
                               backgroundColor="var(--md-sys-color-secondary-container)">
             <view class="list-content">
               <zui-svg-icon icon="md-event_available" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view>日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-surface-container)" :opacity="0.4"
-                              transition="ease-out"
-                              :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-surface-container)"
+                              backgroundColor="var(--md-sys-color-secondary-container)">
             <view class="list-content">
               <zui-svg-icon icon="md-location" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view class="title">地点：{{ building }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell :showLeftText="false" color="var(--md-sys-color-surface-container)" :opacity="0.4"
-                              transition="ease-out"
-                              :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell :showLeftText="false" color="var(--md-sys-color-surface-container)"
+                              backgroundColor="var(--md-sys-color-secondary-container)">
             <view class="group">
               <woTag mult row :options="coursesList" @changeSelect="onChangeTagOne"
-                     color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
+                     color="var(--md-sys-color-primary-fixed)"
                      backgroundColor="var(--md-sys-color-secondary)" fontColor="var(--md-sys-color-on-secondary)"
                      :activateStyle="{'background-color': 'var(--md-sys-color-primary)', 'color': 'var(--md-sys-color-on-primary)'}"/>
             </view>
@@ -83,7 +79,7 @@
     <u-picker style="position: absolute;" :show="pickBuilding" @change="selectBuilding" :columns="buildings"
               @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm"
               :closeOnClickOverlay="true"/>
-<!--    <footer class="footer"/>-->
+    <!--    <footer class="footer"/>-->
   </view>
 </template>
 
@@ -355,16 +351,17 @@ export default {
 .main {
   flex: 1;
 
-  .table-container{
+  .table-container {
     height: calc(100vh - var(--status-bar-height) - sx(55));
   }
+
   @media (orientation: landscape) {
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between; /* 根据需要调整 */
 
-    .table-container{
+    .table-container {
       height: calc(100vh - var(--status-bar-height) - sx(10));
     }
 

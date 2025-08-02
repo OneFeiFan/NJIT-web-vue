@@ -1,8 +1,6 @@
 <template>
   <view :style="[getTheme(),SXData]">
-    <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                      :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar id="nav-bar">
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">成绩查询</text>
@@ -12,8 +10,7 @@
     <scroll-view scroll-y="true" class="scroll-table" :style="{'height': heigth + 'px'}">
       <slot v-for="(item, index) in tableData">
         <view class="content">
-          <material-card width="100%" :height="mx(38)" color="var(--md-sys-color-on-primary)" :opacity="0.4"
-                         transition="ease-out" :duration="250"
+          <material-card width="100%" :height="mx(38)" color="var(--md-sys-color-on-primary)"
                          :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'"
                          @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
             <view class="card-content"
@@ -102,23 +99,6 @@ export default {
       heigth: 0,
       tableData: []
     }
-  },
-  created() {
-    // #ifdef APP-PLUS
-    // this.loginPage = plus.webview.getWebviewById("webviewInside");
-    // plus.globalEvent.addEventListener('plusMessage', this.scores_)
-    // this.loginPage.setStyle({
-    //   top: 550,
-    //   height: "25%",
-    //   width: "100%"
-    // })
-    // var currentWebview = this.$scope.$getAppWebview(); //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效
-    // currentWebview.append(this.loginPage);
-
-    // #endif
-  },
-  onLoad() {
-
   },
   onResize() {
     const systemInfo = uni.getSystemInfoSync();
@@ -874,20 +854,8 @@ export default {
       }
     ]
     // #endif
-    // #ifdef APP-PLUS
-    try {
-      // let temp = uni.getStorageSync('SCOREDATA_SCORES');
-      // if (temp !== null && temp !== '') {
-      //   this.tableData = temp;
-      // }else {
-      this.update();
-      // }
-    } catch (e) {
-      console.error(e)
-      this.update();
-    }
-    // #endif
-    // this.update();
+
+    setTimeout(() => {this.update()}, 500)
   },
   methods: {
     mx,
@@ -902,11 +870,11 @@ export default {
     update() {
       //   console.log('update')
       this.loading = true;
-      // uni.showToast({
-      //   title: '验证信息',
-      //   icon: 'loading',
-      //   duration: 2000
-      // });
+      uni.showToast({
+        title: '尝试刷新',
+        icon: 'loading',
+        duration: 1000
+      });
 
       this.$manager.getAllSorces().then(res => {
         this.tableData = JSON.parse(res).data;

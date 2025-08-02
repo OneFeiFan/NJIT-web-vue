@@ -1,8 +1,7 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
     <!-- 头部控制栏 -->
-    <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar>
       <view class="nav-bar">
         <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
                    class="icon-left"/>
@@ -15,17 +14,14 @@
                    color="var(--md-sys-color-on-surface)" :class="{'rotate': loading}"/>
       </view>
     </material-nav-bar>
-    <!--		<y-tabs v-model="week" :swipeable="true" :hide="true">-->
     <myswiper ref="swiper" :default-index="calculateCurrentWeek()" @change="changeSwipe">
       <timetable v-for="(tab,index) in timetableData" :timetables="tab" :timetableType="timeSlots"
                  :weekStartDate="weekStartDate" :thisWeek="index"
                  @courseClick="handleCourseClick"></timetable>
     </myswiper>
-    <!--		</y-tabs>-->
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :show="menu" :beforeIntercept="closeMenu"/>
-    <material-tab-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)"/>
+    <material-tab-bar/>
   </view>
 </template>
 
@@ -230,21 +226,21 @@ export default {
       this.$refs.swiper.goto(this.week);
     },
     showMenu() {
-      setTimeout(() => {
-        const systemInfo = uni.getSystemInfoSync();
-        let dom = uni.createSelectorQuery().in(this);
-        dom.select("#menu-top").boundingClientRect()
-
-        dom.exec((data) => {
-          this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-        })
-      }, 200)
-
-      this.menu = true;
-      uni.hideTabBar({
-        animation: true
-      });
-      this.$refs.menu.open();
+      // setTimeout(() => {
+      //   const systemInfo = uni.getSystemInfoSync();
+      //   let dom = uni.createSelectorQuery().in(this);
+      //   dom.select("#menu-top").boundingClientRect()
+      //
+      //   dom.exec((data) => {
+      //     this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
+      //   })
+      // }, 200)
+      //
+      // this.menu = true;
+      // uni.hideTabBar({
+      //   animation: true
+      // });
+      // this.$refs.menu.open();
     },
     closeMenu() {
       // this.$refs.menu.close();
@@ -252,19 +248,6 @@ export default {
       //   animation: true
       // });
       // this.isDrawerOpen = false;
-    },
-    jump(page) {
-      console.log(page)
-      this.isDrawerOpen = false;
-      // this.$refs.menu.close();
-      // uni.showTabBar({
-      //   animation: true
-      // });
-      setTimeout(() => {
-        uni.navigateTo({
-          url: `/pages/${page}/${page}`
-        });
-      }, 250);
     },
     calculateCurrentWeek() {
       const today = new Date(); // 当前日期

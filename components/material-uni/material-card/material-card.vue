@@ -6,6 +6,7 @@
       :opacity="opacity"
       :duration="duration"
       :transition="transition"
+      :backgroundColor="backgroundColor"
       @click="handleClick"
   >
     <slot></slot>

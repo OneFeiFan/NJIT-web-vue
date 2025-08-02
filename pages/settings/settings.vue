@@ -1,7 +1,6 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
-    <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar id="nav-bar">
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">设置</text>
@@ -11,36 +10,36 @@
     <scroll-view scroll-y="true" class="scroll-table">
       <material-list>
         <material-list-cell rightIcon @click="jump(`widget`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>小部件管理</text>
         </material-list-cell>
         <material-list-cell rightIcon @click="jump(`safetymanager`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>安全管理</text>
         </material-list-cell>
         <material-list-cell rightIcon @click="jump(`dev`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>监督我开发</text>
         </material-list-cell>
 
         <material-list-cell rightIcon @click="jump(`faq`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>FAQ</text>
         </material-list-cell>
 
         <material-list-cell rightIcon @click="jump(`privacy`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>隐私政策</text>
         </material-list-cell>
 
         <material-list-cell rightIcon @click="jump(`about`)" color="var(--md-sys-color-on-primary)"
-                            :opacity="0.4" transition="ease-out" :duration="250"
-                            backgroundColor="var(--md-sys-color-primary-container)" fontColor="var(--md-sys-color-on-primary-container)">
+                            backgroundColor="var(--md-sys-color-primary-container)"
+                            fontColor="var(--md-sys-color-on-primary-container)">
           <text>关于</text>
         </material-list-cell>
 
@@ -75,10 +74,10 @@ export default {
   components: {
     MaterialListCell, MaterialList,
     MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons},
+    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+  },
   data() {
-    return {
-    }
+    return {}
   },
   created() {
     // #ifdef APP-PLUS
@@ -89,7 +88,7 @@ export default {
   onLoad() {
 
   },
-  onResize(){
+  onResize() {
 
   },
   onReady() {
@@ -117,8 +116,9 @@ export default {
 }
 
 .scroll-table {
-  height:  calc(100vh - var(--status-bar-height) - sx(10));
-  .color-red{
+  height: calc(100vh - var(--status-bar-height) - sx(10));
+
+  .color-red {
     color: red;
   }
 }

@@ -1,8 +1,7 @@
 <template>
   <Drawer :value="opened" @onClose="onClose">
     <view class="menu">
-      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)" :opacity="0.4"
-                    transition="ease-out" :duration="250" backgroundColor="var(--md-sys-color-tertiary)">
+      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)" backgroundColor="var(--md-sys-color-tertiary)">
         <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
         <view class="menu-content">
           <view class="container">
@@ -13,30 +12,22 @@
       </touch-ripple>
       <scroll-view scroll-y="true" class="scroll-table">
         <material-list>
-          <material-list-cell rightIcon @click="jump(`classroom`)"
-                              color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                              :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+          <material-list-cell rightIcon @click="jump(`classroom`)">
             <text>空教室查询</text>
           </material-list-cell>
           <!--          <material-list-cell rightIcon @click="jump(`evaluate`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
           <!--            <text>快速评价</text>-->
           <!--          </material-list-cell>-->
-          <material-list-cell rightIcon @click="jump(`scores`)" color="var(--md-sys-color-primary-fixed)"
-                              :opacity="0.4" transition="ease-out" :duration="250"
-                              backgroundColor="var(--md-sys-color-surface-container)">
+          <material-list-cell rightIcon @click="jump(`scores`)">
             <text>成绩查询</text>
           </material-list-cell>
           <!--          <material-list-cell rightIcon @click="jump(`curriculums_test`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
           <!--            <text>测试</text>-->
           <!--          </material-list-cell>-->
-          <material-list-cell rightIcon @click="jump(`usermanager`)"
-                              color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                              :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+          <material-list-cell rightIcon @click="jump(`usermanager`)">
             <text>用户管理</text>
           </material-list-cell>
-          <material-list-cell rightIcon @click="jump(`settings`)"
-                              color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                              :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
+          <material-list-cell rightIcon @click="jump(`settings`)">
             <text>设置</text>
           </material-list-cell>
         </material-list>
@@ -66,7 +57,17 @@ export default {
   methods: {
     onClose() {
       this.$emit("onClose");
-    }
+    },
+    jump(page) {
+      console.log(page)
+      this.$emit("onClose");
+
+      setTimeout(() => {
+        uni.navigateTo({
+          url: `/pages/${page}/${page}`
+        });
+      }, 250);
+    },
   }
 }
 </script>

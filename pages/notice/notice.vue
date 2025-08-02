@@ -1,7 +1,6 @@
 <template>
   <view class="container" :style="[getTheme(),SXData]">
-    <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)">
+    <material-nav-bar>
       <view class="nav-bar">
         <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
                    class="icon-left"/>
@@ -60,9 +59,7 @@
         :show="menu"
         :beforeIntercept="closeMenu"
     />
-    <material-tab-bar id="tabbar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                      :duration="250"
-                      backgroundColor="var(--md-sys-color-surface-container)"/>
+    <material-tab-bar/>
   </view>
 </template>
 
