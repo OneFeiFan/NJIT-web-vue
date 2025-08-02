@@ -330,9 +330,9 @@ export default {
   overflow: hidden;
 
   .zui-svg-icon-image {
-    width: 100%;
-    height: 100%;
-    vertical-align: middle;
+    //width: 100%;
+    //height: 100%;
+    //vertical-align: middle;
   }
 
   &.rotate-clockwise {
