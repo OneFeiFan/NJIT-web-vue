@@ -1,6 +1,5 @@
 <template>
-  <page-meta :page-style="theme"></page-meta>
-  <sx class="container">
+  <view class="container" :style="[getTheme(),SXData]">
     <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
       <view class="nav-bar">
@@ -32,18 +31,23 @@
       </view>
     </scroll-view>
 
-  </sx>
+  </view>
 </template>
 
 <script>
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {mx, SXData} from "@/components/material-uni/sx";
+import {getTheme} from "@/components/material-uni/colors";
 
 export default {
-  mixins: [sx],
-  components: {UniIcons, MaterialCard, MaterialNavBar,sx},
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
+  components: {UniIcons, MaterialCard, MaterialNavBar},
   data() {
     return {
       users: {
@@ -83,6 +87,8 @@ export default {
     //#endif
   },
   methods: {
+    mx,
+    getTheme,
     back() {
       uni.navigateBack();
     },

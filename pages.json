@@ -9,7 +9,7 @@
       }
     },
     {
-      "path": "pages/index/index",
+      "path": "pages/notice/notice",
       "style": {
         "navigationBarTitleText": "uni-app",
         "navigationStyle": "custom"
@@ -115,15 +115,15 @@
     "list": [
       {
         "pagePath": "pages/curriculums/curriculums",
-        "iconPath": "/static/table_select.png",
-        "selectedIconPath": "/static/table.png",
-        "text": "课表"
+        "iconPath": "",
+        "selectedIconPath": "",
+        "text": ""
       },
       {
-        "pagePath": "pages/index/index",
-        "iconPath": "/static/read_more_select.png",
-        "selectedIconPath": "/static/read_more.png",
-        "text": "关于"
+        "pagePath": "pages/notice/notice",
+        "iconPath": "",
+        "selectedIconPath": "",
+        "text": ""
       }
     ]
   },

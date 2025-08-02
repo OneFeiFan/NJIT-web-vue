@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import sx from "@/components/material-uni/sx.vue"
+import {mxValue} from "@/components/material-uni/sx";
+
 export default {
-  mixins: [sx],
   name: 'mt-swipe',
   props: {
     defaultIndex: {type: Number, default: 0},
@@ -84,7 +84,7 @@ export default {
       }
       const deltaX = e.changedTouches[0].pageX - this.dragStartX
       const deltaY = e.changedTouches[0].pageY - this.startY
-      if (Math.abs(deltaX) > this.mxValue(15.5) && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (Math.abs(deltaX) > mxValue(15.5) && Math.abs(deltaX) > Math.abs(deltaY)) {
         deltaX > 0 ? this.prev() : this.next()
       }
       this.isDragging = false

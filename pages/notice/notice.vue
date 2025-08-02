@@ -1,6 +1,5 @@
 <template>
-  <page-meta :page-style="theme"></page-meta>
-  <sx class="container">
+  <view class="container" :style="[getTheme(),SXData]">
     <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
       <view class="nav-bar">
@@ -56,50 +55,7 @@
     <!--        </fui-list-cell>-->
     <!--      </fui-list>-->
     <!--    </view>-->
-    <Drawer :value="isDrawerOpen" @onClose="() => { isDrawerOpen = false }">
-      <view class="menu" @click.stop="">
-        <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)" :opacity="0.4"
-                      transition="ease-out" :duration="250">
-          <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
-          <view class="menu-content">
-            <view class="container">
-              <image src="@/static/logo.png" class="logo"></image>
-              <text class="text">你的门户<br/>Made By OneFeiFan</text>
-            </view>
-          </view>
-        </touch-ripple>
-        <scroll-view scroll-y="true" class="scroll-table">
-          <material-list>
-            <material-list-cell rightIcon @click="jump(`classroom`)"
-                                color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                                :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
-              <text>空教室查询</text>
-            </material-list-cell>
-            <!--          <material-list-cell rightIcon @click="jump(`evaluate`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
-            <!--            <text>快速评价</text>-->
-            <!--          </material-list-cell>-->
-            <material-list-cell rightIcon @click="jump(`scores`)" color="var(--md-sys-color-primary-fixed)"
-                                :opacity="0.4" transition="ease-out" :duration="250"
-                                backgroundColor="var(--md-sys-color-surface-container)">
-              <text>成绩查询</text>
-            </material-list-cell>
-            <!--          <material-list-cell rightIcon @click="jump(`curriculums_test`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
-            <!--            <text>测试</text>-->
-            <!--          </material-list-cell>-->
-            <material-list-cell rightIcon @click="jump(`usermanager`)"
-                                color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                                :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
-              <text>用户管理</text>
-            </material-list-cell>
-            <material-list-cell rightIcon @click="jump(`settings`)"
-                                color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
-                                :duration="250" backgroundColor="var(--md-sys-color-surface-container)">
-              <text>设置</text>
-            </material-list-cell>
-          </material-list>
-        </scroll-view>
-      </view>
-    </Drawer>
+    <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back
         :show="menu"
         :beforeIntercept="closeMenu"
@@ -107,16 +63,13 @@
     <material-tab-bar id="tabbar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
                       :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)"/>
-  </sx>
+  </view>
 </template>
 
 <script>
 
 import ZeroMarkdownView from "@/uni_modules/zero-markdown-view/components/zero-markdown-view/zero-markdown-view.vue";
-import FuiList from "@/components/fui-list/fui-list.vue";
 import UniLink from "@/uni_modules/uni-link/components/uni-link/uni-link.vue";
-// import StatusBar from "@/components/status-bar/status-bar.vue";
-import FuiListCell from "@/components/fui-list-cell/fui-list-cell.vue";
 import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
@@ -125,17 +78,24 @@ import MaterialListCell from "@/components/material-uni/material-list-cell/mater
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import TouchRipple from "@/components/material-uni/ripple/component.vue";
 import Drawer from "@/components/material-uni/drawer/drawer.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {SXData} from "@/components/material-uni/sx";
+import {getTheme} from "@/components/material-uni/colors";
+import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
 
 
 export default {
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
   components: {
-    sx,
+    StatusBar,
     Drawer,
     MaterialList,
     MaterialListCell,
     SvInterceptBack,
-    UniIcons, MaterialNavBar, MaterialTabBar, FuiListCell, UniLink, FuiList, ZeroMarkdownView, TouchRipple
+    UniIcons, MaterialNavBar, MaterialTabBar, UniLink, ZeroMarkdownView, TouchRipple
   },
   data() {
     return {
@@ -177,6 +137,7 @@ export default {
     })
   },
   methods: {
+    getTheme,
     refreshScrollHeight() {
       const systemInfo = uni.getSystemInfoSync();
       const windowHeight = systemInfo.windowHeight;
@@ -258,97 +219,5 @@ export default {
       font-weight: bold;
     }
   }
-}
-
-.menu {
-  /* 竖屏样式（默认） */
-  @media (orientation: portrait) {
-    height: 100vh;
-    width: 100%;
-    background: var(--md-sys-color-surface);
-    display: flex;
-    flex-direction: column;
-
-    .scroll-table {
-      height: calc(100% - 35vmin - var(--status-bar-height));
-    }
-
-    .menu-content {
-      background-color: var(--md-sys-color-tertiary);
-      height: 35vmin;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .container {
-        background-color: var(--md-sys-color-tertiary);
-        width: calc(100% - 7vmin);
-        height: calc(100% - 7vmin);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-        .logo {
-          height: 15vmin;
-          width: 15vmin;
-        }
-
-        .text {
-          color: var(--md-sys-color-on-tertiary);
-          font-weight: bold;
-          font-size: 3.5vmin;
-        }
-      }
-    }
-  }
-  /* 横屏样式（默认） */
-  @media (orientation: landscape) {
-    height: 100vh;
-    width: 100%;
-    background: var(--md-sys-color-surface);
-    display: flex;
-    flex-direction: column;
-
-    .scroll-table {
-      height: calc(100% - 20vmin - var(--status-bar-height));
-    }
-
-    .menu-content {
-      background-color: var(--md-sys-color-tertiary);
-      height: 20vmin;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .container {
-        background-color: var(--md-sys-color-tertiary);
-        width: calc(100% - 7vmin);
-        height: calc(100% - 7vmin);
-        display: flex;
-        align-items: center;
-
-        .logo {
-          height: 12vmin;
-          width: 12vmin;
-        }
-
-        .text {
-          margin-left: 3.5vmin;
-          color: var(--md-sys-color-on-tertiary);
-          font-size: 3.5vmin;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-
-  .close-icon {
-    margin-top: 20rpx;
-    margin-left: auto;
-    margin-right: 20rpx;
-  }
-
 }
 </style>

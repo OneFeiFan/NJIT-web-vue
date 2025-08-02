@@ -1,6 +1,5 @@
 <template>
-  <page-meta :page-style="theme"></page-meta>
-  <sx>
+  <view :style="[getTheme(),SXData]">
     <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
                       :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
@@ -61,12 +60,11 @@
         <button class="ok" type="primary" @click="cancel">确认</button>
       </view>
     </uni-popup>
-  </sx>
+  </view>
 </template>
 
 <script>
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import getCurriculumByUsernameAndPassword, {getClassroom, getScores} from "@/static/util/tool";
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
@@ -76,12 +74,16 @@ import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {mx, SXData} from "@/components/material-uni/sx";
+import {getTheme} from "@/components/material-uni/colors";
 
 export default {
-  mixins: [sx],
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
   components: {
-    sx,
     MaterialNavBar,
     MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
   },
@@ -888,6 +890,8 @@ export default {
     // this.update();
   },
   methods: {
+    mx,
+    getTheme,
     cancel() {
       // this.$refs.loginModal.close();
       this.$refs.detail.close();

@@ -1,6 +1,5 @@
 <template>
-  <page-meta :page-style="theme"></page-meta>
-  <sx class="container">
+  <view class="container" :style="[getTheme(),SXData]">
     <!-- 头部控制栏 -->
     <material-nav-bar color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
@@ -23,7 +22,7 @@
                               transition="ease-out" :duration="250"
                               backgroundColor="var(--md-sys-color-secondary-container)">
             <view class="list-content">
-              <zui-svg-icon icon="md-event_available" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
+              <zui-svg-icon icon="md-event_available" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view>日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
@@ -31,7 +30,7 @@
                               transition="ease-out"
                               :duration="250" backgroundColor="var(--md-sys-color-secondary-container)">
             <view class="list-content">
-              <zui-svg-icon icon="md-location" :color="_colorMap['--md-sys-color-on-secondary-container']"/>
+              <zui-svg-icon icon="md-location" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view class="title">地点：{{ building }}</view>
             </view>
           </material-list-cell>
@@ -85,7 +84,7 @@
               @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm"
               :closeOnClickOverlay="true"/>
 <!--    <footer class="footer"/>-->
-  </sx>
+  </view>
 </template>
 
 <script>
@@ -102,11 +101,16 @@ import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {mx, SXData} from "@/components/material-uni/sx"
+import {getColor, getTheme} from "@/components/material-uni/colors";
 
 export default {
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
   components: {
-    sx,
     UPicker,
     UniTd,
     UniTh,
@@ -250,9 +254,11 @@ export default {
   onShow() {
   },
   methods: {
+    getColor,
+    getTheme,
     refreshScrollHeight() {
       const {safeArea: {height}, windowHeight, deviceOrientation} = uni.getSystemInfoSync();
-      const headerHeight = parseInt(this.mx(deviceOrientation === "landscape" ? 10.05 : 55.05));
+      const headerHeight = parseInt(mx(deviceOrientation === "landscape" ? 10.05 : 55.05));
       const derta = height - headerHeight - windowHeight;
 
       this.$nextTick(() => {

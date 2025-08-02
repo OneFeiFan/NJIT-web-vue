@@ -1,12 +1,15 @@
 import App from './App'
 import uView from '@/uni_modules/uview-ui'
-import store from './store';
-import mixin from '@/mixin/themeMixin.js'
+// import store from './store';
+import {updateRippleConfig} from "@/components/material-uni/ripple/config";
+import {setTheme} from "@/components/material-uni/colors";
+import SvgIconLib from "@/static/svg-icons-lib";
+import MaterialFilled from "@/uni_modules/zui-material-icons/static/material-filled";
 import materialTabBar from '@/components/material-uni/material-tab-bar/material-tab-bar.vue'
 import moment from "moment";
 
 moment.locale('zh-cn');
-Vue.prototype.$store = store;
+// Vue.prototype.$store = store;
 // #ifdef APP-PLUS
 import {
   Core
@@ -14,19 +17,29 @@ import {
 Vue.prototype.$manager = new Core();
 // #endif
 
+SvgIconLib.registerCollection("material-filled", MaterialFilled);
+
 Vue.use(materialTabBar,[
   {
-    icon:'md-event_note',
+    icon:'event_note',
     name:"课表",
     page: "pages/curriculums/curriculums",
   },
   {
-    icon:'md-report',
+    icon:'report',
     name:"通知",
-    page: "pages/index/index",
+    page: "pages/notice/notice",
   }
 ])
-Vue.use(mixin)
+
+setTheme("blue")
+updateRippleConfig({
+  color: "var(--md-sys-color-surface-dim)",
+  opacity: 0.4,
+  transition: "ease-out",
+  duration: 250,
+  backgroundColor: "var(--md-sys-color-surface-container)"
+})
 
 //初始化主题，从本地存储中获取之前保存的主题
 const savedTheme = uni.getStorageSync('currentTheme');

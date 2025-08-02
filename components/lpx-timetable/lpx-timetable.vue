@@ -1,5 +1,5 @@
 <template>
-  <sx class="timetable">
+  <view class="timetable" :style="[getTheme(),SXData]">
     <view class="header">
       <view class="header-item" v-for="(item,index) in week" :key="item"
             :style="{ color: todayWeekIndex === index ? '#4070FF' : 'unset' }">{{ item }}<br/>{{ getDateOfWeek(item) }}
@@ -32,19 +32,18 @@
         </view>
       </scroll-view>
     </view>
-  </sx>
+  </view>
 </template>
 
 <script>
 import moment from 'moment';
-import sx from "@/components/material-uni/sx.vue"
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
+import {mx, mxValue, SXData} from "@/components/material-uni/sx";
+import {getTheme} from "@/components/material-uni/colors";
 export default {
-  mixins: [sx],
   name: 'Timetable',
   components:{
-    UniIcons,
-    sx
+    UniIcons
   },
   props: {
     weekStartDate: {
@@ -129,6 +128,9 @@ export default {
     }
   },
   computed: {
+    SXData() {
+      return SXData
+    },
     courseData() {
       let course2color = {}
       let paletteIndex = 0
@@ -191,6 +193,9 @@ export default {
     }
   },
   methods: {
+    mx,
+    getTheme,
+    mxValue,
     getDateOfWeek(y) {
       let x = this.thisWeek;
       if (x == 0) {

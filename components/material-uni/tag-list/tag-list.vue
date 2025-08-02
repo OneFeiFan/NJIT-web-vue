@@ -21,9 +21,8 @@
 
 <script>
 import materialButton from "@/components/material-uni/material-button/material-button.vue";
-import sx from "@/components/material-uni/sx.vue";
+import {mx} from "@/components/material-uni/sx";
 export default {
-  mixins: [sx],
   name: 'tag-list',
   components: {
     materialButton
@@ -127,6 +126,7 @@ export default {
     }
   },
   methods: {
+    mx,
     onChange(data) {
       if (data.disabled) return;
       if (this.mult) {

@@ -219,10 +219,10 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 4;
   opacity: 0.001;
   transform: translateZ(0);
   visibility: hidden;
+  z-index: 99999999999;
 }
 
 .drawer {
@@ -234,7 +234,7 @@ export default {
   transform: translateX(-100%);
   background: white;
   position: fixed;
-  z-index: 5;
+  z-index: 99999999999;
   opacity: 0.001;
   box-shadow: 3px 0 16px -3px rgba(0, 0, 0, 0.4);
 }

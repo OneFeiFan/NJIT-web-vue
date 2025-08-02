@@ -68,7 +68,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/components/material-uni/ripple/style.scss';
 /*每个页面公共css */
 .uni-navbar__header-container {
   padding: 0 !important;

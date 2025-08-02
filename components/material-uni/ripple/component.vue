@@ -1,5 +1,5 @@
 <template>
-  <view class="v-touch-ripple" :style="{'background-color': backgroundColor}" @longpress.stop="handleLongPress" @mousedown.stop="handleMouseDown" @mouseup.stop="handleMouseUp">
+  <view class="v-touch-ripple" :style="{'background-color': config.backgroundColor}" @longpress.stop="handleLongPress" @mousedown.stop="handleMouseDown" @mouseup.stop="handleMouseUp">
     <slot>
 
     </slot>
@@ -25,12 +25,11 @@
 
 <script>
 import Vue from 'vue'
-import {DEFAULT_CONFIG} from './config'
-import {props, events, EventKey, Props} from './interface'
+import {DEFAULT_CONFIG, DEFAULT_RIPPLE_PROPS} from './config'
 
 export default {
   name: 'touch-ripple',
-  props: {...props},
+  props: {...DEFAULT_RIPPLE_PROPS},
   data() {
     return {
       element: null,
@@ -57,7 +56,8 @@ export default {
         opacity: this.opacity ?? defaultConfig.opacity,
         duration: this.duration ?? defaultConfig.duration,
         transition: this.transition ?? defaultConfig.transition,
-        keepLastRipple: this.keepLastRipple ?? defaultConfig.keepLastRipple
+        backgroundColor: this.backgroundColor ?? defaultConfig.backgroundColor,
+        // keepLastRipple: this.keepLastRipple ?? defaultConfig.keepLastRipple
       }
     }
   },
@@ -100,7 +100,7 @@ export default {
       event["clientY"] = event.changedTouches[0].clientY;
       this.handleMouseDown(event.changedTouches[0])
     },
-    handleMouseDown(event,type) {
+    handleMouseDown(event) {
       this.state.active = true
       const {clientX: layerX, clientY: layerY} = event
       uni.createSelectorQuery().in(this).select(".v-touch-ripple")
@@ -123,7 +123,7 @@ export default {
           })
           .exec();
       if(event.type === "mousedown"){
-        this.$emit(EventKey.Touch, event);
+        this.$emit("touch", event);
       }
     },
     animateRipple(id) {
@@ -165,7 +165,7 @@ export default {
       if (this.state.cleanWhenMouseUp) {
         this.clearRipples()
       }
-      this.$emit(EventKey.Click, event)
+      this.$emit("click", event)
     },
     beforeDestroy() {
       this.clearRipples()
@@ -174,26 +174,37 @@ export default {
 }
 </script>
 
-<style scoped>
-//.v-touch-ripple {
-//
-//}
+<style lang="scss" scoped>
+.v-touch-ripple {
+  position: relative;
+  overflow: hidden;
+  //background-color: rgba(255, 255, 255, 0);
 
-//.ripples {
-//  position: absolute;
-//  width: 100%;
-//  height: 100%;
-//  top: 0;
-//  left: 0;
-//  pointer-events: none;
-//  //z-index: 1;
-//}
+  :not(:last-child) {
+    position: relative;
+    z-index: 1;
+  }
 
-//.ripple-item {
-//  position: absolute;
-//  border-radius: 50%;
-//  transition: opacity 300ms ease;
-//  pointer-events: none;
-//  z-index: -1; // 修改为负值
-//}
+  > .ripples {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: hidden;
+    pointer-events: none;
+
+    > .ripple-item {
+      display: block;
+      position: absolute;
+      border-radius: 50%;
+
+      &.ripple-leave-to {
+        opacity: 0 !important;
+      }
+    }
+  }
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition" :background-color="backgroundColor">
-    <sx class="material-list-cell" @click="handleClick">
+    <view class="material-list-cell" @click="handleClick">
       <view class="left-text" :style="{'color': fontColor}" v-if="showLeftText">
         <slot></slot>
       </view>
@@ -9,8 +9,8 @@
         <uni-icons type="right" size="" :color="fontColor"/>
         <!--        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap[fontColor.split('var(')[1].split(')')[0]]"></zui-svg-icon>-->
       </view>
-      <view class="ripple-fix" v-if="!rightIcon"></view>
-    </sx>
+<!--      <view class="ripple-fix" v-if="!rightIcon"></view>-->
+    </view>
   </touch-ripple>
 </template>
 
@@ -18,12 +18,11 @@
 import TouchRipple from "../ripple/component.vue";
 import zuiSvgIcon from "@/uni_modules/zui-svg-icon/components/zui-svg-icon/zui-svg-icon.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {DEFAULT_RIPPLE_PROPS} from "@/components/material-uni/ripple/config";
 
 export default {
   name: "material-list-cell",
   components: {
-    sx,
     UniIcons,
     zuiSvgIcon,
     TouchRipple
@@ -33,26 +32,6 @@ export default {
       type: Boolean,
       default: false
     },
-    backgroundColor: {
-      type: String,
-      default: '#fff'
-    },
-    color: {
-      type: String,
-      default: '#000'
-    },
-    opacity: {
-      type: Number,
-      default: 1
-    },
-    duration: {
-      type: Number,
-      default: 500
-    },
-    transition: {
-      type: String,
-      default: "ease"
-    },
     showLeftText: { // 新增的prop来控制left-text是否显示
       type: Boolean,
       default: true
@@ -60,7 +39,8 @@ export default {
     fontColor: {
       type: String,
       default: "var(--md-sys-color-on-surface)"
-    }
+    },
+    ...DEFAULT_RIPPLE_PROPS
   },
   methods: {
     handleClick(e) {

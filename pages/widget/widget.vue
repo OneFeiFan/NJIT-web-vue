@@ -1,6 +1,5 @@
 <template>
-  <page-meta :page-style="theme"></page-meta>
-  <sx class="container">
+  <view class="container" :style="[getTheme(),SXData]">
     <material-nav-bar id="nav-bar" color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out"
                       :duration="250"
                       backgroundColor="var(--md-sys-color-surface-container)">
@@ -31,12 +30,11 @@
         <uni-link href="https://www.baidu.cn" text="手动创建教程：点这儿"></uni-link>
       </text>
     </view>
-  </sx>
+  </view>
 </template>
 
 <script>
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import getCurriculumByUsernameAndPassword, {getClassroom, getScores} from "@/static/util/tool";
 import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
@@ -47,12 +45,17 @@ import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
+import {SXData} from "@/components/material-uni/sx";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
-import sx from "@/components/material-uni/sx.vue"
+import {getTheme} from "@/components/material-uni/colors";
 
 export default {
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
   components: {
-    sx,
     MaterialListCell, MaterialList,
     MaterialNavBar,
     MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
@@ -77,6 +80,7 @@ export default {
 
   },
   methods: {
+    getTheme,
     jump(page) {
       // this.isDrawerOpen = false;
       uni.navigateTo({
