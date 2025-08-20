@@ -1,7 +1,8 @@
 <template>
   <Drawer :value="opened" @onClose="onClose">
     <view class="menu">
-      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)" backgroundColor="var(--md-sys-color-tertiary)">
+      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)"
+                    backgroundColor="var(--md-sys-color-tertiary)">
         <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
         <view class="menu-content">
           <view class="container">
@@ -21,9 +22,13 @@
           <material-list-cell rightIcon @click="jump(`scores`)">
             <text>成绩查询</text>
           </material-list-cell>
-          <!--          <material-list-cell rightIcon @click="jump(`curriculums_test`)" color="var(&#45;&#45;md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250" backgroundColor="var(&#45;&#45;md-sys-color-surface-container)">-->
-          <!--            <text>测试</text>-->
-          <!--          </material-list-cell>-->
+
+          <material-list-cell rightIcon @click="jump(`academicprogress`)">
+            <text>学业进度</text>
+          </material-list-cell>
+<!--          <material-list-cell rightIcon @click="jump(`test`)">-->
+<!--            <text>测试</text>-->
+<!--          </material-list-cell>-->
           <material-list-cell rightIcon @click="jump(`usermanager`)">
             <text>用户管理</text>
           </material-list-cell>
@@ -37,7 +42,6 @@
 </template>
 
 
-
 <script>
 import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
@@ -49,7 +53,7 @@ export default {
   name: "MyDrawer",
   components: {TouchRipple, MaterialList, Drawer, MaterialListCell, StatusBar},
   props: {
-    opened:{
+    opened: {
       type: Boolean,
       default: false
     }
@@ -71,7 +75,6 @@ export default {
   }
 }
 </script>
-
 
 
 <style scoped lang="scss">
