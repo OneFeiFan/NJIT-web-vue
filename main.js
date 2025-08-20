@@ -2,7 +2,7 @@ import App from './App'
 import uView from '@/uni_modules/uview-ui'
 // import store from './store';
 import {updateRippleConfig} from "@/components/material-uni/ripple/config";
-import {setTheme} from "@/components/material-uni/colors";
+import {getThemeName, setTheme} from "@/components/material-uni/colors";
 import SvgIconLib from "@/static/svg-icons-lib";
 import MaterialFilled from "@/uni_modules/zui-material-icons/static/material-filled";
 import materialTabBar from '@/components/material-uni/material-tab-bar/material-tab-bar.vue'
@@ -32,7 +32,7 @@ Vue.use(materialTabBar,[
   }
 ])
 
-setTheme("blue")
+setTheme(getThemeName())
 updateRippleConfig({
   color: "var(--md-sys-color-surface-dim)",
   opacity: 0.4,

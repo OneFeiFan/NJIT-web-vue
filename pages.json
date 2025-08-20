@@ -68,9 +68,10 @@
       }
     },
     {
-      "path": "pages/curriculums_test/curriculums_test",
+      "path": "pages/test/test",
       "style": {
-        "navigationBarTitleText": "uni-app",
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
     },
@@ -100,6 +101,14 @@
     },
     {
       "path": "pages/safetymanager/safetymanager",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/academicprogress/academicprogress",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false,

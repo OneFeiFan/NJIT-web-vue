@@ -10,12 +10,12 @@
           <view class="title">{{ range[week] }}</view>
         </picker>
 
-        <uni-icons type="loop" size="" @click="update" class="icon-right"
+        <uni-icons type="loop" size="" @click="update(true)" class="icon-right"
                    color="var(--md-sys-color-on-surface)" :class="{'rotate': loading}"/>
       </view>
     </material-nav-bar>
     <myswiper ref="swiper" :default-index="calculateCurrentWeek()" @change="changeSwipe">
-      <timetable v-for="(tab,index) in timetableData" :timetables="tab" :timetableType="timeSlots"
+      <timetable v-for="(tab,index) in timetableData" :other="other" :timetables="tab" :timetableType="timeSlots"
                  :weekStartDate="weekStartDate" :thisWeek="index"
                  @courseClick="handleCourseClick"></timetable>
     </myswiper>
@@ -48,6 +48,7 @@ import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
 import myswiper from "@/components/material-uni/swipe/swipe.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
+import MyDrawer from "@/components/MyDrawer/MyDrawer.vue";
 
 export default {
   computed: {
@@ -56,6 +57,7 @@ export default {
     }
   },
   components: {
+    MyDrawer,
     myswiper,
     StatusBar,
     MaterialListCell,
@@ -161,59 +163,56 @@ export default {
                       Array(11).fill("")
               )
       ),
+      other:[],
       schedules: [],
       weekStartDate: new Date('2025-02-17'),
       webviewJS: null,
       systemInfo: uni.getSystemInfoSync()
     };
   },
-  created() {
-    // #ifdef APP-PLUS
-    // #endif
-  },
-  onLoad() {
+  onReady() {
     this.week = this.calculateCurrentWeek()
     //#ifdef H5
     this.loadSchedule()
     // #endif
-    this.$manager.getCurriculum(false).then(res => {
-      let value = JSON.parse(res)
-      if (value.state !== undefined && value.state === "error") {
-        if (value.message !== undefined && value.message === "current_user is null") {
-
-          uni.showModal({
-            title: '提示',
-            content: '当前未登录或者登录异常，请在登陆后刷新课表。',
-            success: (res) => {
-              if (res.confirm) {
-                this.$manager.startLogin(false);
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-              }
-            }
-          });
-          return;
-        }
-      }
-
-      this.timetableData = value;
-      this.loadSchedule();
-      // uni.setStorageSync('curriculum', this.schedules)
-    }).catch(res => {
-      this.timetableData = Array.from({
-            length: 20
-          }, () =>
-              Array.from({
-                    length: 7
-                  }, () =>
-                      Array(11).fill("")
-              )
-      )
-
-      console.log(res)
-    })
-  },
-  onReady() {
+    this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
+    this.update(false)
+    // this.$manager.getCurriculum(false).then(res => {
+    //   let value = JSON.parse(res)
+    //   if (value.state !== undefined && value.state === "error") {
+    //     if (value.message !== undefined && value.message === "current_user is null") {
+    //
+    //       uni.showModal({
+    //         title: '提示',
+    //         content: '当前未登录或者登录异常，请在登陆后刷新课表。',
+    //         success: (res) => {
+    //           if (res.confirm) {
+    //             this.$manager.startLogin(false);
+    //           } else if (res.cancel) {
+    //             console.log('用户点击取消');
+    //           }
+    //         }
+    //       });
+    //       return;
+    //     }
+    //   }
+    //
+    //   this.timetableData = value;
+    //   this.loadSchedule();
+    //   // uni.setStorageSync('curriculum', this.schedules)
+    // }).catch(res => {
+    //   this.timetableData = Array.from({
+    //         length: 20
+    //       }, () =>
+    //           Array.from({
+    //                 length: 7
+    //               }, () =>
+    //                   Array(11).fill("")
+    //           )
+    //   )
+    //
+    //   console.log(res)
+    // })
   },
   methods: {
     getTheme,
@@ -225,29 +224,12 @@ export default {
       this.week = e.detail.value;
       this.$refs.swiper.goto(this.week);
     },
-    showMenu() {
-      // setTimeout(() => {
-      //   const systemInfo = uni.getSystemInfoSync();
-      //   let dom = uni.createSelectorQuery().in(this);
-      //   dom.select("#menu-top").boundingClientRect()
-      //
-      //   dom.exec((data) => {
-      //     this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-      //   })
-      // }, 200)
-      //
-      // this.menu = true;
-      // uni.hideTabBar({
-      //   animation: true
-      // });
-      // this.$refs.menu.open();
-    },
     closeMenu() {
       // this.$refs.menu.close();
       // uni.showTabBar({
       //   animation: true
       // });
-      // this.isDrawerOpen = false;
+      this.isDrawerOpen = false;
     },
     calculateCurrentWeek() {
       const today = new Date(); // 当前日期
@@ -1132,7 +1114,7 @@ export default {
 
       }
       //#endif
-
+      this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
       this.loading = false;
       uni.hideLoading();
       this.week = this.calculateCurrentWeek();
@@ -1191,7 +1173,7 @@ export default {
         content: `${e.name}`
       });
     },
-    update() {
+    update(refresh) {
       console.log('update')
       this.loading = true;
       uni.showLoading({
@@ -1206,31 +1188,41 @@ export default {
           duration: 2000
         });
       }, 5000);
-      this.$manager.getCurriculum(true).then(res => {
+      this.$manager.getCurriculum(refresh).then(res => {
         let value = JSON.parse(res)
-        if (value.state !== undefined && value.state === "error") {
-          if (value.message !== undefined && value.message === "current_user is null") {
-
-            uni.showModal({
-              title: '提示',
-              content: '当前未登录或者登录异常，请在登陆后刷新课表。',
-              success: (res) => {
-                if (res.confirm) {
-                  this.$manager.startLogin(false);
-                } else if (res.cancel) {
-                  console.log('用户点击取消');
-                }
-              }
-            });
-            return;
-          }
-          this.$manager.showToast(value.message);
-          return;
-        }
-        this.timetableData = value;
+        // if (value.state !== undefined && value.state === "error") {
+        //   if (value.message !== undefined && value.message === "current_user is null") {
+        //
+        //     uni.showModal({
+        //       title: '提示',
+        //       content: '当前未登录或者登录异常，请在登陆后刷新课表。',
+        //       success: (res) => {
+        //         if (res.confirm) {
+        //           this.$manager.startLogin(false);
+        //         } else if (res.cancel) {
+        //           console.log('用户点击取消');
+        //         }
+        //       }
+        //     });
+        //     return;
+        //   }
+        //   this.$manager.showToast(value.message);
+        //   return;
+        // }
+        // console.log(value)
+        this.timetableData = JSON.parse(value.validTimeCourses);
+        this.other = JSON.parse(value.nullTimeCourses);
         this.loadSchedule();
       }).catch(res => {
-        console.log(res)
+          this.timetableData = Array.from({
+                length: 20
+              }, () =>
+                  Array.from({
+                        length: 7
+                      }, () =>
+                          Array(11).fill("")
+                  )
+          )
       })
     }
   }

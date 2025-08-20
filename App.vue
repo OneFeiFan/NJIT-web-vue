@@ -8,15 +8,50 @@ import {
   UMenableImeiCollection, UMenableWiFiMacCollection, onUMgetOaid,
   getUMIDString
 } from "@/uni_modules/xtf-umeng"
+import {getThemeName, setTheme} from "@/components/material-uni/colors";
 // #endif
 export default {
+  onThemeChange(res) {
+    const themeName = getThemeName();
+    console.log('系统主题变化:', res.theme, themeName); // 输出"dark"或"light"
+
+    if (res.theme === 'dark') {
+      if (!themeName.includes('dark')) {
+        setTheme("dark_" + themeName);
+      }
+    } else {
+      setTheme(themeName.replace('dark_', ''));
+    }
+    var pages = getCurrentPages(); //获取所有页面的数组对象
+    var currPage = pages[pages.length - 1]; //当前页面
+    console.log(currPage.route)
+    if (!currPage.route.includes("curriculums") && !currPage.route.includes("notice")) {
+      uni.redirectTo({
+        url: "/" + currPage.route
+      })
+    } else {
+      console.log("非课程页面")
+      uni.reLaunch({
+        url: "/" + currPage.route
+      })
+      console.log("非课程页面")
+    }
+    // 根据res.theme动态调整样式或逻辑
+  },
   onLaunch: function () {
+
+    setTimeout(() => {
+      // setTheme("dark_blue"); // 设置当前主题
+      console.log('设置当前主题:', getThemeName());
+    }, 5000)
+
+    const systemInfo = uni.getSystemInfoSync();
     console.log('App Launch')
     // 获取当前app的版本
-    const systemInfo = uni.getSystemInfoSync();
 // 应用程序版本号
 // 条件编译，只在APP渲染
 // #ifdef APP
+    plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
     initUM("67d77c8948ac1b4f87e98e5f", "android");
     let version_number = systemInfo.appWgtVersion;
     uni.request({
@@ -58,11 +93,6 @@ export default {
   },
   onHide: function () {
     console.log('App Hide')
-  },
-  methods: {
-    test() {
-      console.log('test')
-    }
   }
 }
 </script>
@@ -76,7 +106,8 @@ export default {
 .uni-navbar__header {
   padding: 0 !important;
 }
-.uni-table-loading{
+
+.uni-table-loading {
   visibility: collapse;
 }
 
@@ -91,8 +122,8 @@ export default {
   .icon-left {
     /* 调整这个值控制间距 */
     position: relative;
-    margin-left:sx(2.5);
-    font-size:sx(8);
+    margin-left: sx(2.5);
+    font-size: sx(8);
   }
 
   .rotate {
@@ -104,8 +135,8 @@ export default {
     /* 调整这个值控制间距 */
     position: relative;
     will-change: transform;
-    margin-right:sx(2.5);
-    font-size:sx(8);
+    margin-right: sx(2.5);
+    font-size: sx(8);
   }
 
 
