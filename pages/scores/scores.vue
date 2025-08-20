@@ -882,8 +882,7 @@ export default {
       this.className = kcmc;
       this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
         console.log(res)
-        let detail = JSON.parse(res)
-        this.detail = detail.data
+        this.detail = JSON.parse(res)
 
         uni.hideLoading();
         this.$refs.detail.open('center');

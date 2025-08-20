@@ -129,7 +129,7 @@ export default {
   },
   onShow() {
     this.$manager.getNoticeInformation().then(res => {
-      this.noticeInformation = JSON.parse(res).data;
+      this.noticeInformation = res;
     })
   },
   methods: {
