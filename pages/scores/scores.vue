@@ -1,16 +1,16 @@
 <template>
   <view :style="[getTheme(),SXData]">
-    <material-nav-bar id="nav-bar">
+    <material-nav-bar>
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" class="icon-left"/>
         <text class="title">成绩查询</text>
-        <uni-icons type="loop" size="" @click="update" class="icon-right"/>
+        <uni-icons type="loop" size="" @click="update(true)" class="icon-right"/>
       </view>
     </material-nav-bar>
-    <scroll-view scroll-y="true" class="scroll-table" :style="{'height': heigth + 'px'}">
+    <scroll-view scroll-y="true" class="scroll-table">
       <slot v-for="(item, index) in tableData">
         <view class="content">
-          <material-card width="100%" :height="mx(38)" color="var(--md-sys-color-on-primary)"
+          <material-card width="100%" color="var(--md-sys-color-on-primary)"
                          :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'"
                          @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
             <view class="card-content"
@@ -100,24 +100,7 @@ export default {
       tableData: []
     }
   },
-  onResize() {
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#nav-bar").boundingClientRect()
-
-    dom.exec((data) => {
-      this.heigth = systemInfo.windowHeight - data[0].bottom;
-    })
-  },
   onReady() {
-    // this.$refs.detail.open("center")
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#nav-bar").boundingClientRect()
-
-    dom.exec((data) => {
-      this.heigth = systemInfo.windowHeight - data[0].bottom;
-    })
     // #ifdef H5
     this.tableData = [
       {
@@ -855,59 +838,31 @@ export default {
     ]
     // #endif
 
-    setTimeout(() => {this.update()}, 500)
+    // setTimeout(() => {
+      this.update(false)
+    // }, 500)
   },
   methods: {
     mx,
     getTheme,
     cancel() {
-      // this.$refs.loginModal.close();
       this.$refs.detail.close();
     },
     back() {
       uni.navigateBack();
     },
-    update() {
-      //   console.log('update')
-      this.loading = true;
+    update(refresh) {
       uni.showToast({
         title: '尝试刷新',
         icon: 'loading',
         duration: 1000
       });
 
-      this.$manager.getAllSorces().then(res => {
+      this.$manager.getAllSorces(refresh).then(res => {
+        console.log(res)
         this.tableData = JSON.parse(res).data;
-        // if(this.tableData instanceof Array){
-          this.tableData = this.tableData.reverse()
-          console.log(this.tableData)
-        // }
-        // let first = this.tableData.filter(item => {
-        //   return item.kcgsmc !== "劳动教育" &&
-        //       item.kcgsmc !== "跨专业选修" &&
-        //       item.kcgsmc !== "公选" &&
-        //       item.kcgsmc !== "劳动选修" &&
-        //       item.kcgsmc !== "xxx" && // 如果"xxx"是一个占位符，你可以根据需要替换为实际的课程名称
-        //       item.kclbmc !== "专业选修课程" &&
-        //       item.kclbmc !== "大学外语类课程"
-        // });
-        //
-        // let second = this.tableData.filter(item => {
-        //   return item.kclbmc === "专业选修课程" || item.kclbmc === "大学外语类课程";
-        // });
-        // let secondResult = Object.values(second.reduce((acc, item) => {
-        //   if (!acc[item.kclbmc] || item.bfzcj > acc[item.kclbmc].bfzcj) {
-        //     acc[item.kclbmc] = item;
-        //   }
-        //   return acc;
-        // }, {}));
-        // console.log([...first, ...secondResult])
-        // let temp = [...first, ...secondResult]
-        // console.log(this.calculateAverageGPA(this.tableData))
-        // uni.setStorageSync('SCOREDATA_SCORES', this.tableData)
-
-        // uni.hideLoading();
-        this.loading = false;
+        this.tableData = this.tableData.reverse()
+        console.log(this.tableData)
       }).catch(err => {
         console.error(err)
         // uni.hideLoading();
@@ -916,7 +871,6 @@ export default {
           icon: 'error',
           duration: 2000
         });
-        this.loading = false;
       })
     },
     // calculateAverageGPA(tableData) {
@@ -1091,7 +1045,7 @@ $modal-width: 90vw;
 }
 
 .scroll-table {
-  height: 100vh;
+  height: calc(100vh - sx(10) - var(--status-bar-height));
 
   .color-red {
     color: red;
@@ -1125,43 +1079,11 @@ $modal-width: 90vw;
   }
 }
 
-.nav-bar {
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-
-
-  .icon-left {
-    /* 调整这个值控制间距 */
-    position: relative;
-  }
-
-  .rotate {
-    animation: rotate 1s linear infinite;
-    display: inline-block;
-  }
-
-  .icon-right {
-    /* 调整这个值控制间距 */
-    position: relative;
-    will-change: transform;
-  }
-
-
-  .title {
-    margin: 0 auto;
-    display: block;
-    text-align: center;
-    color: var(--md-sys-color-on-surface);
-  }
-}
-
 .content {
-padding-left: sx(2.5);
-padding-right: sx(2.5);
-margin-top: sx(2.5);
+  padding-left: sx(2.5);
+  padding-right: sx(2.5);
+  margin-top: sx(2.5);
+
   .card-content {
     height: 100%;
     width: 100%;
@@ -1174,18 +1096,18 @@ margin-top: sx(2.5);
     .time {
       display: flex;
       justify-content: space-between;
-      font-size:sx(6.5);
+      font-size: sx(6.5);
       font-weight: bold;
     }
 
     .name {
-      font-size:sx(6.5);
+      font-size: sx(6.5);
       font-weight: bold;
       display: inline-block;
       white-space: nowrap;
       width: 100%;
       overflow: hidden;
-      text-overflow:ellipsis;
+      text-overflow: ellipsis;
     }
 
     .score {

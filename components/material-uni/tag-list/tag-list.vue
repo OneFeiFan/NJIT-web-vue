@@ -84,6 +84,10 @@ export default {
       type: Number,
       default: undefined
     },
+    fontColor:{
+      type: String,
+      default: '#000'
+    },
     ...DEFAULT_RIPPLE_PROPS
   },
   data() {

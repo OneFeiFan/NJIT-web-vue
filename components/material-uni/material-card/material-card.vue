@@ -1,7 +1,7 @@
 <template>
   <touch-ripple
       class="card"
-      :style="{height: height, width: width }"
+      :style="{ width: width }"
       :color="color"
       :opacity="opacity"
       :duration="duration"
@@ -23,10 +23,6 @@ export default {
     TouchRipple
   },
   props: {
-    height: {
-      type: String,
-      default: "76px"
-    },
     width: {
       type: String,
       default: "100%"

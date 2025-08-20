@@ -154,21 +154,21 @@ export default {
       });
     },
     showMenu() {
-      setTimeout(() => {
-        const systemInfo = uni.getSystemInfoSync();
-        let dom = uni.createSelectorQuery().in(this);
-        dom.select("#menu-top").boundingClientRect()
-
-        dom.exec((data) => {
-          this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-        })
-      }, 200)
-
-      this.menu = true;
-      uni.hideTabBar({
-        animation: true
-      });
-      this.$refs.menu.open();
+      // setTimeout(() => {
+      //   const systemInfo = uni.getSystemInfoSync();
+      //   let dom = uni.createSelectorQuery().in(this);
+      //   dom.select("#menu-top").boundingClientRect()
+      //
+      //   dom.exec((data) => {
+      //     this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
+      //   })
+      // }, 200)
+      //
+      // this.menu = true;
+      // uni.hideTabBar({
+      //   animation: true
+      // });
+      // this.$refs.menu.open();
     },
     closeMenu() {
       this.$refs.menu.close();

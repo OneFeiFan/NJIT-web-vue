@@ -2,7 +2,7 @@
   <view class="timetable" :style="[getTheme(),SXData]">
     <view class="header">
       <view class="header-item" v-for="(item,index) in week" :key="item"
-            :style="{ color: todayWeekIndex === index ? '#4070FF' : 'unset' }">{{ item }}<br/>{{ getDateOfWeek(item) }}
+            :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-tertiary)':'var(--md-sys-color-on-primary-container)' }">{{ item }}<br/>{{ getDateOfWeek(item) }}
       </view>
     </view>
 
@@ -28,7 +28,7 @@
           </view>
         </view>
         <view class="other">
-          <text class="text" v-for="(value, index) in other">{{index+1}}.{{" "}}{{value}}</text>
+          <text class="text" v-for="(value, index) in other">{{index+1}}.{{" "}}{{value.name}}<br>{{"\t\t\t\t教师："}}{{value.teacher}}</text>
         </view>
       </scroll-view>
     </view>
@@ -347,7 +347,7 @@ export default {
     .other {
       min-height: sx(30);
       width: 100vw;
-      height: calc(100% - $time-item-height*11);
+      //height: calc(100% - $time-item-height*11);
       color: var(--md-sys-color-on-primary-container);
       display: flex;
       justify-content: center;
