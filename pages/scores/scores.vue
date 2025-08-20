@@ -81,22 +81,12 @@ export default {
     }
   },
   components: {
-    MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialNavBar, MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
   },
   data() {
     return {
       className: 'test',
       detail: [],
-      loginPage: null,
-      check: null,
-      wait: null,
-      captchaImg: null,
-      username: '',
-      password: '',
-      captcha: '',
-      loading: false,
-      heigth: 0,
       tableData: []
     }
   },
@@ -839,7 +829,7 @@ export default {
     // #endif
 
     // setTimeout(() => {
-      this.update(false)
+    this.update(false)
     // }, 500)
   },
   methods: {
@@ -859,7 +849,6 @@ export default {
       });
 
       this.$manager.getAllSorces(refresh).then(res => {
-        console.log(res)
         this.tableData = JSON.parse(res).data;
         this.tableData = this.tableData.reverse()
         console.log(this.tableData)
@@ -913,56 +902,6 @@ export default {
 </script>
 
 <style lang="scss">
-.header {
-  height: 100%;
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  //justify-content: center;
-
-
-  .icon-left {
-    margin-left: 50rpx;
-
-    /* 调整这个值控制间距 */
-    position: relative;
-    //top: -6rpx
-  }
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .rotate {
-    animation: rotate 1s linear infinite;
-    display: inline-block;
-  }
-
-  .icon-right {
-    margin-right: 50rpx;
-    /* 调整这个值控制间距 */
-    position: relative;
-    will-change: transform;
-    //top: -6rpx
-  }
-
-
-  .title {
-    margin: 0 auto;
-    display: block;
-    text-align: center;
-    font-size: 36rpx;
-    color: #333;
-  }
-}
-
 .select {
   .group {
     margin-top: 40rpx;
@@ -997,49 +936,6 @@ export default {
       .text {
         color: #5489f5;
       }
-    }
-  }
-}
-
-$modal-width: 90vw;
-.login-modal {
-  width: $modal-width;
-  height: $modal-width * 0.75;
-  border-radius: 40rpx;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  .wrap {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-
-    .input {
-      margin-top: 20rpx;
-    }
-  }
-
-  .captcha {
-    display: flex;
-
-    .captcha-img {
-      margin-top: 20rpx;
-      height: 70rpx;
-      width: 200rpx;
-    }
-  }
-
-  .btn-wrap {
-    width: 100%;
-    display: flex;
-
-    .login-btn {
-      margin-top: 20rpx;
-      width: 45%;
-      //height: 80rpx;
     }
   }
 }

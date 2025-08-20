@@ -8,17 +8,17 @@
       </view>
     </material-nav-bar>
 
-    <scroll-view scroll-y="true" :style="{'height': scrollHeight + 'px'}">
+    <scroll-view scroll-y="true" class="scroll-container">
       <view class="content">
-        <material-card width="100%" :height="mx(25)"
+        <material-card width="100%"
                        :color="user.current? 'var(--md-sys-color-on-primary)':'var(--md-sys-color-primary-fixed)'"
                        :backgroundColor="user.current? 'var(--md-sys-color-primary-container)':'var(--md-sys-color-surface-container)'"
                        v-for="(user, id) in users"
-                       :key="id">
+                       :key="user.id">
           <view class="user"
                 :style="{color: user.current? 'var(--md-sys-color-on-primary-container)':'var(--md-sys-color-on-secondary-container)'}">
             <view class="data" @click="update(id)">
-              <text class="id">{{ id }}{{ "  " }}GPA:{{ user.gPA }}</text>
+              <text class="id">{{ user.id }}{{ "  " }}GPA:{{ user.gpa }}</text>
               <text class="name">{{ user.name }}</text>
             </view>
             <view class="delete">
@@ -50,39 +50,16 @@ export default {
   components: {UniIcons, MaterialCard, MaterialNavBar},
   data() {
     return {
-      users: {
-        "0": {
-          name: "测试用户",
-        },
-        "1": {
-          name: "测试用户2",
-        }
-      },
-      scrollHeight: 0,
+      users: {},
     }
   },
   onReady() {
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#nav-bar").boundingClientRect()
 
-    dom.exec((data) => {
-      this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-    })
-  },
-  onResize() {
-    const systemInfo = uni.getSystemInfoSync();
-    let dom = uni.createSelectorQuery().in(this);
-    dom.select("#nav-bar").boundingClientRect()
-
-    dom.exec((data) => {
-      this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-    })
   },
   onShow() {
     //#ifdef APP-PLUS
     this.users = JSON.parse(this.$manager.getAllUsers());
-    console.log(this.users);
+    // console.log(this.users);
 
     //#endif
   },
@@ -158,6 +135,10 @@ export default {
 .container {
   height: 100vh;
   background-color: var(--md-sys-color-surface);
+}
+
+.scroll-container{
+  height: calc(100vh - sx(10) - var(--status-bar-height));
 }
 
 .content {

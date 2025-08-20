@@ -20,7 +20,7 @@
                  @courseClick="handleCourseClick"></timetable>
     </myswiper>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
-    <sv-intercept-back :show="menu" :beforeIntercept="closeMenu"/>
+    <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
     <material-tab-bar/>
   </view>
 </template>
@@ -69,7 +69,6 @@ export default {
     YTab,
     YTabs,
     UniNavBar,
-    // StatusBar,
     UButton,
     UIcon,
     UniPopup,
@@ -163,7 +162,7 @@ export default {
                       Array(11).fill("")
               )
       ),
-      other:[],
+      other: [],
       schedules: [],
       weekStartDate: new Date('2025-02-17'),
       webviewJS: null,
@@ -224,13 +223,6 @@ export default {
       this.week = e.detail.value;
       this.$refs.swiper.goto(this.week);
     },
-    closeMenu() {
-      // this.$refs.menu.close();
-      // uni.showTabBar({
-      //   animation: true
-      // });
-      this.isDrawerOpen = false;
-    },
     calculateCurrentWeek() {
       const today = new Date(); // 当前日期
       today.setHours(0, 0, 0, 0); // 重置时间部分
@@ -244,7 +236,7 @@ export default {
       if (diff < 0) {
         return 1;
       }
-      if(Math.floor(diff / 7) + 1 > 19){
+      if (Math.floor(diff / 7) + 1 > 19) {
         return 0;
       }
       return Math.floor(diff / 7) + 1; // 计算周数
@@ -1214,15 +1206,15 @@ export default {
         this.other = JSON.parse(value.nullTimeCourses);
         this.loadSchedule();
       }).catch(res => {
-          this.timetableData = Array.from({
-                length: 20
-              }, () =>
-                  Array.from({
-                        length: 7
-                      }, () =>
-                          Array(11).fill("")
-                  )
-          )
+        this.timetableData = Array.from({
+              length: 20
+            }, () =>
+                Array.from({
+                      length: 7
+                    }, () =>
+                        Array(11).fill("")
+                )
+        )
       })
     }
   }
@@ -1286,7 +1278,6 @@ $modal-width: 90vw;
 .custom-style {
   witdh: 20rpx
 }
-
 
 
 </style>

@@ -72,9 +72,18 @@ export default {
     }
   },
   components: {
-    MaterialListCell, MaterialList,
+    MaterialListCell,
+    MaterialList,
     MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialCard,
+    UniTh,
+    UniTd,
+    UniTr,
+    UniTable,
+    UniNavBar,
+    UniPopup,
+    UniEasyinput,
+    UniIcons
   },
   data() {
     return {}
@@ -86,9 +95,6 @@ export default {
     // #endif
   },
   onLoad() {
-
-  },
-  onResize() {
 
   },
   onReady() {

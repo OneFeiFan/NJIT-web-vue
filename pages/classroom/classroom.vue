@@ -79,7 +79,6 @@
     <u-picker style="position: absolute;" :show="pickBuilding" @change="selectBuilding" :columns="buildings"
               @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm"
               :closeOnClickOverlay="true"/>
-    <!--    <footer class="footer"/>-->
   </view>
 </template>
 
@@ -117,14 +116,13 @@ export default {
     zuiSvgIcon,
     MaterialList,
     MaterialListCell,
-    MaterialNavBar, UniIcons
+    MaterialNavBar,
+    UniIcons
   },
   data() {
     return {
       pickBuilding: false,
       dateRange: "yyyy-mm-dd/yyyy-mm-dd",
-      // weeksList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-      // coursesList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       coursesList: [{
         value: 1,
         label: '第一节',
@@ -170,7 +168,6 @@ export default {
           label: '第十一节',
         }],
       building: '东馆',
-      // daysList: [1, 2, 3, 4, 5, 6, 7],
       buildings: [[
         "东馆",
         "西馆",
@@ -228,41 +225,18 @@ export default {
       lh: 'DG001',
       // xnm: "",//学年，且取小的那个
       // xqm: "",//哪个学期1学期3，2学期12，3学期？16
-      check: null,
-      captchaImg: null,
-      username: '',
-      password: '',
-      captcha: '',
-      loading: false,
-      heigth: 0,
-      tableData: [],
-      weekAndDay: {},
-      footer: null
+      tableData: []
     }
   },
   onLoad() {
-    // uni.onWindowResize(this.refreshScrollHeight)
   },
   onReady() {
-    // this.footer = uni.createSelectorQuery().select('.footer')
-    // this.refreshScrollHeight();
   },
   onShow() {
   },
   methods: {
     getColor,
     getTheme,
-    refreshScrollHeight() {
-      const {safeArea: {height}, windowHeight, deviceOrientation} = uni.getSystemInfoSync();
-      const headerHeight = parseInt(mx(deviceOrientation === "landscape" ? 10.05 : 55.05));
-      const derta = height - headerHeight - windowHeight;
-
-      this.$nextTick(() => {
-        this.footer.boundingClientRect((rect) => {
-          this.heigth = derta + rect.top;
-        }).exec();
-      });
-    },
     onChangeTagOne(e) {
       console.log(e)
       // [{"value":1,"label":"第一节"}]
@@ -374,11 +348,5 @@ export default {
       flex: 1;
     }
   }
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  height: 0;
 }
 </style>

@@ -5,7 +5,7 @@
         <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
                    class="icon-left"/>
 
-        <view class="title">Hello 方正</view>
+        <view class="title">Hello 正方</view>
 
         <uni-icons type="loop" size="" @click="" class="icon-right"
                    color="rgba(255, 255, 255, 0)"/>
@@ -55,10 +55,7 @@
     <!--      </fui-list>-->
     <!--    </view>-->
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
-    <sv-intercept-back
-        :show="menu"
-        :beforeIntercept="closeMenu"
-    />
+    <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
     <material-tab-bar/>
   </view>
 </template>
@@ -78,6 +75,7 @@ import Drawer from "@/components/material-uni/drawer/drawer.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
 import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
+import MyDrawer from "@/components/MyDrawer/MyDrawer.vue";
 
 
 export default {
@@ -87,12 +85,18 @@ export default {
     }
   },
   components: {
+    MyDrawer,
     StatusBar,
     Drawer,
     MaterialList,
     MaterialListCell,
     SvInterceptBack,
-    UniIcons, MaterialNavBar, MaterialTabBar, UniLink, ZeroMarkdownView, TouchRipple
+    UniIcons,
+    MaterialNavBar,
+    MaterialTabBar,
+    UniLink,
+    ZeroMarkdownView,
+    TouchRipple
   },
   data() {
     return {
@@ -121,12 +125,7 @@ export default {
     //   }
     // });
   },
-  onResize() {
-    // this.refreshScrollHeight()
-  },
   onReady() {
-    // this.tabbar = uni.createSelectorQuery().select('#tabbar')
-    // this.refreshScrollHeight()
   },
   onShow() {
     this.$manager.getNoticeInformation().then(res => {
@@ -135,47 +134,11 @@ export default {
   },
   methods: {
     getTheme,
-    refreshScrollHeight() {
-      const systemInfo = uni.getSystemInfoSync();
-      const windowHeight = systemInfo.windowHeight;
-      const safeAreaHeight = systemInfo.safeArea.height;
-      const navBar = parseInt(this.mx(10));
-      const derta = safeAreaHeight - navBar - windowHeight;
-      this.$nextTick(() => {
-        this.tabbar.boundingClientRect((rect) => {
-          this.scrollHeight = derta + rect.top;
-        }).exec()
-      })
-    },
     jump(page) {
       this.isDrawerOpen = false;
       uni.navigateTo({
         url: `/pages/${page}/${page}`
       });
-    },
-    showMenu() {
-      // setTimeout(() => {
-      //   const systemInfo = uni.getSystemInfoSync();
-      //   let dom = uni.createSelectorQuery().in(this);
-      //   dom.select("#menu-top").boundingClientRect()
-      //
-      //   dom.exec((data) => {
-      //     this.scrollHeight = systemInfo.windowHeight - data[0].bottom;
-      //   })
-      // }, 200)
-      //
-      // this.menu = true;
-      // uni.hideTabBar({
-      //   animation: true
-      // });
-      // this.$refs.menu.open();
-    },
-    closeMenu() {
-      this.$refs.menu.close();
-      // uni.showTabBar({
-      //   animation: true
-      // });
-      this.menu = false;
     },
   }
 }
