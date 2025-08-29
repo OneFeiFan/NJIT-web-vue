@@ -1,9 +1,9 @@
 <template>
-  <view class="container" :style="[getTheme(),SXData]">
+  <view class="container" :style="[theme,SXData]">
     <!-- 头部控制栏 -->
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-surface)"
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)"
                    class="icon-left"/>
 
         <view class="title">空教室查询</view>
@@ -121,6 +121,7 @@ export default {
   },
   data() {
     return {
+      theme:{},
       pickBuilding: false,
       dateRange: "yyyy-mm-dd/yyyy-mm-dd",
       coursesList: [{
@@ -233,6 +234,7 @@ export default {
   onReady() {
   },
   onShow() {
+    this.theme = getTheme()
   },
   methods: {
     getColor,

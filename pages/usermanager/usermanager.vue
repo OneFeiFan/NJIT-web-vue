@@ -1,10 +1,10 @@
 <template>
-  <view class="container" :style="[getTheme(),SXData]">
+  <view class="container" :style="[theme,SXData]">
     <material-nav-bar id="nav-bar">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
         <text class="title">用户管理</text>
-        <uni-icons type="plusempty" size="" @click="login" class="icon-right"/>
+        <uni-icons type="plusempty" size="" @click="login" color="var(--md-sys-color-on-secondary-container)" class="icon-right"/>
       </view>
     </material-nav-bar>
 
@@ -14,11 +14,11 @@
                        :color="user.current? 'var(--md-sys-color-on-primary)':'var(--md-sys-color-primary-fixed)'"
                        :backgroundColor="user.current? 'var(--md-sys-color-primary-container)':'var(--md-sys-color-surface-container)'"
                        v-for="(user, id) in users"
-                       :key="user.id">
+                       :key="id">
           <view class="user"
                 :style="{color: user.current? 'var(--md-sys-color-on-primary-container)':'var(--md-sys-color-on-secondary-container)'}">
             <view class="data" @click="update(id)">
-              <text class="id">{{ user.id }}{{ "  " }}GPA:{{ user.gpa }}</text>
+              <text class="id">{{ id }}{{ "  " }}GPA:{{ user.gpa }}</text>
               <text class="name">{{ user.name }}</text>
             </view>
             <view class="delete">
@@ -50,6 +50,7 @@ export default {
   components: {UniIcons, MaterialCard, MaterialNavBar},
   data() {
     return {
+      theme:{},
       users: {},
     }
   },
@@ -57,9 +58,10 @@ export default {
 
   },
   onShow() {
+    this.theme = getTheme()
     //#ifdef APP-PLUS
     this.users = JSON.parse(this.$manager.getAllUsers());
-    // console.log(this.users);
+    console.log(this.users);
 
     //#endif
   },

@@ -1,8 +1,8 @@
 <template>
-  <view class="container" :style="[getTheme(),SXData]">
+  <view class="container" :style="[theme,SXData]">
     <material-nav-bar id="nav-bar">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
         <text class="title">设置</text>
         <uni-icons type="loop" size="" color="#ffffff00" class="icon-right"/>
       </view>
@@ -86,7 +86,9 @@ export default {
     UniIcons
   },
   data() {
-    return {}
+    return {
+      theme:{},
+    }
   },
   created() {
     // #ifdef APP-PLUS
@@ -97,8 +99,8 @@ export default {
   onLoad() {
 
   },
-  onReady() {
-
+  onShow() {
+    this.theme = getTheme()
   },
   methods: {
     getTheme,

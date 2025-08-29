@@ -39,11 +39,15 @@ export default {
     // 根据res.theme动态调整样式或逻辑
   },
   onLaunch: function () {
-
-    setTimeout(() => {
-      // setTheme("dark_blue"); // 设置当前主题
-      console.log('设置当前主题:', getThemeName());
-    }, 5000)
+    const themeName = getThemeName();
+    var style = plus.navigator.getUIStyle();
+    if (style === 'dark') {
+      if (!themeName.includes('dark')) {
+        setTheme("dark_" + themeName);
+      }
+    } else {
+      setTheme(themeName.replace('dark_', ''));
+    }
 
     const systemInfo = uni.getSystemInfoSync();
     console.log('App Launch')
@@ -63,28 +67,29 @@ export default {
         "Connection": "keep-alive"
       },
       success: (res) => {
-        let data = res.data;
+        const data = res.data;
         if (version_number !== data.version) {
-          let url = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data.version}.apk`
-          console.log(data)
-          uni.showModal({
-            showCancel: false,
-            title: '版本升级',
-            content: `更新内容：\n${data.description}`,
-            success: function (res) {
-              if (res.confirm) {
-                plus.runtime.openURL(url);
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-              }
-            },
-            complete: function (res) {
-              plus.runtime.openURL(url);
-            }
-          });
+          const url = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data.version}.apk`;
+          console.log('发现新版本', data.version, data.description);
+          if (data[version_number]) {
+            const bin = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data[version_number]}`;
+            console.log('增量更新', bin);
+            this.$manager.updateApp(bin)
+                .then((res) => {
+                  if (!res) {
+                    this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
+                  }
+                })
+                .catch(() => {
+                  this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
+                });
+          } else {
+            this.showUpdateModal('版本升级', `更新内容：\n${data.description}`, url);
+          }
         }
       }
     });
+
 
     // #endif
   },
@@ -93,6 +98,24 @@ export default {
   },
   onHide: function () {
     console.log('App Hide')
+  },
+  methods: {
+    showUpdateModal(title, content, url) {
+      uni.showModal({
+        showCancel: false,
+        title: title,
+        content: content,
+        success: function (res) {
+          if (res.confirm) {
+            plus.runtime.openURL(url);
+          }
+        },
+        complete: function (res) {
+          plus.runtime.openURL(url);
+        }
+      });
+
+    }
   }
 }
 </script>
@@ -145,7 +168,7 @@ export default {
     font-size: sx(6.5);
     display: block;
     text-align: center;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-sys-color-on-secondary-container);
   }
 }
 </style>

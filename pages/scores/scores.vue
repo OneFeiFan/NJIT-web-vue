@@ -1,10 +1,10 @@
 <template>
-  <view :style="[getTheme(),SXData]">
+  <view :style="[theme,SXData]">
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
         <text class="title">成绩查询</text>
-        <uni-icons type="loop" size="" @click="update(true)" class="icon-right"/>
+        <uni-icons type="loop" size="" @click="update(true)" color="var(--md-sys-color-on-secondary-container)" class="icon-right"/>
       </view>
     </material-nav-bar>
     <scroll-view scroll-y="true" class="scroll-table">
@@ -85,6 +85,7 @@ export default {
   },
   data() {
     return {
+      theme:{},
       className: 'test',
       detail: [],
       tableData: []
@@ -831,6 +832,9 @@ export default {
     // setTimeout(() => {
     this.update(false)
     // }, 500)
+  },
+  onShow() {
+    this.theme = getTheme()
   },
   methods: {
     mx,

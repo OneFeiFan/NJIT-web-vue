@@ -1,10 +1,10 @@
 <template>
-  <view :style="[getTheme(),SXData]">
+  <view :style="[theme,SXData]">
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
         <text class="title">学业进度</text>
-        <uni-icons type="loop" size="" @click="update(true)" class="icon-right"/>
+        <uni-icons type="loop" size="" @click="update(true)" color="var(--md-sys-color-on-secondary-container)" class="icon-right"/>
       </view>
     </material-nav-bar>
     <scroll-view scroll-y="true" class="scroll-table">
@@ -69,6 +69,7 @@ export default {
   components: {MaterialProgress, MaterialNavBar, MaterialCard, UniIcons, UPicker},
   data() {
     return {
+      theme:{},
       datas: {},
     }
   },
@@ -76,6 +77,7 @@ export default {
     this.update(false)
   },
   onShow() {
+    this.theme = getTheme()
     // #ifdef H5
     this.datas = {
       "独立设课实验": {"total": 2, "name": "独立设课实验", "completed": 2},

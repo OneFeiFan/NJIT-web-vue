@@ -1,8 +1,8 @@
 <template>
-  <view class="container" :style="[getTheme(),SXData]">
+  <view class="container" :style="[theme,SXData]">
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-surface)"
+        <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-secondary-container)"
                    class="icon-left"/>
 
         <view class="title">Hello 正方</view>
@@ -100,6 +100,7 @@ export default {
   },
   data() {
     return {
+      theme:{},
       isDrawerOpen: false,
       content: `<p align="center">不晓得为啥,没获取到数据QAQ</p>`,
       main: null,
@@ -128,6 +129,7 @@ export default {
   onReady() {
   },
   onShow() {
+    this.theme = getTheme()
     this.$manager.getNoticeInformation().then(res => {
       this.noticeInformation = res;
     })

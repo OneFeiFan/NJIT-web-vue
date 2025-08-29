@@ -2,7 +2,7 @@
   <view class="tag-layout">
     <scroll-view scroll-x="true" :class="{'scroll': row}">
       <materialButton
-          :color="color" :opacity="opacity" :transition="transition" :duration="duration" :backgroundColor="backgroundColor" :fontColor="fontColor"
+          :color="color" :opacity="opacity" :transition="transition" :duration="duration" :backgroundColor="BackgroundColor(item)" :fontColor="fontColor"
           size="small"
           v-for="(item, index) in options"
           :key="index"
@@ -101,6 +101,11 @@ export default {
     }
   },
   computed: {
+    BackgroundColor() {
+      return (item) => {
+        return this.selectedTagList.includes(item.value) ? this.activateStyle.background : this.backgroundColor;
+      }
+    },
     tagStatus() {
       return (item) => {
         return this.selectedTagList.includes(item.value) ? this.activateStyle : '';
