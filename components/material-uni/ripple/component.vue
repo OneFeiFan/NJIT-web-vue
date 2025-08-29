@@ -30,14 +30,6 @@ import {DEFAULT_CONFIG, DEFAULT_RIPPLE_PROPS} from './config'
 export default {
   name: 'touch-ripple',
   props: {...DEFAULT_RIPPLE_PROPS},
-  watch:{
-    color: function(newVal, oldVal) {
-      console.log("color change", newVal, oldVal)
-    },
-    backgroundColor: function(newVal, oldVal) {
-      console.log("backgroundColor change", newVal, oldVal)
-    }
-  },
   data() {
     return {
       element: null,

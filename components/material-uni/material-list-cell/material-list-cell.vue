@@ -59,7 +59,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   height: sx(15);
-  border-bottom: max(sx(0.25), 0.5px) solid var(--md-sys-color-outline-variant);
+  border-bottom: max(sx(0.25), 0.5px) solid color-mix(in srgb, var(--md-sys-color-secondary) 50%, transparent);
 
   .left-text {
     font-size: sx(5);
