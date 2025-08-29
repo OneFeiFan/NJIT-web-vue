@@ -108,18 +108,7 @@ export class Core {
 	}
 
 	public async getCurriculum(refresh:boolean) : Promise<string> {
-		let user = Manager.getUserManager()!.getCurrentUser()
-		if(user.getId() != ""){
-			let curriculums = user.getCurriculums()
-			if(curriculums !=""&&refresh != true){
-				return curriculums
-			}else{
-				curriculums = await Manager.getWebService().getCurriculum()
-				user.setCurriculums(curriculums)
-				return curriculums
-			}
-		}
-		return "{\"state\":\"error\",\"message\":\"current_user is null\"}"
+		return Manager.getUserManager()!.getCurriculum(refresh)
 	}
 	
 	public getAllUsers() : string {
@@ -133,23 +122,22 @@ export class Core {
 	public async deleteUser(id : string) : Promise<boolean> {
 		return await Manager.getUserManager()!.deleteUser(id)
 	}
+	
 	public async getEmptyClassrooms(dateRange : string, coursePeriod : string, buildingId : string) : Promise<string> {
 		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
 	}
-	public async getAllSorces() : Promise<string> {
-		let result = Manager.getUserManager()!.getCurrentUser().getAllSorces();
-		if (result === "") {
-			result = await Manager.getWebService().getAllSorces()
-			Manager.getUserManager()!.getCurrentUser().setAllSorces(result)
-			return result
-		}
-		return result
+	public async getAllSorces(refresh:boolean) : Promise<string> {
+		return await Manager.getUserManager()!.getUserScores(refresh)
 	}
 	public async getSorcesDetail(classId : String, schoolYear : String, semester : String, courseName : String) : Promise<string> {
 		return await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName)
 	}
 	public async getNoticeInformation() : Promise<string> {
 		return await Manager.getWebService().getNoticeInformation()
+	}
+	
+	public async getAcademicProgress(refresh:boolean) : Promise<string> {
+		return await Manager.getWebService().getAcademicProgress(refresh)
 	}
 	
 	public createWidget():string{
@@ -174,13 +162,14 @@ export class Core {
 	public isPasswordStorageEnabled(): boolean {
 		return Manager.getUserManager()!.isPasswordStorageEnabled()
 	}
+
+	public getSemesterStartDate(): string {
+		return Manager.getSemesterStartDate()
+	}
 	
-	// public addUser(id:string,password:string){
-	// 	let user:User = new User()
-	// 	user.setId(id)
-	// 	user.setPassword(password)
-	// 	this.userManager.addUser(user);
-	// }
+	public async updateApp(url:string):Promise<boolean>{
+		return await Manager.updateApp(url)
+	}
 }
 /**
  * 更多插件开发的信息详见：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html
