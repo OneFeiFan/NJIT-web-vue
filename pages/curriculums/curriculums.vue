@@ -17,11 +17,13 @@
     <myswiper ref="swiper" :default-index="calculateCurrentWeek()" @change="changeSwipe">
       <timetable v-for="(tab,index) in timetableData" :other="other" :timetables="tab" :timetableType="timeSlots"
                  :weekStartDate="weekStartDate" :thisWeek="index"
-                 @courseClick="handleCourseClick"></timetable>
+                 @courseClick="handleCourseClick"
+                 :key="'timetable-'+index+'-'+theme['--md-sys-color-primary']"
+      ></timetable>
     </myswiper>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
-    <material-tab-bar/>
+    <material-tab-bar :update="theme['--md-sys-color-primary']"/>
   </view>
 </template>
 
@@ -166,8 +168,7 @@ export default {
       other: [],
       schedules: [],
       weekStartDate: new Date('2025-02-17'),
-      webviewJS: null,
-      systemInfo: uni.getSystemInfoSync()
+      temp:1
     };
   },
   onReady() {
@@ -177,13 +178,19 @@ export default {
     // #endif
 
   },
+  onLoad() {
+    this.refreshTheme()
+    uni.$on('ThemeUpdate',this.refreshTheme)
+  },
   onShow() {
-    this.theme = getTheme()
+	// this.refreshTheme()
     this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
     this.update(false)
   },
   methods: {
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     changeSwipe(newIndex, oldIndex) {
       this.week = newIndex;
       console.log(`swipe from ${oldIndex} to ${newIndex}`);

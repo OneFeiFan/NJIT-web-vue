@@ -73,6 +73,9 @@ export default {
       datas: {},
     }
   },
+  onLoad() {
+    this.refreshTheme()
+  },
   onReady() {
     this.update(false)
   },
@@ -101,7 +104,9 @@ export default {
   },
   methods: {
     mx,
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     back() {
       uni.navigateBack();
     },

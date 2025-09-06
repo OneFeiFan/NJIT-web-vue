@@ -1,13 +1,5 @@
 <script>
 // #ifdef APP
-import {
-  initUM, UMonKillProcess,
-  UMonProfileSignIn, UMonProfileSignIns, UMonPageStart, UMonPageEnd, UMuserProfileMobile,
-  UMonEventObject, UMonProfileSignOff, UMuserProfileEMail, UMuserProfile
-  , UMsubmitPolicyGrantResult, UMenableImsiCollection, UMenableIccidCollection,
-  UMenableImeiCollection, UMenableWiFiMacCollection, onUMgetOaid,
-  getUMIDString
-} from "@/uni_modules/xtf-umeng"
 import {getThemeName, setTheme} from "@/components/material-uni/colors";
 // #endif
 export default {
@@ -24,18 +16,25 @@ export default {
     }
     var pages = getCurrentPages(); //获取所有页面的数组对象
     var currPage = pages[pages.length - 1]; //当前页面
-    console.log(currPage.route)
-    if (!currPage.route.includes("curriculums") && !currPage.route.includes("notice")) {
-      uni.redirectTo({
-        url: "/" + currPage.route
-      })
-    } else {
-      console.log("非课程页面")
-      uni.reLaunch({
-        url: "/" + currPage.route
-      })
-      console.log("非课程页面")
-    }
+    pages.forEach(page => {
+      console.log(page.route)
+      if (page.$vm && page.$vm.refreshTheme) {
+        page.$vm.refreshTheme();
+      }
+    });
+    uni.$emit('ThemeUpdate')
+    // console.log(currPage.$vm.test())
+    // if (!currPage.route.includes("curriculums") && !currPage.route.includes("notice")) {
+    //   uni.redirectTo({
+    //     url: "/" + currPage.route
+    //   })
+    // } else {
+    //   console.log("非课程页面")
+    //   uni.reLaunch({
+    //     url: "/" + currPage.route
+    //   })
+    //   console.log("非课程页面")
+    // }
     // 根据res.theme动态调整样式或逻辑
   },
   onLaunch: function () {
@@ -56,7 +55,7 @@ export default {
 // 条件编译，只在APP渲染
 // #ifdef APP
     plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
-    initUM("67d77c8948ac1b4f87e98e5f", "android");
+    // initUM("67d77c8948ac1b4f87e98e5f", "android");
     let version_number = systemInfo.appWgtVersion;
     uni.request({
       url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',

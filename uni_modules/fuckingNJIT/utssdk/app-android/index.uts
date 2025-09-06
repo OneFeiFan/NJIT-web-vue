@@ -108,15 +108,15 @@ export class Core {
 	}
 
 	public async getCurriculum(refresh:boolean) : Promise<string> {
-		return Manager.getUserManager()!.getCurriculum(refresh)
+		return Manager.getUserManager().getCurriculum(refresh)
 	}
 	
 	public getAllUsers() : string {
-		return Manager.getUserManager()!.getAllUsers()
+		return Manager.getUserManager().getAllUsers()
 	}
 	
 	public setCurrentUser(id:String){
-		return Manager.getUserManager()!.setCurrentUser(id)
+		return Manager.getUserManager().setCurrentUser(id)
 	}
 
 	public async deleteUser(id : string) : Promise<boolean> {
@@ -127,7 +127,7 @@ export class Core {
 		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
 	}
 	public async getAllSorces(refresh:boolean) : Promise<string> {
-		return await Manager.getUserManager()!.getUserScores(refresh)
+		return await Manager.getUserManager().getUserScores(refresh)
 	}
 	public async getSorcesDetail(classId : String, schoolYear : String, semester : String, courseName : String) : Promise<string> {
 		return await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName)
@@ -156,11 +156,11 @@ export class Core {
 	
 	
 	public setPasswordStorageEnabled(enable: boolean) {
-	    Manager.getUserManager()!.setPasswordStorageEnabled(enable)
+	    Manager.getUserManager().setPasswordStorageEnabled(enable)
 	}
 	
 	public isPasswordStorageEnabled(): boolean {
-		return Manager.getUserManager()!.isPasswordStorageEnabled()
+		return Manager.getUserManager().isPasswordStorageEnabled()
 	}
 
 	public getSemesterStartDate(): string {

@@ -833,12 +833,14 @@ export default {
     this.update(false)
     // }, 500)
   },
-  onShow() {
-    this.theme = getTheme()
+  onLoad() {
+    this.refreshTheme()
   },
   methods: {
     mx,
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     cancel() {
       this.$refs.detail.close();
     },

@@ -64,13 +64,12 @@ export default {
     }
   },
   onShow() {
-    this.theme = getTheme()
     // #ifdef APP-PLUS
     this.isStoragePassword = this.$manager.isPasswordStorageEnabled()
     // #endif
   },
   onLoad() {
-
+    this.refreshTheme()
   },
   onResize() {
 
@@ -79,7 +78,9 @@ export default {
 
   },
   methods: {
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     jump(page) {
       // this.isDrawerOpen = false;
       uni.navigateTo({

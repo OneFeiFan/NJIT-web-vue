@@ -54,11 +54,10 @@ export default {
       users: {},
     }
   },
-  onReady() {
-
+  onLoad() {
+    this.refreshTheme();
   },
   onShow() {
-    this.theme = getTheme()
     //#ifdef APP-PLUS
     this.users = JSON.parse(this.$manager.getAllUsers());
     console.log(this.users);
@@ -66,8 +65,10 @@ export default {
     //#endif
   },
   methods: {
+    refreshTheme() {
+      this.theme = getTheme()
+    },
     mx,
-    getTheme,
     back() {
       uni.navigateBack();
     },

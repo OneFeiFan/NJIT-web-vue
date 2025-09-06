@@ -1,7 +1,6 @@
 <template>
   <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition"
-                :background-color="backgroundColor"
-                style="position: fixed;bottom: 0;width: 100%;z-index: 999999999">
+                :background-color="backgroundColor" style="position: fixed;bottom: 0;width: 100%;z-index: 999999999">
     <view class="material-tab-bar">
       <view class="material-tab-bar-item" v-for="(value, key) in pages" @click="changePage(key)">
         <view class="wrap">
@@ -31,6 +30,10 @@ export default {
     TouchRipple
   },
   props: {
+    update:{
+      type:String,
+      default:''
+    },
     pages: {
       type: Object,
       default: () => ({})
@@ -60,6 +63,12 @@ export default {
       this.props.pages.default = () => pages;
     }
     Vue.component(this.name, this);
+  },
+  watch: {
+    update(newVal) {
+      // 强制重新渲染所有图标
+      this.$forceUpdate();
+    }
   },
   methods: {
     mx,

@@ -230,15 +230,18 @@ export default {
     }
   },
   onLoad() {
+    this.refreshTheme()
   },
   onReady() {
   },
   onShow() {
-    this.theme = getTheme()
+
   },
   methods: {
     getColor,
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     onChangeTagOne(e) {
       console.log(e)
       // [{"value":1,"label":"第一节"}]

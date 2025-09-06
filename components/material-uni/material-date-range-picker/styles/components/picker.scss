@@ -1,23 +1,21 @@
-// 合并重复注释块，提取公共变量
-$panel-class: mdrp__panel !default;
-
-
-// 基础样式
-.mdrp-root {
-  position: relative;
-  display: inline-block;
-}
-
-.#{$panel-class} {
+.mdrp__panel {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  color: inherit;
   background-color: #fff;
+  font-size: sx(4.5);
+  border-radius: sx(5);
 
-  &.show-calendar .calendar-table {
-    // 确保在此处添加必要的样式以避免未定义的布局问题
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    padding: sx(5);
+    box-sizing: border-box;
+
+    .edit {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 }
 
@@ -25,7 +23,7 @@ $panel-class: mdrp__panel !default;
 @mixin orientation-styles($orientation) {
   @if $orientation == landscape or $orientation == portrait {
     @media (orientation: $orientation) {
-      .#{$panel-class} {
+      .mdrp__panel {
         @content;
       }
     }
@@ -36,55 +34,59 @@ $panel-class: mdrp__panel !default;
 
 // 横屏样式
 @include orientation-styles(landscape) {
-  height: 85vmin;
-  width: 102vmin;
-  border-radius: 5vmin;
+  $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
+  max-height: calc(100vh - sx(30) - var(--status-bar-height));
+  max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
+  height: $height;
+  width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
+
+
 
   .wrapper {
-    font-size: 2.5vmin;
-    width: 90%;
-    height: 90%;
     display: flex;
-    justify-content: space-between;
 
     .edit {
-      display: flex;
       flex-direction: column;
-      justify-content: space-between;
       align-items: flex-start;
       width: 20%;
+
+      .time-range-l {
+        text-align: center;
+        word-wrap: break-word;
+      }
+
+      .time-range-p {
+        display: none;
+      }
     }
 
     .calendar-wrap {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      width: 80%;
     }
   }
 }
 
 // 竖屏样式 (移除非常规单位rpx)
 @include orientation-styles(portrait) {
-  width: 90vw;
-  height: calc(90vw * 1.2);
-  border-radius: 2.5vw;
+  --test: 0px;
+  $width: calc((90vw + sx(90)) / 2);
+  max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
+  max-width: calc(100vw - sx(15) - var(--test));
+  height: calc($width / 90 * 100);
+  width: $width;
 
   .wrapper {
-    width: 85%;
-    height: 85%;
-
     .edit {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
       height: 5%;
+
+      .time-range-l {
+        display: none;
+      }
     }
 
     .calendar-wrap {
       height: 95%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
   }
 }

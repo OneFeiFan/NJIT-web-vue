@@ -3,15 +3,19 @@
     <view class="mdrp__panel dropdown-menu show-calendar">
       <view class="wrapper">
         <view class="edit">
-          <text class="time-range">{{ startText }} - {{ endText }}</text>
-          <material-button
-              type="text"
-              size="small"
-              fontColor="#000"
-              color="var(--md-sys-color-primary-fixed)" :opacity="0.4" transition="ease-out" :duration="250"
-              @click="handleButtonClick"
-              v-show="true"
-          >
+          <view class="time-range-l">
+            <text>{{ startText.slice(5) }}</text>
+            <br/>
+            <text>-</text>
+            <br/>
+            <text>{{ endText.slice(5) }}</text>
+          </view>
+          <view class="time-range-p">
+            <text>{{ startText.slice(5) }} {{ " " }}</text>
+            <text>-</text>
+            <text>{{ " " }}{{ endText.slice(5) }}</text>
+          </view>
+          <material-button type="text" size="small" fontColor="#000" @click="handleButtonClick" v-show="true">
             test
           </material-button>
         </view>
@@ -38,16 +42,15 @@
 <script>
 import moment from 'moment';
 import Calendar from './Calendar.vue';
-import CalendarRanges from './Ranges.vue';
-import DefaultActivator from './widgets/activator.vue';
-import { defaultPresets } from '../constant';
+// import DefaultActivator from './widgets/activator.vue';
+import {defaultPresets} from '../constant';
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
 import materialButton from "@/components/material-uni/material-button/material-button.vue";
 
 export default {
   name: 'v-md-date-range-picker',
-  components: { UniPopup, Calendar, CalendarRanges, DefaultActivator, materialButton },
-  provide () {
+  components: {UniPopup, Calendar, materialButton},
+  provide() {
     return {
       'picker': this,
     };
@@ -63,7 +66,7 @@ export default {
     },
     presets: {
       type: Array,
-      default () {
+      default() {
         return defaultPresets;
       },
     },
@@ -104,7 +107,7 @@ export default {
       default: true,
     },
   },
-  data () {
+  data() {
     return {
       locale: {
         direction: 'ltr',
@@ -119,17 +122,17 @@ export default {
         firstDay: moment.localeData().firstDayOfWeek(),
       },
       leftCalendarMonth_: null,
-      rightCalendarMonth_: null,
+      // rightCalendarMonth_: null,
       start_: null,
       end_: null,
-      hoverStart_: null,
-      hoverEnd_: null,
-      cloneStart: null,
-      cloneEnd: null,
+      // hoverStart_: null,
+      // hoverEnd_: null,
+      // cloneStart: null,
+      // cloneEnd: null,
       startText: 'YYYY-MM-DD',
       endText: 'YYYY-MM-DD',
       inRange: false,
-      pickerVisible: false,
+      // pickerVisible: false,
     };
   },
   created() {
@@ -141,23 +144,26 @@ export default {
     },
     initializeDates() {
       this.leftCalendarMonth_ = moment(this.startDate);
-      this.rightCalendarMonth_ = moment(this.endDate).add(1, 'month');
-      this.start_ = moment(this.startDate);
-      this.end_ = moment(this.endDate);
-      this.cloneStart = this.start_.clone();
-      this.cloneEnd = this.end_.clone();
-      this.updateTextField();
+      this.inRange = false;
+      // this.rightCalendarMonth_ = moment(this.endDate).add(1, 'month');
+      this.start_ = null;
+      this.end_ = null;
+      this.startText = 'YYYY-MM-DD';
+      this.endText = 'YYYY-MM-DD';
+      // this.cloneStart = this.start_.clone();
+      // this.cloneEnd = this.end_.clone();
+      // this.updateTextField();
     },
-    clickYearSelect ({ location, calendarMonth }) {
-      this.safeSetDate(`${location}CalendarMonth_`, calendarMonth);
+    clickYearSelect({location, calendarMonth}) {
+      // this.safeSetDate(`${location}CalendarMonth_`, calendarMonth);
     },
-    clickNextMonth () {
+    clickNextMonth() {
       this.safeSetDate('leftCalendarMonth_', this.leftCalendarMonth_.add(1, 'month'));
     },
-    clickPrevMonth () {
+    clickPrevMonth() {
       this.safeSetDate('leftCalendarMonth_', this.leftCalendarMonth_.subtract(1, 'month'));
     },
-    dateClick (value) {
+    dateClick(value) {
       if (this.inRange) {
         this.inRange = false;
         if (value.isBefore(this.start_)) {
@@ -176,66 +182,66 @@ export default {
     open() {
       this.$refs.dateRangePicker.open("center");
       this.initializeDates();
-      this.resetDates();
+      // this.resetDates();
     },
-    resetDates() {
-      this.start_ = null;
-      this.end_ = null;
-      this.startText = 'YYYY-MM-DD';
-      this.endText = 'YYYY-MM-DD';
-    },
-    togglePicker () {
-      let elm = this.$refs.defaultActivator && this.$refs.defaultActivator.$el;
-      const slotActivator = this.$slots.input?.[0]?.elm;
-      if (!elm && slotActivator && (slotActivator.querySelector('input') || slotActivator.querySelector('button'))) {
-        elm = slotActivator;
-      }
-
-      this.pickerVisible = !!elm || !this.pickerVisible;
-    },
+    // resetDates() {
+    //   this.start_ = null;
+    //   this.end_ = null;
+    //   this.startText = 'YYYY-MM-DD';
+    //   this.endText = 'YYYY-MM-DD';
+    // },
+    // togglePicker() {
+    //   let elm = this.$refs.defaultActivator && this.$refs.defaultActivator.$el;
+    //   const slotActivator = this.$slots.input?.[0]?.elm;
+    //   if (!elm && slotActivator && (slotActivator.querySelector('input') || slotActivator.querySelector('button'))) {
+    //     elm = slotActivator;
+    //   }
+    //
+    //   this.pickerVisible = !!elm || !this.pickerVisible;
+    // },
     handleButtonClick() {
       console.log('Button clicked');
     },
-    cancel () {
+    cancel() {
       this.inRange = false;
       this.$refs.dateRangePicker.close();
     },
-    clickApply () {
-      this.pickerVisible = false;
-      this.updateTextField();
-      this.cloneForCancelUsage();
+    clickApply() {
+      // this.pickerVisible = false;
+      // this.updateTextField();
+      // this.cloneForCancelUsage();
       this.emitChange();
       this.$refs.dateRangePicker.close();
     },
-    clickPreset (preset) {
-      if (preset.label === this.locale.customRangeLabel) return;
-      this.start_ = moment(preset.range[0]);
-      this.end_ = moment(preset.range[1]);
-      this.leftCalendarMonth_ = moment(preset.range[0]);
-      if (this.autoApply) this.clickApply();
-    },
-    updateTextField () {
+    // clickPreset(preset) {
+    //   if (preset.label === this.locale.customRangeLabel) return;
+    //   this.start_ = moment(preset.range[0]);
+    //   this.end_ = moment(preset.range[1]);
+    //   this.leftCalendarMonth_ = moment(preset.range[0]);
+    //   if (this.autoApply) this.clickApply();
+    // },
+    updateTextField() {
       if (!this.$slots.input) {
         this.startText = this.start_?.format(this.locale.format) || 'YYYY-MM-DD';
         this.endText = this.end_?.format(this.locale.format) || 'YYYY-MM-DD';
       }
     },
-    cloneForCancelUsage () {
-      if (this.start_ && this.end_) {
-        this.cloneStart = this.start_.clone();
-        this.cloneEnd = this.end_.clone();
-      }
-    },
-    emitChange () {
+    // cloneForCancelUsage() {
+    //   if (this.start_ && this.end_) {
+    //     // this.cloneStart = this.start_.clone();
+    //     // this.cloneEnd = this.end_.clone();
+    //   }
+    // },
+    emitChange() {
       if (this.start_ && this.end_) {
         const start = this.start_.clone();
         const end = this.end_.clone();
         this.$emit('change', [start, end], [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]);
       }
     },
-    clickOutside () {
-      if (this.pickerVisible) this.clickApply();
-    },
+    // clickOutside() {
+    //   if (this.pickerVisible) this.cli ckApply();
+    // },
     safeSetDate(location, date) {
       try {
         this[location] = date.clone();
@@ -245,24 +251,24 @@ export default {
     },
   },
   watch: {
-    start_ (newValue) {
+    start_(newValue) {
       if (!newValue || newValue.month() === this.end_?.month()) return;
       this.safeSetDate('leftCalendarMonth_', newValue);
     },
-    end_ (newValue) {
+    end_(newValue) {
       if (!newValue) return;
       this.updateTextField();
     },
-    startDate (newValue) {
-      this.safeSetDate('start_', moment(newValue));
-      this.startText = moment(newValue).format(this.locale.format);
-      this.safeSetDate('cloneStart', moment(newValue));
-    },
-    endDate (newValue) {
-      this.safeSetDate('end_', moment(newValue));
-      this.endText = moment(newValue).format(this.locale.format);
-      this.safeSetDate('cloneEnd', moment(newValue));
-    },
+    // startDate(newValue) {
+    //   this.safeSetDate('start_', moment(newValue));
+    //   this.startText = moment(newValue).format(this.locale.format);
+    //   this.safeSetDate('cloneStart', moment(newValue));
+    // },
+    // endDate(newValue) {
+    //   this.safeSetDate('end_', moment(newValue));
+    //   this.endText = moment(newValue).format(this.locale.format);
+    //   this.safeSetDate('cloneEnd', moment(newValue));
+    // },
   },
 };
 </script>
@@ -270,8 +276,4 @@ export default {
 <style lang="scss" scoped>
 @import '../styles/components/picker';
 
-.button_wrap {
-  width: fit-content;
-  margin-left: auto;
-}
 </style>

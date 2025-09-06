@@ -2,8 +2,8 @@
     "name" : "你的门户",
     "appid" : "__UNI__2090008",
     "description" : "",
-    "versionName" : "1.2.2",
-    "versionCode" : 122,
+    "versionName" : "1.2.3",
+    "versionCode" : 123,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -61,6 +61,10 @@
                         "appkey_android" : "67d77c8948ac1b4f87e98e5f",
                         "channelid_android" : "android"
                     }
+                },
+                "ad" : {
+                    "fl" : {},
+                    "zy" : {}
                 }
             },
             "splashscreen" : {

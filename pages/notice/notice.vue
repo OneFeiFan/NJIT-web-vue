@@ -56,7 +56,7 @@
     <!--    </view>-->
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
-    <material-tab-bar/>
+    <material-tab-bar :update="theme['--md-sys-color-primary']"/>
   </view>
 </template>
 
@@ -111,6 +111,8 @@ export default {
     }
   },
   onLoad() {
+    this.refreshTheme()
+    uni.$on('ThemeUpdate',this.refreshTheme)
     // uni.request({
     //   url: "https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/markdown.json",
     //   header: {
@@ -129,13 +131,15 @@ export default {
   onReady() {
   },
   onShow() {
-    this.theme = getTheme()
+    // this.refreshTheme()
     this.$manager.getNoticeInformation().then(res => {
       this.noticeInformation = res;
     })
   },
   methods: {
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     jump(page) {
       this.isDrawerOpen = false;
       uni.navigateTo({

@@ -13,6 +13,9 @@
       </touch-ripple>
       <scroll-view scroll-y="true" class="scroll-table">
         <material-list>
+          <material-list-cell rightIcon @click="jump(`share`)">
+            <text>分享</text>
+          </material-list-cell>
           <material-list-cell rightIcon @click="jump(`classroom`)">
             <text>空教室查询</text>
           </material-list-cell>
@@ -59,6 +62,12 @@ export default {
     }
   },
   methods: {
+    aderror(e) {
+      console.log(e)
+    },
+    closeAd() {
+      console.log('closeAd')
+    },
     onClose() {
       this.$emit("onClose");
     },

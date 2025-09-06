@@ -97,13 +97,15 @@ export default {
     // #endif
   },
   onLoad() {
-
+    this.refreshTheme()
   },
   onShow() {
-    this.theme = getTheme()
+
   },
   methods: {
-    getTheme,
+    refreshTheme(){
+      this.theme = getTheme()
+    },
     jump(page) {
       // this.isDrawerOpen = false;
       uni.navigateTo({
