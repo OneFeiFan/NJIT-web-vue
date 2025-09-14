@@ -2,11 +2,12 @@
   <view :style="[theme,SXData]">
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
+        <uni-icons type="left" size="" @click="" color="var(--md-sys-color-surface-container)" class="icon-left"/>
         <text class="title">成绩查询</text>
         <uni-icons type="loop" size="" @click="" color="var(--md-sys-color-surface-container)" class="icon-right"/>
       </view>
     </material-nav-bar>
+    <zmm-watermark :watermark="'爱点小灵通'" :column="3" :margin="50" :opacity="0.35"/>
     <view class="select-bar">
       <picker mode="selector" :range="yearOptions" @change="onYearChange">
         <view class="select-item">学年：{{ selectedYear || '请选择' }}</view>

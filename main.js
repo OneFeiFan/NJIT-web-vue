@@ -19,18 +19,18 @@ Vue.prototype.$manager = new Core();
 
 SvgIconLib.registerCollection("material-filled", MaterialFilled);
 
-Vue.use(materialTabBar,[
-  {
-    icon:'event_note',
-    name:"课表",
-    page: "pages/curriculums/curriculums",
-  },
-  {
-    icon:'report',
-    name:"通知",
-    page: "pages/notice/notice",
-  }
-])
+// Vue.use(materialTabBar,[
+//   {
+//     icon:'event_note',
+//     name:"课表",
+//     page: "pages/curriculums/curriculums",
+//   },
+//   {
+//     icon:'report',
+//     name:"通知",
+//     page: "pages/notice/notice",
+//   }
+// ])
 
 setTheme(getThemeName())
 updateRippleConfig({

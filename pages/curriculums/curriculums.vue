@@ -3,17 +3,20 @@
     <!-- 头部控制栏 -->
     <material-nav-bar>
       <view class="nav-bar">
-        <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons type="bars" size="" @click="isDrawerOpen = false" color="var(--md-sys-color-surface-container)"
                    class="icon-left"/>
 
         <picker class="title" @change="change" :value="week" :range="range">
-          <view class="title">{{ range[week] }}</view>
+          <view class="title">{{ range[week] }}
+            <text  :style="{'font-size':'30rpx'}" color="var(--md-sys-color-on-surface)">{{"   "}}←切换</text>
+          </view>
         </picker>
 
         <uni-icons type="loop" size="" @click="update(true)" class="icon-right"
                    color="var(--md-sys-color-on-secondary-container)"/>
       </view>
     </material-nav-bar>
+    <zmm-watermark :watermark="'爱点小灵通'" :column="3" :margin="50" :opacity="0.35"/>
     <myswiper ref="swiper" :default-index="week" @change="changeSwipe">
       <timetable v-for="(tab,index) in timetableData" :other="other" :timetables="tab" :timetableType="timeSlots"
                  :weekStartDate="weekStartDate" :thisWeek="index"
@@ -23,7 +26,7 @@
     </myswiper>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
-    <material-tab-bar :update="theme['--md-sys-color-primary']"/>
+<!--    <material-tab-bar :update="theme['&#45;&#45;md-sys-color-primary']"/>-->
   </view>
 </template>
 
@@ -92,47 +95,51 @@ export default {
       week: 0,
       timeSlots: [{
         index: '1',
-        name: '08:00\n08:45'
+        name: '08:30\n09:10'
       },
         {
           index: '2',
-          name: '08:55\n09:40'
+          name: '09:10\n09:50'
         },
         {
           index: '3',
-          name: '10:10\n10:55'
+          name: '10:10\n10:50'
         },
         {
           index: '4',
-          name: '11:05\n11:50'
+          name: '10:50\n11:30'
         },
         {
           index: '5',
-          name: '13:40\n14:25'
+          name: '13:50\n14:30'
         },
         {
           index: '6',
-          name: '14:35\n15:20'
+          name: '14:30\n15:10'
         },
         {
           index: '7',
-          name: '15:40\n16:25'
+          name: '15:25\n16:05'
         },
         {
           index: '8',
-          name: '16:35\n17:20'
+          name: '16:05\n16.45'
         },
         {
           index: '9',
-          name: '18:30\n19:15'
+          name: '18:00\n18:40'
         },
         {
           index: '10',
-          name: '19:25\n20:10'
+          name: '18:40\n19:20'
         },
         {
           index: '11',
-          name: '20:20\n21:05'
+          name: '19:30\n20:10'
+        },
+        {
+          index: '12',
+          name: '20:10\n20:50'
         }
       ],
       range: [
@@ -163,7 +170,7 @@ export default {
               Array.from({
                     length: 7
                   }, () =>
-                      Array(11).fill("")
+                      Array(12).fill("")
               )
       ),
       other: [],
@@ -329,7 +336,7 @@ export default {
                 Array.from({
                       length: 7
                     }, () =>
-                        Array(11).fill("")
+                        Array(12).fill("")
                 )
         )
       }).

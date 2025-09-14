@@ -138,20 +138,7 @@
     "selectedColor": "#000000",
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
-    "list": [
-      {
-        "pagePath": "pages/curriculums/curriculums",
-        "iconPath": "",
-        "selectedIconPath": "",
-        "text": ""
-      },
-      {
-        "pagePath": "pages/notice/notice",
-        "iconPath": "",
-        "selectedIconPath": "",
-        "text": ""
-      }
-    ]
+    "list": []
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",

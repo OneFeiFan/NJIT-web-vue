@@ -262,7 +262,7 @@ export default {
   .main {
     background-color: var(--md-sys-color-primary-container);
     position: relative;
-    height: calc(100vh - var(--status-bar-height) - sx(30));
+    height: calc(100vh - var(--status-bar-height) - sx(18));
 
     .scroll-Y {
       height: 100%;
