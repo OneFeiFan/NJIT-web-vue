@@ -1,7 +1,7 @@
 <script>
-// #ifdef APP
+
 import {getThemeName, setTheme} from "@/components/material-uni/colors";
-// #endif
+
 export default {
   onThemeChange(res) {
     const themeName = getThemeName();
@@ -39,7 +39,7 @@ export default {
   },
   onLaunch: function () {
     const themeName = getThemeName();
-    var style = plus.navigator.getUIStyle();
+    var style = "light";
     if (style === 'dark') {
       if (!themeName.includes('dark')) {
         setTheme("dark_" + themeName);

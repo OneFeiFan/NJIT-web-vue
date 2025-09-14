@@ -14,7 +14,7 @@
                    color="var(--md-sys-color-on-secondary-container)"/>
       </view>
     </material-nav-bar>
-    <myswiper ref="swiper" :default-index="calculateCurrentWeek()" @change="changeSwipe">
+    <myswiper ref="swiper" :default-index="week" @change="changeSwipe">
       <timetable v-for="(tab,index) in timetableData" :other="other" :timetables="tab" :timetableType="timeSlots"
                  :weekStartDate="weekStartDate" :thisWeek="index"
                  @courseClick="handleCourseClick"
@@ -51,6 +51,7 @@ import myswiper from "@/components/material-uni/swipe/swipe.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
 import MyDrawer from "@/components/MyDrawer/MyDrawer.vue";
+import {http} from "@/static/util/request";
 
 export default {
   computed: {
@@ -172,9 +173,9 @@ export default {
     };
   },
   onReady() {
-    this.week = this.calculateCurrentWeek()
+    // this.week = this.calculateCurrentWeek()
     //#ifdef H5
-    this.loadSchedule()
+    // this.loadSchedule()
     // #endif
 
   },
@@ -184,7 +185,7 @@ export default {
   },
   onShow() {
 	// this.refreshTheme()
-    this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
+  //   this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
     this.update(false)
   },
   methods: {
@@ -199,895 +200,37 @@ export default {
       this.week = e.detail.value;
       this.$refs.swiper.goto(this.week);
     },
-    calculateCurrentWeek() {
-      const today = new Date(); // 当前日期
-      today.setHours(0, 0, 0, 0); // 重置时间部分
-
-      const start = new Date(this.weekStartDate); // 学期开始日期
-      start.setHours(0, 0, 0, 0); // 重置时间部分
-
-      const momentDate1 = moment(start); // 使用 moment 处理学期开始日期
-      const momentDate2 = moment(today); // 使用 moment 处理当前日期
-      const diff = momentDate2.diff(momentDate1, 'days'); // 计算日期差（天数）
-      if (diff < 0) {
-        return 1;
-      }
-      if (Math.floor(diff / 7) + 1 > 19) {
-        return 0;
-      }
-      return Math.floor(diff / 7) + 1; // 计算周数
-    },
+    // calculateCurrentWeek() {
+    //   const today = new Date(); // 当前日期
+    //   today.setHours(0, 0, 0, 0); // 重置时间部分
+    //
+    //   const start = new Date(this.weekStartDate); // 学期开始日期
+    //   start.setHours(0, 0, 0, 0); // 重置时间部分
+    //
+    //   const momentDate1 = moment(start); // 使用 moment 处理学期开始日期
+    //   const momentDate2 = moment(today); // 使用 moment 处理当前日期
+    //   const diff = momentDate2.diff(momentDate1, 'days'); // 计算日期差（天数）
+    //   if (diff < 0) {
+    //     return 1;
+    //   }
+    //   if (Math.floor(diff / 7) + 1 > 19) {
+    //     return 0;
+    //   }
+    //   return Math.floor(diff / 7) + 1; // 计算周数
+    // },
     loadSchedule() {
       // let temp = this.schedules
-      //#ifdef H5
-      let temp = [
-        [],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 1
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 1
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 1
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "大学生职业发展与就业指导Ⅱ",
-          "teacher": "黄玮",
-          "time": {
-            "weekday": 5,
-            "courseTime": [5, 6],
-            "week": 1
-          },
-          "classroom": "东202"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 1
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 1
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 1
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 1
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 2
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 2
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 2
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "大学生职业发展与就业指导Ⅱ",
-          "teacher": "黄玮",
-          "time": {
-            "weekday": 5,
-            "courseTime": [5, 6],
-            "week": 2
-          },
-          "classroom": "东202"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 2
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 2
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 2
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 2
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 3
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 3
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 3
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "大学生职业发展与就业指导Ⅱ",
-          "teacher": "黄玮",
-          "time": {
-            "weekday": 5,
-            "courseTime": [5, 6],
-            "week": 3
-          },
-          "classroom": "东202"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 3
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 3
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 3
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 3
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 4
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 4
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 4
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "大学生职业发展与就业指导Ⅱ",
-          "teacher": "黄玮",
-          "time": {
-            "weekday": 5,
-            "courseTime": [5, 6],
-            "week": 4
-          },
-          "classroom": "东202"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 4
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 4
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 4
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 4
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 5
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 5
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 5
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 5
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 5
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 5
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 5
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "形势与政策",
-          "teacher": "苏红",
-          "time": {
-            "weekday": 4,
-            "courseTime": [7, 8],
-            "week": 6
-          },
-          "classroom": "西C302"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 6
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 6
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 6
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 6
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 6
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 6
-          },
-          "classroom": "西A202"
-        }],
-        [{
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 7
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 7
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 7
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 7
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 1,
-            "courseTime": [1, 2],
-            "week": 8
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "虚拟现实",
-          "teacher": "陈钧",
-          "time": {
-            "weekday": 3,
-            "courseTime": [1, 2],
-            "week": 8
-          },
-          "classroom": "东A402"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 8
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 8
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 8
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 8
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 9
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 9
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 9
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢 阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 9
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 9
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 9
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 10
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 10
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 10
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 10
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 10
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 10
-          },
-          "classroom": "西A302"
-        }],
-        [],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 12
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 12
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 12
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 12
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 12
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 12
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": " 岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 13
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 13
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 2,
-            "courseTime": [3, 4],
-            "week": 13
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人工智能",
-          "teacher": "卢阿丽",
-          "time": {
-            "weekday": 4,
-            "courseTime": [3, 4],
-            "week": 13
-          },
-          "classroom": "西A302"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 13
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐 梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 13
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 14
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 14
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 1,
-            "courseTime": [3, 4],
-            "week": 14
-          },
-          "classroom": "西A101"
-        }, {
-          "name": "人机交互技术",
-          "teacher": "徐梦溪",
-          "time": {
-            "weekday": 3,
-            "courseTime": [3, 4],
-            "week": 14
-          },
-          "classroom": "西A302"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 15
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 15
-          },
-          "classroom": "南A209"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 16
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 16
-          },
-          "classroom": "南A209"
-        }],
-        [{
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 2,
-            "courseTime": [1, 2],
-            "week": 17
-          },
-          "classroom": "南A209"
-        }, {
-          "name": "计算机视觉",
-          "teacher": "岳红原",
-          "time": {
-            "weekday": 4,
-            "courseTime": [1, 2],
-            "week": 17
-          },
-          "classroom": "南A209"
-        }]
-      ]
-      for (let i = 1; i < temp.length; i++) {
-        const weekCourses = temp[i];
-
-        for (let j = 0; j < weekCourses.length; j++) {
-          const course = weekCourses[j];
-          const time = course.time;
-          const courseTime = time.courseTime;
-          const week = time.week;
-          const weekday = time.weekday;
-          const classroom = course.classroom;
-          const name = course.name;
-
-          for (let m = 0; m < courseTime.length; m++) {
-            const value = name + '@' + classroom;
-            if (this.timetableData[week][weekday - 1][courseTime[m] - 1].indexOf(value) == -1 && this.timetableData[week][weekday - 1][courseTime[m] - 1] != '') {
-              this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, (this.timetableData[week][weekday - 1][courseTime[m] - 1]) + "!" + value)
-              this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, (this.timetableData[week][weekday - 1][courseTime[m] - 1]) + "!" + value)
-            } else {
-              this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
-              this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
-            }
-          }
-
-          // for (let m = 0; m < courseTime.length; m++) {
-          //   const value = name + '@' + classroom;
-          //   this.$set(this.timetableData[week][weekday - 1], courseTime[m] - 1, value)
-          //   this.$set(this.timetableData[0][weekday - 1], courseTime[m] - 1, value)
-          // }
-        }
-
-      }
-      //#endif
-      this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
-      this.loading = false;
-      uni.hideLoading();
-      this.week = this.calculateCurrentWeek();
-      this.$refs.swiper.goto(this.week);
-      clearTimeout(this.wait);
+      // http.post('/course/list', {
+      //   semester: '2023-2024-1'
+      // }).then(res => {
+      //   console.log(res)
+      // })
+      // this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
+      // this.loading = false;
+      // uni.hideLoading();
+      // this.week = this.calculateCurrentWeek();
+      // this.$refs.swiper.goto(this.week);
+      // clearTimeout(this.wait);
     },
     todayWeekIndex() {
       let weekIndex = new Date().getDay() - 1
@@ -1141,32 +284,45 @@ export default {
         content: `${e.name}`
       });
     },
-    update(refresh) {
-      console.log('update')
-      this.loading = true;
-      uni.showLoading({
-        title: '获取课表数据'
-      });
-      this.wait = setTimeout(() => {
-        this.loading = false;
-        uni.hideLoading();
-        uni.showToast({
-          title: '获取课表失败',
-          icon: 'error',
-          duration: 2000
+    update(forceRefresh) {
+      if(forceRefresh){
+        uni.showLoading({
+          title: '尝试刷新课表'
         });
-      }, 5000);
-      this.$manager.getCurriculum(refresh).then(res => {
-        let value = JSON.parse(res)
+      }
 
-        if(value === {}){
-          return
+      http.post("/getDateData").
+      then(res=>{
+        this.week = res.data.currentWeek
+        this.$refs.swiper.goto(this.week);
+        this.weekStartDate = new Date(res.data.startDate)
+      }).
+      catch(res=>{
+        console.log(res)
+      })
+      http.post("/getCurriculum",{forceRefresh}).
+      then(res=>{
+        if(forceRefresh){
+          setTimeout(()=>{
+            uni.showToast({
+              title: '成功',
+              duration: 2000
+            });
+          },500)
         }
-
-        this.timetableData = JSON.parse(value.validTimeCourses);
-        this.other = JSON.parse(value.nullTimeCourses);
-        this.loadSchedule();
-      }).catch(res => {
+        this.other = JSON.parse(res.data.nullTimeCourses)
+        this.timetableData = JSON.parse(res.data.validTimeCourses)
+      }).
+      catch(res=>{
+        if(forceRefresh){
+          setTimeout(()=>{
+            uni.showToast({
+              title: '失败',
+              icon:"error",
+              duration: 2000
+            });
+          },500)
+        }
         this.timetableData = Array.from({
               length: 20
             }, () =>
@@ -1176,6 +332,9 @@ export default {
                         Array(11).fill("")
                 )
         )
+      }).
+      finally(()=>{
+        uni.hideLoading()
       })
     }
   }
@@ -1189,49 +348,9 @@ export default {
 
 $modal-width: 90vw;
 
-.login-modal {
-  width: $modal-width;
-  height: $modal-width * 0.75;
-  border-radius: 40rpx;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  .wrap {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-
-    .input {
-      margin-top: 20rpx;
-    }
-  }
-
-  .captcha {
-    display: flex;
-
-    .captcha-img {
-      margin-top: 20rpx;
-      height: 70rpx;
-      width: 200rpx;
-    }
-  }
-
-  .btn-wrap {
-    width: 100%;
-    display: flex;
-
-    .login-btn {
-      margin-top: 20rpx;
-      width: 45%;
-      //height: 80rpx;
-    }
-  }
-}
 
 .container {
+  //height: 100vh;
   //height: calc(100vh - var(--window-bottom) - var(--status-bar-height) - 44px);
   background: #f5f5f5;
 }
