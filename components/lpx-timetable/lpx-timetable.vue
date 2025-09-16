@@ -2,7 +2,7 @@
   <view class="timetable" :style="[getTheme(),SXData]">
     <view class="header">
       <view class="header-item" v-for="(item,index) in week" :key="item"
-            :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-tertiary)':'var(--md-sys-color-on-primary-container)' }">{{ item }}<br/>{{ getDateOfWeek(item) }}
+            :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-tertiary)':'var(--md-sys-color-on-primary-container)' }">{{"周"}}{{ item }}<br/>{{ getDateOfWeek(item) }}
       </view>
     </view>
 
