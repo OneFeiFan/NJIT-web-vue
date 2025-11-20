@@ -56,10 +56,32 @@
           </view>
         </view>
 
+        <!-- 验证码（根据条件显示） -->
+        <view v-if="captchaImage !== ''" class="form-group">
+          <text class="label">验证码</text>
+          <view class="input-wrapper">
+            <uni-icons class="icon-captcha" type="shield-filled" size="" color="var(--md-sys-color-on-surface)"/>
+            <input
+                class="input"
+                v-model="captcha"
+                type="text"
+                placeholder="请输入验证码"
+                placeholder-style="{ color: '#bbb' }"
+            />
+            <image
+                class="captcha-image"
+                :src="captchaImage"
+                @click="refreshCaptcha"
+                mode="aspectFit"
+            />
+          </view>
+        </view>
+
         <!-- 记住我 -->
         <view class="form-options">
           <label class="remember-me">
-            <checkbox v-if="!rememberMe" :checked="false" @click="rememberMe = true" color="var(--md-sys-color-on-surface)"/>
+            <checkbox v-if="!rememberMe" :checked="false" @click="rememberMe = true"
+                      color="var(--md-sys-color-on-surface)"/>
             <checkbox v-else :checked="true" @click="rememberMe = false" color="var(--md-sys-color-on-surface)"/>
             记住我
           </label>
@@ -100,13 +122,20 @@ export default {
   data() {
     return {
       theme: {},          // 主题样式
+      uuid: '',           // 验证码 uuid
       username: '',
       password: '',
+      captcha: '',        // 验证码
+      captchaImage: '',   // 验证码图片URL
       showPassword: false,
       loading: false,
       rememberMe: false,
       error: '',
     };
+  },
+  onLoad() {
+    console.log(11111)
+    this.refreshCaptcha()
   },
   // uni‑app 生命周期：页面加载完成后执行
   onReady() {
@@ -114,15 +143,60 @@ export default {
     this.initRemember();
   },
   methods: {
+    refreshCaptcha() {
+      uni.showToast({
+        title: '正在获取验证码...',
+        icon: 'loading',
+        duration: 5000
+      })
+      let request = new Promise((resolve, reject) => uni.request({
+            url: baseUrl + `/perLogin?uuid=${this.uuid}`,
+            method: 'GET',
+            success: (res) => {
+              if (res.data.code === 200) {
+                resolve(res.data)
+              } else {
+                reject(res.data)
+              }
+            },
+            fail: (res) => {
+              reject(res)
+            }
+          })
+      )
+      request.then(res => {
+        let data = res.data;
+        this.uuid = data.uuid;
+        this.captchaImage = data.captcha;
+        if(this.captchaImage == ''){
+          uni.showToast({
+            title: '本次登录不需要验证码',
+            icon: 'success',
+            duration: 2000
+          })
+        }else{
+          uni.showToast({
+            title: '验证码已刷新',
+            icon:'success',
+            duration: 2000
+          })
+        }
+        console.log(data)
+      }).catch(err => {
+        uni.showToast({title: err.data, icon: 'error', duration: 2000})
+        console.log(err)
+      })
+      // console.log(request)
+    },
     /** 读取本地记住的账号 */
     initRemember() {
       const saved = uni.getStorageSync('loginInfo');
-      if(saved){
+      if (saved) {
         if (!saved.password) {
           this.username = saved.username;
           this.password = '';  // 不自动填充密码
           this.rememberMe = false;  // 默认不记住密码
-        }else{
+        } else {
           this.username = saved.username;
           this.password = saved.password;  // 不自动填充密码
           this.rememberMe = true;  // 默认不记住密码
@@ -153,11 +227,13 @@ export default {
       uni.showLoading({title: '登录中...'});
 
       let request = new Promise((resolve, reject) => uni.request({
-            url: baseUrl+'/login',
+            url: baseUrl + '/login',
             method: 'POST',
             data: {
+              "uuid": this.uuid,
               "studentId": this.username,
-              "password": this.password
+              "password": this.password,
+              "captcha": this.captcha,
             },
             header: {
               "Content-Type": "application/x-www-form-urlencoded"
@@ -196,6 +272,10 @@ export default {
         uni.navigateBack();
       }).catch(err => {
         this.error = err.data;
+        if (err.data === 'Timed out waiting for 15000 ms') {
+          this.uuid = '';
+        }
+        this.refreshCaptcha()
       }).finally(() => {
         this.loading = false;
         uni.hideLoading();
@@ -286,6 +366,7 @@ export default {
         font-size: sx(6);
       }
     }
+
     .input {
       width: 100%;
       height: 100%;
@@ -306,6 +387,19 @@ export default {
       font-size: sx(5);
     }
   }
+}
+
+/* 验证码图片样式 */
+.captcha-image {
+  width: sx(45);
+  height: sx(20);
+  margin-left: sx(2);
+}
+
+/* 验证码图标 */
+.icon-captcha {
+  padding: sx(1);
+  font-size: sx(6);
 }
 
 
