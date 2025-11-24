@@ -125,11 +125,11 @@ function getTheme() {
 }
 
 function tabActiveColor() {
-    return global_theme['--md-sys-color-on-surface'];
+    return global_theme['--md-sys-color-primary'];
 }
 
 function tabInactiveColor() {
-    return global_theme['--md-sys-color-surface-dim'];
+    return global_theme['--md-sys-color-outline'];
 }
 
 function getColor(color_name) {
