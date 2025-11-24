@@ -18,7 +18,7 @@
 import {mxValue} from "@/components/material-uni/sx";
 
 export default {
-  name: 'mt-swipe',
+  name: 'my-swipe',
   props: {
     defaultIndex: {type: Number, default: 0},
     disabled: Boolean,
@@ -39,7 +39,11 @@ export default {
     defaultIndex: {
       immediate: true,
       handler(val) {
-        this.currentIndex = val
+        if(val >= 0){
+          this.currentIndex = val
+        }else{
+          this.currentIndex = 0
+        }
       }
     }
   },
