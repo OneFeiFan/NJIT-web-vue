@@ -1,4 +1,3 @@
-
 // utils/request.js
 import {baseUrl} from "@/static/urlConfig";
 
@@ -29,6 +28,7 @@ class Request {
           }
         }
       });
+      console.log(111)
       return false
     }
     return true
