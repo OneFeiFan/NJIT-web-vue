@@ -1,14 +1,11 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar>
+    <material-nav-bar background-color="var(--md-sys-color-primary)">
       <view class="nav-bar">
-        <uni-icons type="bars" size="" @click="isDrawerOpen = true" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="bars" @click="isDrawerOpen = true"
                    class="icon-left"/>
-
         <view class="title">Hello 正方</view>
-
-        <uni-icons type="loop" size="" @click="" class="icon-right"
-                   color="rgba(255, 255, 255, 0)"/>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
 
@@ -100,7 +97,7 @@ export default {
   },
   data() {
     return {
-      theme:{},
+      theme: {},
       isDrawerOpen: false,
       content: `<p align="center">不晓得为啥,没获取到数据QAQ</p>`,
       main: null,
@@ -112,7 +109,7 @@ export default {
   },
   onLoad() {
     this.refreshTheme()
-    uni.$on('ThemeUpdate',this.refreshTheme)
+    uni.$on('ThemeUpdate', this.refreshTheme)
     // uni.request({
     //   url: "https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/markdown.json",
     //   header: {
@@ -137,7 +134,7 @@ export default {
     })
   },
   methods: {
-    refreshTheme(){
+    refreshTheme() {
       this.theme = getTheme()
     },
     jump(page) {
@@ -153,11 +150,11 @@ export default {
 <style lang="scss">
 .container {
   height: 100vh;
-  width: 100vw;
+  //width: 100vw;
   background-color: var(--md-sys-color-surface);
 
   .scroll-view {
-    height: calc(100vh - var(--status-bar-height) - sx(22));
+    height: calc(100vh - var(--status-bar-height) - sx(30));
   }
 }
 

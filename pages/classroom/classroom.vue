@@ -1,15 +1,12 @@
 <template>
   <view class="container" :style="[theme,SXData]">
     <!-- 头部控制栏 -->
-    <material-nav-bar>
+    <material-nav-bar background-color="var(--md-sys-color-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
                    class="icon-left"/>
-
         <view class="title">空教室查询</view>
-
-        <uni-icons type="loop" size="" @click="" class="icon-right"
-                   color="rgba(255, 255, 255, 0)"/>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
     <!-- 选择区 -->
@@ -96,7 +93,7 @@ import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
-import {mx, SXData} from "@/components/material-uni/sx"
+import {SXData} from "@/components/material-uni/sx"
 import {getColor, getTheme} from "@/components/material-uni/colors";
 
 export default {
@@ -232,11 +229,6 @@ export default {
   onLoad() {
     this.refreshTheme()
   },
-  onReady() {
-  },
-  onShow() {
-
-  },
   methods: {
     getColor,
     refreshTheme(){
@@ -331,7 +323,7 @@ export default {
   flex: 1;
 
   .table-container {
-    height: calc(100vh - var(--status-bar-height) - sx(55));
+    height: calc(100vh - var(--status-bar-height) - sx(60));
   }
 
   @media (orientation: landscape) {
@@ -341,7 +333,7 @@ export default {
     justify-content: space-between; /* 根据需要调整 */
 
     .table-container {
-      height: calc(100vh - var(--status-bar-height) - sx(10));
+      height: calc(100vh - var(--status-bar-height) - sx(15));
     }
 
     .select {
