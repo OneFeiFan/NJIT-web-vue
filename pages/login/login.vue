@@ -68,7 +68,7 @@
         <!-- 登录按钮 -->
         <material-button
             size="medium"
-            color="var(--md-sys-color-on-primary"
+            color="var(--md-sys-color-on-primary)"
             class="login-button"
             :disabled="loading"
             @click="handleLogin"
