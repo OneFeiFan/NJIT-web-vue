@@ -1,13 +1,12 @@
 <template>
   <touch-ripple
       class="card"
-      :style="{ width: width }"
       :color="color"
       :opacity="opacity"
       :duration="duration"
       :transition="transition"
       :backgroundColor="backgroundColor"
-      @click="handleClick"
+      @tap="handleClick"
   >
     <slot></slot>
   </touch-ripple>
@@ -30,8 +29,8 @@ export default {
     ...DEFAULT_RIPPLE_PROPS
   },
   methods: {
-    handleClick() {
-      this.$emit('click');
+    handleClick(e) {
+      this.$emit('click', e);
     }
   }
 }
@@ -40,10 +39,11 @@ export default {
 
 <style scoped lang="scss">
 .card {
-  background-color: #ffffff00;
+  width: 100%;
+  //background-color: #ffffff00;
   border-radius: sx(2);
-  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2),
-  0 1px 18px rgba(0, 0, 0, 0.2),
-  0 6px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 5px -1px color-mix(in srgb, var(--md-sys-color-outline), transparent 80%),
+  0 6px 10px 0 color-mix(in srgb, var(--md-sys-color-outline), transparent 86%),
+  0 1px 18px 0 color-mix(in srgb, var(--md-sys-color-outline), transparent 88%);
 }
 </style>
