@@ -1,5 +1,13 @@
 <template>
-  <view class="content">
+  <view :style="[theme,SXData]" class="content">
+    <material-nav-bar background-color="var(--md-sys-color-primary)">
+      <view class="nav-bar">
+        <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
+                   @click="back"/>
+        <text class="title">关于</text>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
+      </view>
+    </material-nav-bar>
     <view class="footer">
       <zero-markdown-view :markdown="content" themeColor="#000"></zero-markdown-view>
     </view>
@@ -7,15 +15,27 @@
 </template>
 
 <script>
-
+import {http} from "@/static/util/request";
+import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
+import {SXData} from "@/components/material-uni/sx";
+import {getTheme} from "@/components/material-uni/colors";
 
 export default {
+  computed: {
+    SXData() {
+      return SXData
+    }
+  },
+  components: {MaterialNavBar},
   data() {
     return {
+      theme: {},
       content:  `<p align="center">不晓得为啥,没获取到数据QAQ</p>`
     }
   },
   onLoad() {
+    this.refreshTheme();
+    //#ifdef APP-PLUS
     uni.request({
       url: "https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/markdown.json",
       header: {
@@ -26,12 +46,29 @@ export default {
       },
       success: (res) => {
         if(res.statusCode === 200){
-          this.content = `${res.data.about}`;
+          this.content = `${res.data.dev}`;
         }
       }
     });
+    //#endif
+    //#ifdef H5
+    http.get("/gitee?url=https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/markdown.json")
+        .then(res => {
+          this.content = `${JSON.parse(res.data).about}`;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    //#endif
   },
-  methods: {}
+  methods: {
+    refreshTheme() {
+      this.theme = getTheme()
+    },
+    back() {
+      uni.navigateBack();
+    }
+  }
 }
 </script>
 
@@ -41,44 +78,7 @@ export default {
   width: 100vw;
   display: flex;
   flex-direction: column;
-
-  .header {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 60rpx;
-    margin-left: auto;
-    margin-right: auto;
-
-    .headimg {
-      width: 120rpx;
-      height: 120rpx;
-      border-radius: 50%;
-    }
-
-    .des {
-      margin-top: 20rpx;
-      font-weight: bold;
-    }
-
-    .more {
-      margin-top: 20rpx;
-    }
-  }
-
-  .body {
-    //margin-top: 50rpx;
-    width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-
-    .sketch {
-      text-align: center;
-    }
-  }
-
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
 }
 </style>
