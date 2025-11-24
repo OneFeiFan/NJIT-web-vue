@@ -1,7 +1,5 @@
 <script>
-
 import {getThemeName, setTheme} from "@/components/material-uni/colors";
-
 export default {
   onThemeChange(res) {
     const themeName = getThemeName();
@@ -55,7 +53,24 @@ export default {
 // 条件编译，只在APP渲染
 // #ifdef APP
     plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
-    // initUM("67d77c8948ac1b4f87e98e5f", "android");
+    if (this.$manager.isSmartUpdate() && !this.$manager.checkRequestInstallPackagePermission()) {
+      uni.showModal({
+        title: '增量更新启用提示',
+        content: "增量更新功能可以加快更新速度并减少流量消耗。\n如需开启增量更新，请点击“确认”授予安装包权限。否则，请点击“取消”永久关闭此功能。\n如果后续更新异常，可以去设置中关闭增量更新功能。",
+        showCancel: true,
+        success: (res) => {
+          if (res.confirm) {
+            this.$manager.requestRequestInstallPackagePermission()
+          } else {
+            uni.showToast({
+              title: '后续可以在设置中重新开启增量更新功能。',
+              icon: 'none'
+            })
+            this.$manager.setSmartUpdate(false);
+          }
+        }
+      })
+    }
     let version_number = systemInfo.appWgtVersion;
     uni.request({
       url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
@@ -67,24 +82,32 @@ export default {
       },
       success: (res) => {
         const data = res.data;
-        if (version_number !== data.version) {
+        // console.log(data.version)
+        if (data.version !== undefined && version_number !== data.version) {
           const url = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data.version}.apk`;
-          console.log('发现新版本', data.version, data.description);
-          if (data[version_number]) {
-            const bin = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data[version_number]}`;
-            console.log('增量更新', bin);
-            this.$manager.updateApp(bin)
-                .then((res) => {
-                  if (!res) {
-                    this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
-                  }
-                })
-                .catch(() => {
-                  this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
-                });
-          } else {
-            this.showUpdateModal('版本升级', `更新内容：\n${data.description}`, url);
-          }
+          // console.log('发现新版本', data.version, data.description);
+          uni.showModal({
+            showCancel: false,
+            title: "版本升级",
+            content: `更新内容：\n${data.description}`,
+            complete: () => {
+              if (data[version_number] && this.$manager.checkRequestInstallPackagePermission()) {
+                const bin = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data[version_number]}`;
+                console.log('增量更新', bin);
+                this.$manager.updateApp(bin)
+                    .then((res) => {
+                      if (!res) {
+                        plus.runtime.openURL(url);
+                      }
+                    })
+                    .catch(() => {
+                      plus.runtime.openURL(url);
+                    });
+              } else {
+                plus.runtime.openURL(url);
+              }
+            }
+          });
         }
       }
     });
@@ -98,37 +121,37 @@ export default {
   onHide: function () {
     console.log('App Hide')
   },
-  methods: {
-    showUpdateModal(title, content, url) {
-      uni.showModal({
-        showCancel: false,
-        title: title,
-        content: content,
-        success: function (res) {
-          if (res.confirm) {
-            plus.runtime.openURL(url);
-          }
-        },
-        complete: function (res) {
-          plus.runtime.openURL(url);
-        }
-      });
-
-    }
-  }
+  // methods: {
+  //   showUpdateModal(title, content, url) {
+  //     uni.showModal({
+  //       showCancel: false,
+  //       title: title,
+  //       content: content,
+  //       success: function (res) {
+  //         if (res.confirm) {
+  //           plus.runtime.openURL(url);
+  //         }
+  //       },
+  //       complete: function (res) {
+  //         plus.runtime.openURL(url);
+  //       }
+  //     });
+  //
+  //   }
+  // }
 }
 </script>
 
 <style lang="scss">
 /*每个页面公共css */
-.uni-navbar__header-container {
-  padding: 0 !important;
-}
-
-.uni-navbar__header {
-  padding: 0 !important;
-}
-
+//.uni-navbar__header-container {
+//  padding: 0 !important;
+//}
+//
+//.uni-navbar__header {
+//  padding: 0 !important;
+//}
+//
 .uni-table-loading {
   visibility: collapse;
 }
@@ -136,7 +159,8 @@ export default {
 .nav-bar {
   height: 100%;
   width: 100%;
-
+  //background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
   display: flex;
   align-items: center;
 
@@ -163,11 +187,10 @@ export default {
 
 
   .title {
-    margin: 0 auto;
+    margin: 0 auto 0 sx(8);
     font-size: sx(6.5);
     display: block;
     text-align: center;
-    color: var(--md-sys-color-on-secondary-container);
   }
 }
 </style>

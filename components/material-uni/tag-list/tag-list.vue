@@ -23,6 +23,7 @@
 import materialButton from "@/components/material-uni/material-button/material-button.vue";
 import {mx} from "@/components/material-uni/sx";
 import {DEFAULT_RIPPLE_PROPS} from "@/components/material-uni/ripple/config";
+
 export default {
   name: 'tag-list',
   components: {
