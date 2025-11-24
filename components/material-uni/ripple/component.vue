@@ -1,8 +1,8 @@
 <template>
   <view class="v-touch-ripple" :style="{'background-color': config.backgroundColor}" @longpress.stop="handleLongPress" @mousedown.stop="handleMouseDown" @mouseup.stop="handleMouseUp">
-    <slot>
-
-    </slot>
+    <view class="ripple-content" @longpress="handleClick" @click.stop="handleClick">
+      <slot></slot>
+    </view>
     <view class="ripples">
       <view
           v-for="(value, key) in ripples"
@@ -99,6 +99,7 @@ export default {
       event["clientX"] = event.changedTouches[0].clientX;
       event["clientY"] = event.changedTouches[0].clientY;
       this.handleMouseDown(event.changedTouches[0])
+      // this.$emit("longpress", event)
     },
     handleMouseDown(event) {
       this.state.active = true
@@ -122,9 +123,9 @@ export default {
             this.animateRipple(id);
           })
           .exec();
-      if(event.type === "mousedown"){
-        this.$emit("touch", event);
-      }
+      // if(event.type === "mousedown"){
+      //   this.$emit("touch", event);
+      // }
     },
     animateRipple(id) {
       try {
@@ -165,7 +166,11 @@ export default {
       if (this.state.cleanWhenMouseUp) {
         this.clearRipples()
       }
-      this.$emit("click", event)
+    },
+    handleClick(event) {
+      setTimeout(() => {
+        this.$emit(event.type, event)
+      }, 250);
     },
     beforeDestroy() {
       this.clearRipples()
@@ -180,26 +185,34 @@ export default {
   overflow: hidden;
   //background-color: rgba(255, 255, 255, 0);
 
-  :not(:last-child) {
+  > .ripple-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    /* 这里的 pointer-events 可以根据需求调整。
+       如果不加 none，点击事件会冒泡到父级；
+       通常保留默认即可，因为父级绑定了事件 */
   }
 
   > .ripples {
-    z-index: 0;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    display: block;
+    z-index: 1;
+    pointer-events: none; // 关键：确保涟漪不阻挡点击事件
     overflow: hidden;
-    pointer-events: none;
+    opacity: 0.2;
 
     > .ripple-item {
       display: block;
       position: absolute;
       border-radius: 50%;
+      /* 解决部分移动端渲染闪烁问题 */
+
+      will-change: transform, opacity;
 
       &.ripple-leave-to {
         opacity: 0 !important;
