@@ -12,7 +12,7 @@
         </view>
       </touch-ripple>
       <scroll-view scroll-y="true" class="scroll-table">
-        <material-list>
+        <material-list color="var(--md-sys-color-on-surface)">
           <material-list-cell rightIcon @click="jump(`share`)">
             <text>分享</text>
           </material-list-cell>

@@ -1,6 +1,6 @@
 <template>
   <touch-ripple :backgroundColor="backgroundColor" :color="color" :duration="duration" :opacity="opacity"
-                :transition="transition" style="position: sticky;top:0;">
+                :transition="transition" style="position: sticky;top:0; z-index: 5">
     <status-bar :background-color="backgroundColor"/>
     <view class="nav-bar-container">
       <slot></slot>

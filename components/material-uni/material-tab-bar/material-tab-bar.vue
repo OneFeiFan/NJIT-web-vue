@@ -1,7 +1,7 @@
 <template>
   <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition"
                 :background-color="backgroundColor" :style="{'box-shadow': shadow()}"
-                style="position: fixed;bottom: 0;width: 100%;">
+                style="position: fixed;bottom: 0;width: 100%; z-index: 5">
     <view class="material-tab-bar">
       <view class="material-tab-bar-item" v-for="(value, key) in pages" @click="changePage(key)">
         <view class="wrap">
@@ -123,7 +123,6 @@ export default {
 
       .material-tab-bar-name {
         font-size: sx(3.5);
-        color: var(--md-sys-color-on-surface);
       }
     }
 

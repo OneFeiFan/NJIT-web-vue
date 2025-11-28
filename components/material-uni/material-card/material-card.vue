@@ -6,7 +6,6 @@
       :duration="duration"
       :transition="transition"
       :backgroundColor="backgroundColor"
-      @tap="handleClick"
   >
     <slot></slot>
   </touch-ripple>
@@ -29,9 +28,9 @@ export default {
     ...DEFAULT_RIPPLE_PROPS
   },
   methods: {
-    handleClick(e) {
-      this.$emit('click', e);
-    }
+    // handleClick(e) {
+    //   this.$emit('click', e);
+    // }
   }
 }
 

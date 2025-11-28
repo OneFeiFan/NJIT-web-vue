@@ -44,7 +44,6 @@ export default {
     },
     // 动态样式 Props
     backgroundColor: String,
-    fontColor: {type: String, default: "#FFFFFF"},
     outlineColor: {type: String, default: '#79747E'},
     outlineWidth: {type: String, default: '1px'},
     disabled: Boolean,
@@ -74,7 +73,6 @@ export default {
 
       return {
         '--btn-bg-custom': this.backgroundColor,
-        '--btn-color-custom': this.fontColor,
         '--btn-border-color': this.outlineColor,
         '--btn-border-width': this.outlineWidth,
         '--btn-h': s.h,
@@ -156,19 +154,19 @@ export default {
 // === 类型 (Type) ===
 .type-filled {
   background-color: var(--btn-bg-custom, var(--md-sys-color-primary, #6750A4));
-  color: var(--btn-color-custom, var(--md-sys-color-on-primary, #FFFFFF));
+  //color: var(--md-sys-color-on-primary, #000);
 }
 
 .type-outlined {
   background-color: transparent;
-  color: var(--btn-color-custom, var(--btn-border-color));
+  color:  var(--btn-border-color);
   border: var(--btn-border-width) solid var(--btn-border-color);
   box-shadow: none !important;
 }
 
 .type-text {
   background-color: transparent;
-  color: var(--btn-color-custom, var(--md-sys-color-primary, #6750A4));
+  //color: var(--md-sys-color-primary, #6750A4);
   box-shadow: none !important;
 
   // 特殊处理：如果是 1:1 按钮使用 text 模式，不需要 padding，否则需要
@@ -179,7 +177,7 @@ export default {
 
 .type-elevated {
   background-color: var(--md-surface-container-low, #F7F2FA);
-  color: var(--md-primary, #6750A4);
+  //color: var(--md-primary, #6750A4);
   // 如果不是 rounded (rounded 有自己的强阴影)，则使用默认 elevated 阴影
   &:not(.shape-rounded) {
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
@@ -188,7 +186,7 @@ export default {
 
 .type-tonal {
   background-color: var(--md-secondary-container, #E8DEF8);
-  color: var(--md-on-secondary-container, #1D192B);
+  //color: var(--md-on-secondary-container, #1D192B);
 }
 
 // === 状态 (Disabled) ===
