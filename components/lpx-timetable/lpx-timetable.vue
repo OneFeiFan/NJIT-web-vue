@@ -1,9 +1,9 @@
 <template>
-  <view :style="[getTheme(), SXData]" class="timetable">
+  <view class="timetable">
     <!-- 顶部星期栏 -->
     <view class="header">
-      <view v-for="(item, index) in week" :key="item" :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-on-surface-variant)' }"
-            class="header-item">
+      <view class="header-item" v-for="(item, index) in week" :key="item"
+            :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-on-surface-variant)' }">
         {{ item }}<br/>{{ getDateOfWeek(item) }}
       </view>
     </view>
@@ -13,7 +13,7 @@
       <scroll-view scroll-y="true" class="scroll-Y">
 
         <!-- 背景网格行（包含左侧时间） -->
-        <view v-for="(item, index) in timetableType" :key="index" class="row">
+        <view class="row" v-for="(item, index) in timetableType" :key="index">
           <view class="time-item">
             {{ item.index }}<br/>{{ item.name.split('\n')[0] }}<br/>{{ item.name.split('\n')[1] }}
           </view>
@@ -22,24 +22,24 @@
         <!-- 课程容器层 -->
         <view class="course-container">
           <!-- 遍历每一天 (weekColumn 代表这一天的渲染队列) -->
-          <view v-for="(weekColumn, dayIndex) in renderData" :key="dayIndex" class="week">
+          <view v-if="courses.length>0" class="week" v-for="(weekColumn, dayIndex) in renderData" :key="dayIndex">
             <!-- 遍历这一天的每一个块 -->
-            <view v-for="(slot, slotIndex) in weekColumn" :key="slotIndex" class="courseList">
+            <view class="courseList" v-for="(slot, slotIndex) in weekColumn" :key="slotIndex">
 
               <!-- 情况1：有课程 -->
               <touch-ripple
                   v-if="slot.type === 'course'"
+                  @click="handleTapCourse(slot.courses)"
+                  @longpress="handleLongPressCourse(slot.courses)"
+                  class="course"
+                  :backgroundColor="slot.style.backgroundColor"
+                  :color="slot.style.textColor"
                   :style="{
                     // 动态高度：(节数 * 单节高度) - 间隙
                     height: (slot.duration * mxValue(18) - mxValue(0.6)) + 'px',
                     // 间隙补到 margin-bottom，形成视觉分割
                     marginBottom: mxValue(0.6) + 'px',
-                    background: slot.style.backgroundColor,
-                    color: slot.style.textColor
                   }"
-                  class="course"
-                  @click="handleTapCourse(slot.courses)"
-                  @longpress="handleLongPressCourse(slot.courses)"
               >
                 <view class="course">
                   <!-- 课程内容布局 -->
@@ -50,7 +50,7 @@
 
                   <!-- 冲突角标 -->
                   <view v-if="slot.conflictCount > 0" class="conflict-badge">
-                    <uni-icons :size="mx(3.5)" color="currentColor" type="tune-filled"/>
+                    <uni-icons color="currentColor" :size="mx(3.5)" type="tune-filled"/>
                   </view>
                 </view>
 
@@ -59,12 +59,12 @@
               <!-- 情况2：空白占位符 -->
               <touch-ripple
                   v-else-if="slot.type === 'empty'"
-                  :background-color="'argb(0,0,0,0)'"
-                  :style="{ height: mxValue(18) + 'px' }"
+                  background-color="var(--md-sys-color-surface)"
+                  color="var(--md-sys-color-on-surface)"
                   class="course placeholder"
                   @longpress="handleLongPressEmpty(dayIndex, slot.realNodeIndex)"
+                  :style="{ height: mxValue(18) + 'px' }"
               />
-
               <!-- 情况3：跳过（被合并的格子） -->
               <view v-else-if="slot.type === 'skip'" style="display: none;"/>
             </view>
@@ -72,8 +72,8 @@
         </view>
 
         <!-- 底部其他课程 (无时间课程) -->
-        <view v-if="otherCourses && otherCourses.length" class="other">
-          <text v-for="(course, index) in otherCourses" :key="course.id || index" class="text">
+        <view class="other" v-if="otherCourses && otherCourses.length">
+          <text class="text" v-for="(course, index) in otherCourses" :key="course.id || index">
             {{ index + 1 }}.{{ " " }}{{ course.name }}<br>{{ "\t\t\t\t教师：" }}{{ course.teacher }}
           </text>
         </view>
@@ -93,7 +93,7 @@ export default {
   name: 'Timetable',
   components: {TouchRipple, UniIcons},
   props: {
-    weekStartDate: {type: Date, default: () => new Date()},
+    weekStartDate: {type: String, default: '2025-02-17'},
     courses: {type: Array, default: () => []},
     otherCourses: {type: Array, default: () => []},
     thisWeek: {type: [Number, String], default: 1},
@@ -157,7 +157,6 @@ export default {
       let weekIndex = new Date().getDay() - 1;
       return weekIndex === -1 ? 6 : weekIndex;
     },
-
     renderData() {
       const totalNodes = this.timetableType.length;
       const currentWeek = parseInt(this.thisWeek);
@@ -253,7 +252,6 @@ export default {
   },
   methods: {
     mx, getTheme, mxValue,
-
     getDateOfWeek(dayName) {
       if (!this.thisWeek) return '';
       const dayIndex = this.text2num[dayName];
