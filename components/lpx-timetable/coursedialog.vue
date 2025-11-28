@@ -1,6 +1,6 @@
 <template>
   <view class="dialog-mask" v-if="visible" @click="$emit('close')">
-    <material-card class="dialog-card" @click.stop :class="{ 'animate-show': visible }">
+    <material-card class="dialog-card" @click.stop :class="{ 'animate-show': visible }" color="var(--md-sys-color-on-surface)">
 
       <!-- A. 多课程切换区 (冲突时显示) -->
       <view v-if="hasConflict" class="conflict-tabs">
@@ -11,7 +11,7 @@
                 :key="index"
                 size="small"
                 shape="square"
-                :fontColor="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
+                :color="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
                 :background-color="currentIndex === index ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-surface-variant)'"
                 @click="switchCourse(index)"
             >
@@ -48,7 +48,7 @@
           <material-button
               size="small"
               shape="square"
-              :fontColor="currentCourse.source === 1 ? 'var(--md-sys-color-on-tertiary-container)' : 'var(--md-sys-color-on-secondary-container)'"
+              :color="currentCourse.source === 1 ? 'var(--md-sys-color-on-tertiary-container)' : 'var(--md-sys-color-on-secondary-container)'"
               :background-color="currentCourse.source === 1 ? 'var(--md-sys-color-tertiary-container)' : 'var(--md-sys-color-secondary-container)'">
             {{ currentCourse.source === 1 ? '本地手动添加' : '教务系统同步' }}
           </material-button>
@@ -66,6 +66,7 @@
         <view class="card-actions" v-if="mode === 'add'">
           <material-button
               size="small"
+              color="var(--md-sys-color-surface)"
               background-color="var(--md-sys-color-primary)"
               @click="$emit('add')">添加</material-button>
         </view>
@@ -74,15 +75,18 @@
         <view class="card-actions" v-else-if="mode === 'edit' && currentCourse">
           <material-button
               size="small"
-              fontColor="var(--md-sys-color-error)"
+              color="var(--md-sys-color-error)"
+              background-color="#ffffff00"
               @click="$emit('delete', currentCourse)">删除</material-button>
           <view class="spacer"></view>
           <material-button
               size="small"
-              fontColor="var(--md-sys-color-primary)"
+              color="var(--md-sys-color-primary)"
+              background-color="#ffffff00"
               @click="$emit('add')">添加</material-button>
           <material-button
               size="small"
+              color="var(--md-sys-color-surface)"
               background-color="var(--md-sys-color-primary)"
               @click="$emit('edit', currentCourse)">编辑</material-button>
         </view>
@@ -92,7 +96,8 @@
       <view class="card-actions" v-else>
         <material-button
             size="small"
-            fontColor="var(--md-sys-color-primary)"
+            color="var(--md-sys-color-primary)"
+            background-color="#ffffff00"
             @click="$emit('close')">确定</material-button>
       </view>
 
@@ -240,7 +245,6 @@ export default {
     .title {
       font-size: sx(7);
       font-weight: 600;
-      color: var(--md-sys-color-on-surface);
       margin-bottom: sx(1);
       //line-height: 1.3;
     }

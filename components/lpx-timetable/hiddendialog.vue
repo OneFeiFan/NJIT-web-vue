@@ -1,6 +1,6 @@
 <template>
   <view class="mask" v-if="visible" @click="$emit('close')">
-    <material-card class="card" @click.stop>
+    <material-card class="card" color="var(--md-sys-color-on-surface)" @click.stop>
       
       <!-- 标题栏 -->
       <view class="header">
@@ -27,7 +27,7 @@
           <material-button
               size="small"
               shape="square"
-              font-color="var(--md-sys-color-on-primary-container)"
+              color="var(--md-sys-color-on-primary-container)"
               background-color="var(--md-sys-color-primary-container)"
               @click="handleRestore(item)">恢复</material-button>
 
@@ -46,12 +46,11 @@
 
 <script>
 import { getTheme } from "@/components/material-uni/colors";
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 
 export default {
-  components: {MaterialButton, MaterialCard, UniIcons },
+  components: {MaterialButton, MaterialCard },
   props: {
     visible: { type: Boolean, default: false },
     list: { type: Array, default: () => [] } // 接收所有 hiddenCourses
@@ -123,7 +122,6 @@ export default {
   .title {
     font-size: sx(6);
     font-weight: 600;
-    color: var(--md-sys-color-on-surface);
   }
 }
 
