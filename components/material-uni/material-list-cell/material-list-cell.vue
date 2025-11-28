@@ -1,15 +1,13 @@
 <template>
-  <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition" :background-color="backgroundColor">
-    <view class="material-list-cell" @click="handleClick">
-      <view class="left-text" :style="{'color': fontColor}" v-if="showLeftText">
+  <touch-ripple :color="getColor" :opacity="opacity" :duration="duration" :transition="transition" :background-color="backgroundColor" @click="handleClick">
+    <view class="material-list-cell">
+      <view class="left-text" v-if="showLeftText">
         <slot></slot>
       </view>
       <slot v-else></slot>
       <view class="right-icon" v-if="rightIcon">
-        <uni-icons type="right" size="" :color="fontColor"/>
-        <!--        <zui-svg-icon icon="md-keyboard_arrow_right" :color="_colorMap[fontColor.split('var(')[1].split(')')[0]]"></zui-svg-icon>-->
+        <uni-icons type="right" size="" :color="getColor"/>
       </view>
-<!--      <view class="ripple-fix" v-if="!rightIcon"></view>-->
     </view>
   </touch-ripple>
 </template>
@@ -36,17 +34,25 @@ export default {
       type: Boolean,
       default: true
     },
-    fontColor: {
-      type: String,
-      default: "var(--md-sys-color-on-surface)"
-    },
     ...DEFAULT_RIPPLE_PROPS
+  },
+  computed:{
+    getColor(){
+      // if(this.color !== ""){
+      //   return this.color
+      // }
+      return this.color || this.materialList.color
+    }
+  },
+  inject: {
+    materialList: {
+      from: 'materialList', // 对应父组件 provide 的 key
+      default: null         // 默认为 null，防止子组件单独使用时报错
+    }
   },
   methods: {
     handleClick(e) {
-      setTimeout(() => {
-        this.$emit('click', e);
-      }, 200);
+      this.$emit('click', e);
     }
   }
 }
