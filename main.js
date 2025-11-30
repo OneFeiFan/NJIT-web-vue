@@ -32,8 +32,7 @@ Vue.use(materialTabBar,[
 
 setTheme(getThemeName())
 updateRippleConfig({
-  color: "var(--md-sys-color-on-surface)",
-  opacity: 0.4,
+  opacity: 0.085,
   transition: "ease-out",
   duration: 250,
   backgroundColor: "var(--md-sys-color-surface)"
