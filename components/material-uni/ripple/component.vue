@@ -142,7 +142,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 /*
   注意：这里不要加 scoped，或者使用 /deep/
   因为手动创建的元素不会带有 Vue 的 scoped data-v-xxx 属性
@@ -170,12 +170,13 @@ export default {
     overflow: hidden;
   }
 
-  .ripple-manual-item {
+  ::v-deep.ripple-manual-item {
+    display: block;
     position: absolute;
     border-radius: 50%;
     pointer-events: none;
     /* 优化：强制开启 GPU 加速 */
-    will-change: transform, opacity;
+    /*will-change: transform, opacity;*/
     /* 确保 transform 原点在中心 */
     transform-origin: center center;
     transform: scale(0);
