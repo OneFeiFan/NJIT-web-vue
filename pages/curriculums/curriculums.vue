@@ -1,6 +1,6 @@
 <template>
-  <view :style="[theme,SXData]">
-    <material-nav-bar :background-color="'var(--md-sys-color-primary)'">
+  <view :style="[theme,SXData]" class="container">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="--md-sys-color-on-primary" size="" type="bars"
                    @click="isDrawerOpen = true"/>
@@ -11,22 +11,31 @@
                    @click="update(true)"/>
       </view>
     </material-nav-bar>
-    <my-swipe ref="swiper" :default-index="week" @change="changeSwipe">
-      <timetable v-for="(week,index) in weeks" :key="'timetable-'+week+'-'+theme['--md-sys-color-primary']"
-                 :courses="timetableData"
-                 :otherCourses="other" :thisWeek="week" :timetableType="timeSlots"
-                 :weekStartDate="weekStartDate" @handleLongPressCourse="editCourse"
-                 @handleLongPressEmpty="addCourse"
-                 @handleTapCourse="showDetail"></timetable>
+    <my-swipe ref="swiper" :default-index="week" :loop="true" @change="changeSwipe">
+      <my-swipe-item v-for="(w, index) in weeks" :key="w">
+        <timetable
+            :courses="timetableData"
+            :otherCourses="other"
+            :thisWeek="w"
+            :timetableType="timeSlots"
+            :weekStartDate="weekStartDate"
+            @handleLongPressCourse="editCourse"
+            @handleLongPressEmpty="addCourse"
+            @handleTapCourse="showDetail">
+        </timetable>
+      </my-swipe-item>
     </my-swipe>
-    <material-button v-if="hiddenCourses.length > 0" :background-color="'var(--md-sys-color-primary-container)'"
-                     class="float-btn"
-                     icon-only shape="rounded"
-                     size="large" @click="showHiddenManager = true">
-      <zui-svg-icon :color="getColor('--md-sys-color-on-primary-container')" :height="mx(6.5)" :width="mx(6.5)"
-                    collection="material-filled"
-                    icon="visibility_off"/>
-    </material-button>
+    <view class="float-btn">
+      <material-button v-if="hiddenCourses.length > 0" background-color="var(--md-sys-color-primary-container)"
+                       color="var(--md-sys-color-on-primary-container)"
+                       shape="rounded"
+                       size="large" @click="showHiddenManager = true">
+        <zui-svg-icon :color="getColor('--md-sys-color-on-primary-container')" :height="mx(6.5)" :width="mx(6.5)"
+                      collection="material-filled"
+                      icon="visibility_off"/>
+      </material-button>
+    </view>
+
     <!-- 2. 引入隐藏管理弹窗 -->
     <hidden-course-dialog :list="hiddenCourses" :visible="showHiddenManager" @close="showHiddenManager = false"
                           @restore="handleRestoreFromManager"/>
@@ -34,7 +43,7 @@
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false}" :show="isDrawerOpen"/>
-    <material-tab-bar :update="theme['--md-sys-color-primary']"/>
+    <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
   </view>
 </template>
 
@@ -45,10 +54,13 @@ import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-
 import MySwipe from "@/components/material-uni/my-swipe/my-swipe.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
 import {getColor, getTheme} from "@/components/material-uni/colors";
+//#ifdef H5
 import {http} from "@/static/util/request";
+//#endif
 import CourseDialog from '@/components/lpx-timetable/coursedialog.vue';
 import HiddenCourseDialog from '@/components/lpx-timetable/hiddendialog.vue';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import MySwipeItem from "@/components/material-uni/my-swipe/my-swipe-item.vue";
 
 export default {
   computed: {
@@ -57,17 +69,12 @@ export default {
     }
   },
   components: {
-    MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
+    MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
   },
   data() {
     return {
       theme: {},
       isDrawerOpen: false,
-      menu: false,
-      loading: false,
-      app: false,
-      check: null,
-      wait: null,
       week: 0,
       timeSlots: [{
         index: '1',
@@ -138,7 +145,7 @@ export default {
       weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
       timetableData: [],
       other: [],
-      weekStartDate: new Date('2025-02-17'),
+      weekStartDate: '2025-02-17',
       dialog: {
         visible: false,
         mode: 'view',
@@ -152,13 +159,6 @@ export default {
       showHiddenManager: false, // 控制新弹窗显示
     };
   },
-  onReady() {
-    // #ifdef APP-PLUS
-    console.log('app onReady')
-    plus.navigator.closeSplashscreen()
-    // #endif
-    // this.week = this.calculateCurrentWeek()
-  },
   onLoad() {
     this.refreshTheme()
     uni.$on('ThemeUpdate', this.refreshTheme)
@@ -167,10 +167,14 @@ export default {
     })
   },
   onShow() {
-    //#ifdef APP-PLUS
-    this.weekStartDate = new Date(this.$manager.getSemesterStartDate());
-    // #endif
-    this.update(false)
+    if (this.weekStartDate !== '2025-02-17') {
+      this.update(false)
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.update(false)
+    })
   },
   methods: {
     getColor,
@@ -184,11 +188,44 @@ export default {
           title: '尝试刷新课表'
         });
       }
+      // #ifdef APP-PLUS
+      let res = this.$manager.getDate()
+      if (res !== "{}") {
+        let value = JSON.parse(res)
+        this.week = value.currentWeek - 1; //第一周的index为0
+        this.weekStartDate = value.startDate
+      }
 
+
+      this.$manager.getCurriculum(forceRefresh).then(value => {
+        if (Object.keys(value).length > 0) {
+          this.timetableData = value.validTimeCourses;
+          this.other = value.nullTimeCourses;
+          this.hiddenCourses = value.hiddenCourses || [];
+        }
+      }).catch(res => {
+        if (forceRefresh) {
+          setTimeout(() => {
+            uni.showToast({
+              title: '失败',
+              icon: "error",
+              duration: 2000
+            });
+          }, 500)
+        }
+        console.log(res)
+      }).finally(() => {
+        uni.hideLoading()
+      })
+
+
+      // console.log(result)
+      // #endif
+
+      // #ifdef H5
       http.post("/getDateData").then(res => {
         this.week = res.data.currentWeek - 1; //第一周的index为0
-        this.$refs.swiper.goto(this.week);
-        this.weekStartDate = new Date(res.data.startDate)
+        this.weekStartDate = res.data.startDate
       }).catch(res => {
         console.log(res)
       })
@@ -221,6 +258,7 @@ export default {
       }).finally(() => {
         uni.hideLoading()
       })
+      // #endif
     },
     showDetail(courses) {
       this.dialog.visible = true;
@@ -281,12 +319,23 @@ export default {
               params.day = targetCourse.day;
               params.start = targetCourse.start;
             }
+            // #ifdef APP-PLUS
+            let result = this.$manager.deleteCourse(params)
+            if (Object.keys(result).length > 0 && result.code === 200) {
+              this.update(true)
+            } else {
+              console.error(result)
+              uni.showToast({title: "删除失败"})
+            }
+            // #endif
+            // #ifdef H5
             http.post("/course/delete", params).then(res => {
               this.update(true)
               console.log(res)
             }).catch(res => {
               console.log(res)
             })
+            // #endif
           }
         }
       });
@@ -294,7 +343,22 @@ export default {
     async handleRestoreFromManager(item) {
       // 调用后端恢复接口
       uni.showLoading({title: '恢复中'});
+      // #ifdef APP-PLUS
+      let result = this.$manager.restoreCourse({
+        courseId: item.id,
+        day: item.day,
+        start: item.start // 这里依然需要 day 和 start 做精准恢复
+      })
+      if (Object.keys(result).length > 0 && result.code === 200) {
+        uni.showToast({title: '恢复成功', icon: 'none'});
+        this.update(true)
+      } else {
+        console.error(result)
+        uni.showToast({title: "恢复失败"})
+      }
+      // #endif
       try {
+        //#ifdef H5
         http.post('/course/restore', {
           courseId: item.id,
           day: item.day,
@@ -304,6 +368,7 @@ export default {
         }).catch(res => {
           uni.showToast({title: res.data});
         })
+        // #endif
       } catch (e) {
         console.log(e)
         uni.showToast({title: '恢复失败', icon: 'none'});
@@ -315,7 +380,6 @@ export default {
     },
     change(e) {
       this.week = e.detail.value;
-      this.$refs.swiper.goto(this.week);
     },
     todayWeekIndex() {
       let weekIndex = new Date().getDay() - 1
@@ -329,10 +393,16 @@ export default {
 </script>
 
 <style lang="scss">
+.container {
+  height: 100vh;
+  background-color: var(--md-sys-color-surface);
+}
+
 .float-btn {
   position: fixed;
   bottom: sx(25); // 根据你的 TabBar 高度调整
   right: sx(6);
+  z-index: 5;
 
   //.badge {
   //  position: absolute;
