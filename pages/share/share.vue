@@ -1,6 +1,6 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
                    class="icon-left"/>
@@ -9,7 +9,8 @@
       </view>
     </material-nav-bar>
 
-    <material-card class="wrap">
+    <view class="wrap" >
+    <material-card class="card" color="var(--md-sys-color-on-primary-container">
       <view class="content">
         <view class="text-area">
           觉得软件实用的话可以和同学分享一下哦。
@@ -17,6 +18,7 @@
         <image class="share-img" mode="widthFix" src="@/static/qq.jpg"/>
       </view>
     </material-card>
+    </view>
   </view>
 </template>
 
@@ -63,18 +65,24 @@ export default {
 }
 
 .wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - var(--status-bar-height) - sx(15));
+}
+
+.card {
   font-size: sx(5);
-  color: var(--md-sys-color-on-primary-container);
-  padding: sx(5);
   box-sizing: border-box;
+
+  .content {
+    padding: sx(5);
+  }
 }
 
 @media (orientation: portrait) {
-  .wrap {
+  .card {
     --test: 0px;
     $width: calc((90vw + sx(90)) / 2);
     max-width: calc(100vw - sx(15) - var(--test));
@@ -88,7 +96,7 @@ export default {
 
 /* 横屏适配 */
 @media screen and (orientation: landscape) {
-  .wrap {
+  .card {
     $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
     max-width: calc(100 / 80 * #{$height});
     width: calc(100 / 80 * #{$height});
