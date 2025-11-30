@@ -1,17 +1,17 @@
 <template>
   <view class="editor-container" :style="[theme,SXData]">
-    <material-nav-bar>
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-primary)"
                    class="icon-left"/>
-        <text class="title">分享软件</text>
+        <text class="title">编辑课程</text>
         <uni-icons type="loop" size="" color="#ffffff00" class="icon-right"/>
       </view>
     </material-nav-bar>
     <view class="content">
       <!-- 1. 基础信息卡片 -->
-      <material-card class="card">
-        <material-list class="form-item">
+      <material-card class="card" color="var(--md-sys-color-on-surface)">
+        <material-list class="form-item" color="var(--md-sys-color-on-surface)">
           <material-list-cell :show-left-text="false">
             <view class="form-item">
               <text class="label">课程名称</text>
@@ -35,8 +35,8 @@
 
       <!-- 2. 时间选择卡片 -->
       <view class="section-header">时间安排</view>
-      <material-card class="card picker-group">
-        <material-list>
+      <material-card class="card picker-group" color="var(--md-sys-color-on-surface)">
+        <material-list color="var(--md-sys-color-on-surface)">
           <material-list-cell :show-left-text="false">
             <!-- 星期选择 -->
             <picker mode="selector" :range="days" @change="onDayChange" :value="form.day - 1" style="width: 100%;">
@@ -86,7 +86,7 @@
           <material-button
               size="small"
               shape="square"
-              fontColor="var(--md-sys-color-on-surface-variant)"
+              color="var(--md-sys-color-on-surface-variant)"
               background-color="var(--md-sys-color-surface-container-high)"
               @click="setWeeks('all')">
             全选
@@ -94,7 +94,7 @@
           <material-button
               size="small"
               shape="square"
-              fontColor="var(--md-sys-color-on-surface-variant)"
+              color="var(--md-sys-color-on-surface-variant)"
               background-color="var(--md-sys-color-surface-container-high)"
               @click="setWeeks('odd')">
             单周
@@ -102,7 +102,7 @@
           <material-button
               size="small"
               shape="square"
-              fontColor="var(--md-sys-color-on-surface-variant)"
+              color="var(--md-sys-color-on-surface-variant)"
               background-color="var(--md-sys-color-surface-container-high)"
               @click="setWeeks('even')">
             双周
@@ -110,7 +110,7 @@
           <material-button
               size="small"
               shape="square"
-              fontColor="var(--md-sys-color-error)"
+              color="var(--md-sys-color-error)"
               background-color="var(--md-sys-color-error-container)"
               @click="setWeeks('clear')">
             清空
@@ -118,7 +118,7 @@
         </view>
       </view>
 
-      <material-card class="card week-card">
+      <material-card class="card week-card" color="var(--md-sys-color-on-surface)">
         <view class="week-grid">
           <view v-for="i in 19" :key="i" class="week-item" :class="{ active: form.weeks.includes(i) }"
                 @click="toggleWeek(i)">
@@ -129,8 +129,7 @@
       <material-button
           class="save-btn"
           size="medium"
-
-          fontColor="var(--md-sys-color-on-primary)"
+          color="var(--md-sys-color-on-primary)"
           background-color="var(--md-sys-color-primary)"
           @click="submit">
         保存课程
@@ -140,11 +139,12 @@
 </template>
 
 <script>
-import {getTheme} from "@/components/material-uni/colors";
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
+//#ifdef H5
 import {http} from "@/static/util/request";
-import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
+//#endif
+import {getTheme} from "@/components/material-uni/colors";
 import {SXData} from "@/components/material-uni/sx";
+import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
@@ -152,12 +152,7 @@ import MaterialButton from "@/components/material-uni/material-button/material-b
 
 export default {
   components: {
-    MaterialButton,
-    MaterialList,
-    MaterialListCell,
-    MaterialCard,
-    MaterialNavBar,
-    UniIcons
+    MaterialButton, MaterialList, MaterialListCell, MaterialCard, MaterialNavBar
   },
   computed: {
     SXData() {
@@ -354,24 +349,46 @@ export default {
         payload.hideRule = JSON.stringify(hideRule)
       }
 
-      console.log("保存课程:", payload);
+      //#ifdef APP-PLUS
+      let result = this.$manager.saveCourse(payload)
+      if(Object.keys(result).length > 0 && result.code === 200){
+          uni.showToast({
+            title: '保存成功'
+          });
+          setTimeout(() => {
+            uni.navigateBack();
+            uni.$emit('refreshTimetable'); // 通知上级页面刷新数据
+          }, 800);
+      }else{
+        console.error("保存失败", result);
+        uni.showToast({
+          title: '失败'
+        });
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 800);
+      }
+      //#endif
 
-      // 这里调用你的 Request 工具
+      // #ifdef H5
       http.post("/course/save", payload).then(res => {
-        console.log(res)
+        uni.showToast({
+          title: '保存成功'
+        });
+        setTimeout(() => {
+          uni.navigateBack();
+          uni.$emit('refreshTimetable'); // 通知上级页面刷新数据
+        }, 800);
       }).catch(res => {
-        console.log(res)
+        console.error("保存失败", res);
+        uni.showToast({
+          title: '失败'
+        });
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 800);
       })
-      // 模拟成功
-      uni.showToast({
-        title: '保存成功'
-      });
-
-      // 返回并刷新
-      setTimeout(() => {
-        uni.navigateBack();
-        uni.$emit('refreshTimetable'); // 通知上级页面刷新数据
-      }, 800);
+      // #endif
     },
     back() {
       uni.navigateBack();
@@ -411,7 +428,6 @@ export default {
   // 表单项
   .form-item {
     width: 100%;
-    color: var(--md-sys-color-on-surface);
 
     .label {
       font-size: sx(4);
@@ -436,7 +452,7 @@ export default {
       font-size: sx(4);
 
       .picker-label {
-        color: var(--md-sys-color-on-surface);
+        //color: var(--md-sys-color-on-surface);
       }
 
       .picker-value {

@@ -1,6 +1,6 @@
 <template>
   <view :style="[theme,SXData]" class="content">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
                    @click="back"/>
@@ -15,7 +15,9 @@
 </template>
 
 <script>
+//#ifdef H5
 import {http} from "@/static/util/request";
+//#endif
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
@@ -79,6 +81,5 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
 }
 </style>
