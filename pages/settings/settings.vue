@@ -1,6 +1,6 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
                    @click="back"/>
@@ -9,7 +9,7 @@
       </view>
     </material-nav-bar>
     <scroll-view scroll-y="true" class="scroll-table">
-      <material-list>
+      <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-surface)">
         <material-list-cell rightIcon @click="jump(`widget`)">
           <text>小部件管理</text>
         </material-list-cell>

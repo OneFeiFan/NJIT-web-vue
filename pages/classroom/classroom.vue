@@ -1,7 +1,7 @@
 <template>
   <view class="container" :style="[theme,SXData]">
     <!-- 头部控制栏 -->
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
                    class="icon-left"/>
@@ -12,28 +12,25 @@
     <!-- 选择区 -->
     <view class="main">
       <view class="select" id="select">
-        <material-list>
+        <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-secondary-container)">
           <!--   日期选择区     -->
-          <material-list-cell @click="openDatePicker" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell @click="openDatePicker">
             <view class="list-content">
               <zui-svg-icon icon="md-event_available" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view>日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell @click="pickBuilding = true">
             <view class="list-content">
               <zui-svg-icon icon="md-location" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view class="title">地点：{{ building }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell :showLeftText="false" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell :showLeftText="false">
             <view class="group">
               <woTag mult row :options="coursesList" @changeSelect="onChangeTagOne"
-                     color="var(--md-sys-color-primary-fixed)"
-                     backgroundColor="var(--md-sys-color-secondary)" fontColor="var(--md-sys-color-on-secondary)"
+                     color="var(--md-sys-color-on-secondary)"
+                     backgroundColor="var(--md-sys-color-secondary)"
                      :activateStyle="{'background-color': 'var(--md-sys-color-primary)', 'color': 'var(--md-sys-color-on-primary)'}"/>
             </view>
           </material-list-cell>
@@ -290,14 +287,13 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: var(--md-sys-color-secondary-container);
+  background-color: var(--md-sys-color-surface);
 }
 
 .select {
   .list-content {
     display: flex;
     align-items: center;
-    color: var(--md-sys-color-on-secondary-container);
   }
 
   .group {

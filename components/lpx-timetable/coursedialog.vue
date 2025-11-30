@@ -1,7 +1,7 @@
 <template>
   <view class="dialog-mask" v-if="visible" @click="$emit('close')">
     <material-card class="dialog-card" @click.stop :class="{ 'animate-show': visible }" color="var(--md-sys-color-on-surface)">
-
+      <view class="content">
       <!-- A. 多课程切换区 (冲突时显示) -->
       <view v-if="hasConflict" class="conflict-tabs">
         <scroll-view scroll-x="true" class="tabs-scroll" show-scrollbar="false">
@@ -100,7 +100,7 @@
             background-color="#ffffff00"
             @click="$emit('close')">确定</material-button>
       </view>
-
+      </view>
     </material-card>
   </view>
 </template>
@@ -209,12 +209,15 @@ export default {
 }
 
 .dialog-card {
-  padding: sx(5);
   border-radius: sx(3.5);
   display: flex;
   flex-direction: column;
   transform: scale(0.95);
   transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+
+  .content {
+    padding: sx(5);
+  }
 
   &.animate-show {
     //opacity: 1;

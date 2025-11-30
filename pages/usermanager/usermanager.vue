@@ -1,10 +1,10 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar id="nav-bar">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-primary)" class="icon-left"/>
         <text class="title">用户管理</text>
-        <uni-icons type="plusempty" size="" @click="login" color="var(--md-sys-color-on-secondary-container)" class="icon-right"/>
+        <uni-icons type="plusempty" size="" @click="login" color="var(--md-sys-color-on-primary)" class="icon-right"/>
       </view>
     </material-nav-bar>
 

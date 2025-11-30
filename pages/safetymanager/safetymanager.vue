@@ -1,6 +1,6 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
                    @click="back"/>
@@ -8,7 +8,7 @@
         <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
-    <material-list>
+    <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-surface)">
       <material-list-cell :rightIcon="false" :showLeftText="false">
         <view class="content">
           <text>储存用户密码</text>

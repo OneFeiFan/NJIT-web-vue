@@ -1,6 +1,6 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons color="var(--md-sys-color-on-primary)" size="" type="bars" @click="isDrawerOpen = true"
                    class="icon-left"/>
@@ -53,25 +53,21 @@
     <!--    </view>-->
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :show="isDrawerOpen" :beforeIntercept="()=>{isDrawerOpen = false}"/>
-    <material-tab-bar :update="theme['--md-sys-color-primary']"/>
+    <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
   </view>
 </template>
 
 <script>
 
 import ZeroMarkdownView from "@/uni_modules/zero-markdown-view/components/zero-markdown-view/zero-markdown-view.vue";
-import UniLink from "@/uni_modules/uni-link/components/uni-link/uni-link.vue";
 import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import SvInterceptBack from "@/uni_modules/sv-intercept-back/components/sv-intercept-back/sv-intercept-back.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
-import TouchRipple from "@/components/material-uni/ripple/component.vue";
-import Drawer from "@/components/material-uni/drawer/drawer.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
-import StatusBar from "@/components/material-uni/status-bar/status-bar.vue";
 import MyDrawer from "@/components/MyDrawer/MyDrawer.vue";
 
 
@@ -83,17 +79,13 @@ export default {
   },
   components: {
     MyDrawer,
-    StatusBar,
-    Drawer,
     MaterialList,
     MaterialListCell,
     SvInterceptBack,
     UniIcons,
     MaterialNavBar,
     MaterialTabBar,
-    UniLink,
     ZeroMarkdownView,
-    TouchRipple
   },
   data() {
     return {
