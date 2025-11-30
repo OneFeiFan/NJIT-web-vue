@@ -12,9 +12,10 @@
 <script>
 	// #ifdef APP-NVUE
 	const dom = uni.requireNativePlugin('dom')
-	// #endif
-	import props from './props.js';
-	/**
+  // #endif
+  import props from './props.js';
+
+  /**
 	 * Row 栅格系统中的行
 	 * @description 通过基础的 12 分栏，迅速简便地创建布局 
 	 * @tutorial https://www.uviewui.com/components/layout.html

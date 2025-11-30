@@ -8,8 +8,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * Steps 步骤条
 	 * @description 该组件一般用于完成一个任务要分几个步骤，标识目前处于第几步的场景。
 	 * @tutorial https://uviewui.com/components/steps.html

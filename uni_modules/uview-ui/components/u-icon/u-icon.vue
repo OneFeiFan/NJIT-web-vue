@@ -44,12 +44,14 @@
 		'fontFamily': "uicon-iconfont",
 		'src': `url('${fontUrl}')`
 	})
-	// #endif
+  // #endif
 
-	// 引入图标名称，已经对应的unicode
-	import icons from './icons'
-	
-	import props from './props.js';;
+  // 引入图标名称，已经对应的unicode
+  import icons from './icons'
+
+  import props from './props.js';
+
+  ;
 
 	/**
 	 * icon 图标

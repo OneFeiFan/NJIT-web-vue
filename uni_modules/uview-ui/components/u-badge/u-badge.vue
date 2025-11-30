@@ -8,8 +8,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * badge 徽标数
 	 * @description 该组件一般用于图标右上角显示未读的消息数量，提示用户点击，有圆点和圆包含文字两种形式。
 	 * @tutorial https://uviewui.com/components/badge.html

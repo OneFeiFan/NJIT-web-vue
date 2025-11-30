@@ -125,13 +125,11 @@
 </template>
 
 <script>
-	import {
-		chooseFile
-	} from './utils';
-	import mixin from './mixin.js';
-	import props from './props.js';
+import {chooseFile} from './utils';
+import mixin from './mixin.js';
+import props from './props.js';
 
-	/**
+/**
 	 * upload 上传
 	 * @description 该组件用于上传图片场景
 	 * @tutorial https://uviewui.com/components/upload.html

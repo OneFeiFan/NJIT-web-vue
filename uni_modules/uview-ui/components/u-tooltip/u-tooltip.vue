@@ -90,13 +90,13 @@
 </template>
 
 <script>
-	import props from './props.js';
-	// #ifdef APP-NVUE 
-	const dom = uni.requireNativePlugin('dom')
-	// #endif
-	// #ifdef H5
-	import ClipboardJS from "./clipboard.min.js"
-	// #endif
+import props from './props.js';
+// #endif
+// #ifdef H5
+import ClipboardJS from "./clipboard.min.js"
+// #ifdef APP-NVUE
+const dom = uni.requireNativePlugin('dom')
+// #endif
 	/**
 	 * Tooltip 
 	 * @description 

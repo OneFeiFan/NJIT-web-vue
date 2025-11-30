@@ -11,7 +11,10 @@
 </template>
 
 <script>
-	import props from './props.js';
+import props from './props.js';
+// #ifndef APP-PLUS-NVUE
+import node from './node/node'
+
 /**
  * mp-html v2.0.4
  * @description 富文本组件
@@ -40,8 +43,6 @@
  */
 const plugins=[]
 const parser = require('./parser')
-// #ifndef APP-PLUS-NVUE
-import node from './node/node'
 // #endif
 // #ifdef APP-PLUS-NVUE
 const dom = weex.requireModule('dom')

@@ -5,8 +5,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * Tr  
 	 * @description 
 	 * @tutorial url

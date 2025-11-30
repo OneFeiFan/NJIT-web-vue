@@ -36,8 +36,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * Toolbar 工具条
 	 * @description 
 	 * @tutorial https://www.uviewui.com/components/toolbar.html
