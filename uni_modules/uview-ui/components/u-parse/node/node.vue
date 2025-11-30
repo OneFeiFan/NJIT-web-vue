@@ -101,6 +101,7 @@ module.exports = {
 <script>
 
 import node from './node'
+
 export default {
   name: 'node',
   // #ifdef MP-WEIXIN
