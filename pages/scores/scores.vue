@@ -1,6 +1,6 @@
 <template>
-  <view :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+  <view class="container" :style="[theme,SXData]">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
                    @click="back"/>
@@ -12,8 +12,7 @@
     <view class="select-bar">
       <material-button
           background-color="var(--md-sys-color-primary-container)"
-          class="select-item"
-          font-color="var(--md-sys-color-on-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
           shape="square"
           size="small">
         <picker :range="yearOptions" mode="selector" @change="onYearChange">
@@ -22,8 +21,7 @@
       </material-button>
       <material-button
           background-color="var(--md-sys-color-primary-container)"
-          class="select-item"
-          font-color="var(--md-sys-color-on-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
           shape="square"
           size="small">
         <picker :range="termOptions" mode="selector" @change="onTermChange">
@@ -32,8 +30,7 @@
       </material-button>
       <material-button
           background-color="var(--md-sys-color-primary-container)"
-          class="select-item"
-          font-color="var(--md-sys-color-on-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
           shape="square"
           size="small"
           @click="update(true)">查询
@@ -44,9 +41,9 @@
         <view class="content">
           <material-card
               :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'"
+              :color="item.jd === `0.00`?'var(--md-sys-color-on-tertiary-container)':'var(--md-sys-color-on-primary-container)'"
               @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
-            <view class="card-content"
-                  :style="{color: item.jd === `0.00`?'var(--md-sys-color-on-tertiary-container)':'var(--md-sys-color-on-primary-container)'}">
+            <view class="card-content">
               <view class="time">
                 {{ item.xnmmc }}
                 <uni-icons v-if="item.jd !== `0.00`" type="checkbox-filled" :size="mx(8)"
@@ -95,7 +92,9 @@ import MaterialCard from "@/components/material-uni/material-card/material-card.
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
+//#ifdef H5
 import {http} from "@/static/util/request";
+//#endif
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 
 export default {
@@ -164,7 +163,25 @@ export default {
         });
       }
       const year = this.selectedYear.split('-')[0];
-      const term = this.selectedTerm === '第一学期' ? '3' : '12';
+      const term = this.selectedTerm === '' ? '' : this.selectedTerm === '第一学期' ? '3' : '12';
+      console.log(year, term)
+      // #ifdef APP-PLUS
+      this.$manager.getSorces(year, term, forceRefresh).then(res => {
+        this.tableData = JSON.parse(res).data;
+        this.tableData = this.tableData.reverse()
+      }).catch(err => {
+        console.error(err)
+        // uni.hideLoading();
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
+        });
+      }).finally(() => {
+        uni.hideLoading();
+      })
+      //#endif
+      // #ifdef H5
       http.post("/getAllSorces", {xnm: year, xqm: term, forceRefresh}).then(res => {
         if (forceRefresh) {
           setTimeout(() => {
@@ -175,6 +192,7 @@ export default {
           }, 500)
         }
         this.tableData = res.data;
+        this.tableData = this.tableData.reverse()
       }).catch(res => {
         console.log(res)
         if (forceRefresh) {
@@ -189,40 +207,48 @@ export default {
       }).finally(() => {
         uni.hideLoading()
       })
+      // #endif
     },
     getDetail(id, xnm, xqm, kcmc) {
-      // uni.showLoading({
-      //   title: '加载详细信息'
-      // });
-      // this.className = kcmc;
-      // this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
-      //   console.log(res)
-      //   this.detail = JSON.parse(res)
-      //
-      //   uni.hideLoading();
-      //   this.$refs.detail.open('center');
-      // }).catch(err => {
-      //   console.error(err)
-      //   uni.hideLoading();
-      //   uni.showToast({
-      //     title: '获取成绩失败',
-      //     icon: 'error',
-      //     duration: 2000
-      //   });
-      // })
+      uni.showLoading({
+        title: '加载详细信息'
+      });
+      this.className = kcmc;
+      this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
+        console.log(res)
+        this.detail = JSON.parse(res)
+
+        uni.hideLoading();
+        this.$refs.detail.open('center');
+      }).catch(err => {
+        console.error(err)
+        uni.hideLoading();
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
+        });
+      })
     }
   }
 }
 </script>
 
 <style lang="scss">
+.container{
+  height: 100vh;
+  background-color: var(--md-sys-color-surface);
+}
 .select-bar {
   display: flex;
   height: sx(10);
   align-items: center;
+  padding-left: sx(2.5);
+  gap: sx(2.5);
 
   .select-item {
-    margin-left: sx(2.5);
+    //margin-left: sx(2.5);
+
   }
 
   .query-btn {
