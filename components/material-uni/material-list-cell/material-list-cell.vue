@@ -1,5 +1,5 @@
 <template>
-  <touch-ripple :color="getColor" :opacity="opacity" :duration="duration" :transition="transition" :background-color="backgroundColor" @click="handleClick">
+  <touch-ripple :color="getColor" :opacity="opacity" :duration="duration" :transition="transition" :background-color="background" @click="handleClick">
     <view class="material-list-cell">
       <view class="left-text" v-if="showLeftText">
         <slot></slot>
@@ -38,10 +38,10 @@ export default {
   },
   computed:{
     getColor(){
-      // if(this.color !== ""){
-      //   return this.color
-      // }
       return this.color || this.materialList.color
+    },
+    background(){
+      return this.backgroundColor || this.materialList.backgroundColor
     }
   },
   inject: {
