@@ -1,6 +1,6 @@
 <template>
-  <view :style="[theme,SXData]">
-    <material-nav-bar background-color="var(--md-sys-color-primary)">
+  <view class="container" :style="[theme,SXData]">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"/>
         <text class="title">学业进度</text>
@@ -11,6 +11,7 @@
     <scroll-view scroll-y="true" class="scroll-table">
       <view class="content">
         <material-card :height="mx(28)"
+                       color="var(--md-sys-color-on-primary-container)"
                        backgroundColor="var(--md-sys-color-primary-container)"
                        @click="">
           <view class="card-content">
@@ -25,7 +26,9 @@
       </view>
       <slot v-for="(item, index) in datas">
         <view class="content">
-          <material-card backgroundColor="var(--md-sys-color-primary-container)"
+          <material-card
+              color="var(--md-sys-color-on-primary-container)"
+              backgroundColor="var(--md-sys-color-primary-container)"
                          @click="">
             <view class="card-content">
               <view class="name">
@@ -57,7 +60,9 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import {getTheme} from "@/components/material-uni/colors";
 import {mx, SXData} from "@/components/material-uni/sx";
 import MaterialProgress from "@/components/material-uni/material-progress/material-progress.vue";
+// #ifdef H5
 import {http} from "@/static/util/request";
+// #endif
 
 export default {
   computed: {
@@ -95,7 +100,16 @@ export default {
           title: '尝试刷新'
         });
       }
-
+      // #ifdef APP-PLUS
+      this.$manager.getAcademicProgress(forceRefresh).then(res => {
+        let value = JSON.parse(res)
+        console.log(value)
+        this.datas = value
+      }).catch(res => {
+        console.log(res)
+      })
+      // #endif
+      // #ifdef H5
       http.post("/getAcademicProgress", {forceRefresh}).then(res => {
         if (forceRefresh) {
           setTimeout(() => {
@@ -120,12 +134,17 @@ export default {
       }).finally(() => {
         uni.hideLoading()
       })
+      //#endif
     },
   }
 }
 </script>
 
 <style lang="scss">
+.container {
+  height: 100vh;
+  background-color: var(--md-sys-color-surface);
+}
 .scroll-table {
   height: calc(100vh - sx(15) - var(--status-bar-height));
 }
@@ -142,7 +161,6 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     box-sizing: border-box;
-    color: var(--md-sys-color-on-primary-container);
     padding: sx(2.5);
 
     .time {
