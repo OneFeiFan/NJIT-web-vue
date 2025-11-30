@@ -132,6 +132,22 @@
       }
     },
     {
+      "path": "pages/WifiAuthenticator/WifiAuthenticator",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/smartupdate/smartupdate",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/courseeditor/editor",
       "style": {
         "navigationBarTitleText": "",

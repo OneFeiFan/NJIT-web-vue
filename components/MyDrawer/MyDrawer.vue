@@ -16,9 +16,9 @@
           <material-list-cell rightIcon @click="jump(`share`)">
             <text>分享</text>
           </material-list-cell>
-          <material-list-cell rightIcon @click="jump(`editcurriculums`)">
-            <text>编辑课表</text>
-          </material-list-cell>
+<!--          <material-list-cell rightIcon @click="jump(`editcurriculums`)">-->
+<!--            <text>编辑课表</text>-->
+<!--          </material-list-cell>-->
           <material-list-cell rightIcon @click="jump(`classroom`)">
             <text>空教室查询</text>
           </material-list-cell>

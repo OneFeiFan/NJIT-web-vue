@@ -36,8 +36,9 @@ export default {
     // 根据res.theme动态调整样式或逻辑
   },
   onLaunch: function () {
+    // #ifdef APP-PLUS
     const themeName = getThemeName();
-    var style = "light";
+    var style = plus.navigator.getUIStyle();
     if (style === 'dark') {
       if (!themeName.includes('dark')) {
         setTheme("dark_" + themeName);
@@ -45,7 +46,7 @@ export default {
     } else {
       setTheme(themeName.replace('dark_', ''));
     }
-
+    // #endif
     const systemInfo = uni.getSystemInfoSync();
     console.log('App Launch')
     // 获取当前app的版本
@@ -116,6 +117,10 @@ export default {
     // #endif
   },
   onShow: function () {
+    // #ifdef APP-PLUS
+    console.log('app onReady')
+    plus.navigator.closeSplashscreen()
+    // #endif
     console.log('App Show')
   },
   onHide: function () {
@@ -160,7 +165,6 @@ export default {
   height: 100%;
   width: 100%;
   //background-color: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
   display: flex;
   align-items: center;
 
@@ -184,7 +188,6 @@ export default {
     margin-right: sx(2.5);
     font-size: sx(8);
   }
-
 
   .title {
     margin: 0 auto 0 sx(8);
