@@ -1,0 +1,15 @@
+export type CourseParams = {
+	course : string
+	hideRule ?: string
+}
+export type DeleteCourse = {
+	courseId : string
+	isSystem : boolean
+	day ?: Int
+	start ?: Int
+}
+export type RestoreCourse = {
+	courseId : string
+	day : Int
+	start : Int
+}

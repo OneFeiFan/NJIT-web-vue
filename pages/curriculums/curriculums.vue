@@ -168,12 +168,12 @@ export default {
   },
   onShow() {
     if (this.weekStartDate !== '2025-02-17') {
-      this.update(false)
+      this.update()
     }
   },
   mounted() {
     setTimeout(() => {
-      this.update(false)
+      this.update()
     })
   },
   methods: {

@@ -3,23 +3,24 @@
  * import { Context } from "android.content.Context";
  * [可选实现，按需引入]
  */
+import { CourseParams, DeleteCourse, RestoreCourse } from "./types";
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
 import DemoMainWidget from 'com.feifan.fuckingnjit.widget.DemoMainWidget'
 import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
-type CourseParams = {
-    course: string
-    hideRule?: string
-}
-type deleteCourse = {
-	courseId: string
-	isSystem: boolean
-	day?: Int
-	start?: Int
-}
-type restoreCourse = {
-	courseId: string
-	day: Int
-	start: Int
+
+function parseUTSResponse(data: string): UTSJSONObject | Error {
+    try{
+    	// 使用 JSON.parseObject 进行解析
+    	const result = JSON.parseObject(data);
+    	
+    	// 检查解析结果是否为空（可能是因为 JSON 字符串格式错误）
+    	if (result === null) {
+    	    throw new Error("数据解析失败：JSON格式可能不正确或数据为空");
+    	}
+    	return result;
+    }catch(e){
+    	return e
+    }
 }
 
 export class Core {
@@ -30,6 +31,10 @@ export class Core {
 
 	public startLogin(relogin : boolean) {
 		Manager.startLogin(relogin)
+	}
+	
+	public async getCurriculum() : Promise<UTSJSONObject> {
+		return JSON.parse<UTSJSONObject>(await Manager.getUserManager().getCurriculum(false)) ?? {}
 	}
 
 	public async getCurriculum(refresh : boolean) : Promise<UTSJSONObject> {
@@ -55,8 +60,9 @@ export class Core {
 		return await Manager.getUserManager().getUserScores(xnm,xqm,refresh)
 	}
 	
-	public async getSorcesDetail(classId : string, schoolYear : string, semester : string, courseName : string) : Promise<string> {
-		return await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName)
+	public async getSorcesDetail(classId : string, schoolYear : string, semester : string, courseName : string) : Promise<UTSJSONObject | Error> {
+		const data = await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName).toJSONString();
+		return parseUTSResponse(data)
 	}
 	public async getNoticeInformation() : Promise<string> {
 		return await Manager.getWebService().getNoticeInformation()
@@ -71,12 +77,12 @@ export class Core {
 			Manager.getWebService().saveCourse(data.course, data.hideRule).toJSONString()
 		) ?? {}
 	}
-	public deleteCourse(data: deleteCourse): UTSJSONObject {
+	public deleteCourse(data: DeleteCourse): UTSJSONObject {
 		return JSON.parse<UTSJSONObject>(
 			Manager.getWebService().deleteCourse(data.courseId, data.isSystem, data.day,data.start).toJSONString()
 		) ?? {}
 	}
-	public restoreCourse(data: restoreCourse): UTSJSONObject {
+	public restoreCourse(data: RestoreCourse): UTSJSONObject {
 		return JSON.parse<UTSJSONObject>(
 			Manager.getWebService().restoreCourse(data.courseId, data.day,data.start).toJSONString()
 		) ?? {}
@@ -123,9 +129,9 @@ export class Core {
 		return Manager.getUserManager().isPasswordStorageEnabled()
 	}
 
-	public getSemesterStartDate() : string {
-		return Manager.getSemesterStartDate()
-	}
+	// public getSemesterStartDate() : string {
+	// 	return Manager.getSemesterStartDate()
+	// }
 
 	public async updateApp(url : string) : Promise<boolean> {
 		return await Manager.updateApp(url)
@@ -168,14 +174,10 @@ export class Core {
 	public setLocalCurriculums(data : string) {
 		Manager.setLocalCurriculums(data)
 	}
-	public modifyLocalCurriculums(keys : string) {
-		Manager.modifyLocalCurriculums(keys)
-	}
-	public reSetLocalCurriculums() {
-		Manager.reSetLocalCurriculums()
-	}
+	// public modifyLocalCurriculums(keys : string) {
+	// 	Manager.modifyLocalCurriculums(keys)
+	// }
+	// public reSetLocalCurriculums() {
+	// 	Manager.reSetLocalCurriculums()
+	// }
 }
-
-/**
- * 更多插件开发的信息详见：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html
- */
