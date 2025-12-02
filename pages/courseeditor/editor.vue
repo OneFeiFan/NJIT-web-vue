@@ -10,8 +10,8 @@
     </material-nav-bar>
     <view class="content">
       <!-- 1. 基础信息卡片 -->
-      <material-card class="card" color="var(--md-sys-color-on-surface)">
-        <material-list class="form-item" color="var(--md-sys-color-on-surface)">
+      <material-card color="var(--md-sys-color-on-surface)">
+        <material-list class="card form-item" color="var(--md-sys-color-on-surface)">
           <material-list-cell :show-left-text="false">
             <view class="form-item">
               <text class="label">课程名称</text>
@@ -35,8 +35,8 @@
 
       <!-- 2. 时间选择卡片 -->
       <view class="section-header">时间安排</view>
-      <material-card class="card picker-group" color="var(--md-sys-color-on-surface)">
-        <material-list color="var(--md-sys-color-on-surface)">
+      <material-card class="picker-group" color="var(--md-sys-color-on-surface)">
+        <material-list class="card" color="var(--md-sys-color-on-surface)">
           <material-list-cell :show-left-text="false">
             <!-- 星期选择 -->
             <picker mode="selector" :range="days" @change="onDayChange" :value="form.day - 1" style="width: 100%;">
@@ -118,8 +118,8 @@
         </view>
       </view>
 
-      <material-card class="card week-card" color="var(--md-sys-color-on-surface)">
-        <view class="week-grid">
+      <material-card class="week-card" color="var(--md-sys-color-on-surface)">
+        <view class="card  week-grid">
           <view v-for="i in 19" :key="i" class="week-item" :class="{ active: form.weeks.includes(i) }"
                 @click="toggleWeek(i)">
             <text class="week-num">{{ i }}</text>
@@ -472,7 +472,6 @@ export default {
 
   // 周次网格
   .week-card {
-    padding: sx(4); // 给内部网格留空间
 
     .week-grid {
       display: grid;

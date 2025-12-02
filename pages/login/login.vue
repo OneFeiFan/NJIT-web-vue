@@ -1,82 +1,73 @@
 <template>
   <view class="login-container" :style="[theme, SXData]">
-    <material-card class="login-box" background-color="var(--md-sys-color-surface-container)">
-
-      <!-- Header -->
-      <view class="login-header">
-        <text class="login-title">欢迎登录</text>
-      </view>
+    <!-- MD2 风格通常 Card 圆角较小，阴影较深 -->
+    <material-card background-color="var(--md-sys-color-surface-container-low)" class="login-box "
+                   color="var(--md-sys-color-on-surface)">
+      <view class="md2-card">
 
       <!-- 错误提示 -->
       <view v-if="error" class="error-message">
-        <uni-icons class="icon-error" type="info-filled" size="" color="var(var(--md-sys-color-on-error-container))"/>
-        <text>{{ error }}</text>
+        <uni-icons class="icon-error" color="var(--md-sys-color-on-error-container)" size="18" type="info-filled"/>
+        <text class="error-text">{{ error }}</text>
       </view>
 
       <!-- 表单 -->
       <view class="login-form">
-        <!-- 账号 -->
-        <view class="form-group">
-          <text class="label">账号</text>
-          <view class="input-wrapper">
-            <uni-icons class="icon-user" type="person-filled" size="" color="var(--md-sys-color-on-surface)"/>
-            <input
-                class="input"
-                v-model="username"
-                type="text"
-                placeholder="请输入账号"
-                placeholder-style="{ color: '#bbb' }"
-            />
-          </view>
-        </view>
+        <material-list background-color="var(--md-sys-color-surface-container-low)" color="var(--md-sys-color-on-surface)"
+                       style="display: contents;gap: 8px;">
+          <material-list-cell :show-left-text="false">
+            <view class="input-wrapper">
+              <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="person-filled"/>
+              <view class="input-content">
+                <text class="floating-label">账号</text>
+                <input v-model="username" class="input" placeholder="请输入账号"/>
+              </view>
+            </view>
+          </material-list-cell>
+          <material-list-cell :show-left-text="false">
+            <view class="input-wrapper">
+              <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="locked-filled"/>
+              <view class="input-content">
+                <text class="floating-label">密码</text>
 
-        <!-- 密码 -->
-        <view class="form-group">
-          <text class="label">密码</text>
-          <view class="input-wrapper">
-            <uni-icons class="icon-lock" type="locked-filled" size="" color="var(--md-sys-color-on-surface)"/>
-            <input
-                v-if="showPassword"
-                class="input"
-                v-model="password"
-                type="text"
-                placeholder="请输入密码"
-                placeholder-style="{ color: '#bbb' }"
-            />
-            <input
-                v-else
-                class="input"
-                v-model="password"
-                type="password"
-                placeholder="请输入密码"
-                placeholder-style="{ color: '#bbb' }"
-            />
-            <uni-icons class="icon-user" :type="showPassword ? 'eye-filled' : 'eye-slash-filled'" size=""
-                       @click="showPassword = !showPassword" color="var(--md-sys-color-on-surface)"/>
-          </view>
-        </view>
+                <input v-if="showPassword" v-model="password" class="input" placeholder="请输入密码" type="text"/>
+                <input v-else v-model="password" class="input" placeholder="请输入密码" type="password"/>
+              </view>
+              <uni-icons :type="showPassword ? 'eye-filled' : 'eye-slash-filled'" class="suffix-icon" color="var(--md-sys-color-on-surface-variant)"
+                         size="20" @click="showPassword = !showPassword"/>
+            </view>
+          </material-list-cell>
+        </material-list>
 
         <!-- 记住我 -->
         <view class="form-options">
-          <label class="remember-me">
-            <checkbox v-if="!rememberMe" :checked="false" @click="rememberMe = true" color="var(--md-sys-color-on-surface)"/>
-            <checkbox v-else :checked="true" @click="rememberMe = false" color="var(--md-sys-color-on-surface)"/>
-            记住我
+          <label class="remember-me" @click="toggleRemember">
+            <!-- 使用 uni-icons 模拟 MD 风格 checkbox，或者原生 checkbox -->
+            <view class="checkbox-wrapper">
+              <uni-icons v-if="rememberMe" color="var(--md-sys-color-primary)" size="22" type="checkbox-filled"/>
+              <uni-icons v-else color="var(--md-sys-color-outline)" size="22" type="circle"/>
+            </view>
+            <text class="remember-text">记住我</text>
           </label>
         </view>
 
         <!-- 登录按钮 -->
-        <material-button
-            size="medium"
-            color="var(--md-sys-color-on-primary)"
-            class="login-button"
-            :disabled="loading"
-            @click="handleLogin"
-            backgroundColor="var(--md-sys-color-primary)"
-        >
-          <text v-if="loading">登录中...</text>
-          <text v-else>登 录</text>
-        </material-button>
+        <view class="button-area">
+          <material-button
+              :disabled="loading"
+              backgroundColor="var(--md-sys-color-primary)"
+              class="login-button"
+              color="var(--md-sys-color-on-primary)"
+              shape="square"
+              size="large"
+              @click="handleLogin"
+          >
+            <!-- MD2 按钮圆角通常较小 (4px) -->
+            <text v-if="loading">登录中...</text>
+            <text v-else>登 录</text>
+          </material-button>
+        </view>
+      </view>
       </view>
     </material-card>
   </view>
@@ -88,10 +79,12 @@ import {SXData} from '@/components/material-uni/sx';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import {baseUrl} from "@/static/urlConfig";
+import MaterialList from "@/components/material-uni/material-list/material-list.vue";
+import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 
 export default {
   name: 'Login',
-  components: {MaterialCard, MaterialButton},
+  components: {MaterialListCell, MaterialList, MaterialCard, MaterialButton},
   computed: {
     SXData() {
       return SXData;
@@ -114,21 +107,22 @@ export default {
     this.initRemember();
   },
   methods: {
+    toggleRemember() {
+      this.rememberMe = !this.rememberMe;
+    },
     /** 读取本地记住的账号 */
     initRemember() {
       const saved = uni.getStorageSync('loginInfo');
       if(saved){
-        if (!saved.password) {
-          this.username = saved.username;
-          this.password = '';  // 不自动填充密码
-          this.rememberMe = false;  // 默认不记住密码
-        }else{
-          this.username = saved.username;
-          this.password = saved.password;  // 不自动填充密码
-          this.rememberMe = true;  // 默认不记住密码
+        this.username = saved.username;
+        if (saved.password) {
+          this.password = saved.password;
+          this.rememberMe = true;
+        } else {
+          this.password = '';
+          this.rememberMe = false;
         }
       }
-
     },
 
     /** 刷新主题 */
@@ -139,10 +133,9 @@ export default {
     /** 登录主流程（async/await） */
     async handleLogin() {
       if (!this.username || !this.password) {
-        // this.error = '请输入账号和密码';
         uni.showToast({
           title: '请输入账号和密码',
-          icon: 'error',
+          icon: 'none', // MD 风格下 error 图标可能不适配，用 none 更稳妥
           duration: 2000
         });
         return;
@@ -152,6 +145,7 @@ export default {
       this.loading = true;
       uni.showLoading({title: '登录中...'});
 
+      // 保持原有逻辑不变
       let request = new Promise((resolve, reject) => uni.request({
             url: baseUrl+'/login',
             method: 'POST',
@@ -181,21 +175,22 @@ export default {
           duration: 2000
         });
         if (this.rememberMe) {
-          uni.removeStorageSync('loginInfo');
           uni.setStorageSync('loginInfo', {
             username: this.username,
             password: this.password  // 存储密码
           });
         } else {
+          // 如果之前存了，现在不记住了，只存用户名或者清除
           uni.setStorageSync('loginInfo', {
-            username: this.username,  // 只存储账号
-            password: ''  // 密码置空
+            username: this.username,
+            password: ''
           });
         }
         // 登录成功后跳转
         uni.navigateBack();
       }).catch(err => {
-        this.error = err.data;
+        // 错误处理逻辑不变，只展示文字
+        this.error = (err && err.msg) ? err.msg : (typeof err === 'string' ? err : '登录失败，请检查网络');
       }).finally(() => {
         this.loading = false;
         uni.hideLoading();
@@ -212,30 +207,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
 }
 
-/* 登录框 */
-.login-box {
-  --test: 0px;
-  $width: calc((90vw + sx(90)) / 2);
-  max-width: calc(100vw - sx(15) - var(--test));
-  width: $width;
-  padding: sx(5);
-  border-radius: sx(5);
-}
-
-/* Header */
-.login-header {
-  text-align: center;
-  margin-bottom: sx(5);
-
-  .login-title {
-    font-size: sx(6);
-    font-weight: 600;
-  }
+/* MD2 风格卡片 */
+.md2-card {
+  //--test: 0px;
+  //$width: sx(200); // 稍微调宽一点
+  max-width: 90vw; // 限制最大宽度，适配平板
+  width: sx(100);
+  padding: sx(4); // MD2 常见的 padding
 }
 
 /* 错误提示 */
@@ -244,74 +226,92 @@ export default {
   align-items: center;
   background: var(--md-sys-color-error-container);
   color: var(--md-sys-color-on-error-container);
-  padding: sx(2.5);
-  border-radius: sx(1.5);
-  margin-bottom: sx(4);
+  padding: sx(3) sx(4);
+  border-radius: sx(1);
+  margin-bottom: sx(6);
+  font-size: sx(3.5);
 
   .icon-error {
-    font-size: sx(6);
+    margin-right: sx(3);
+  }
+
+  .error-text {
+    flex: 1;
   }
 }
 
 .login-form {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  gap: sx(5); // 表单间距
 
-  /* 表单 */
-  .form-group {
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
     width: 100%;
-    margin-bottom: sx(6);
 
-    .label {
-      display: block;
-      font-size: sx(5);
-      margin-bottom: sx(2);
+    .prefix-icon {
+      margin-right: sx(3);
     }
 
-    .input-wrapper {
-      display: flex;
-      align-items: center;
-      border: sx(0.5) solid var(--md-sys-color-outline);
-      border-radius: sx(2);
-      height: sx(10);
-
-      .uni-input-placeholder {
-        position: absolute;
-      }
-
-      .icon-user,
-      .icon-lock {
-        padding: sx(1);
-        font-size: sx(6);
-      }
+    .suffix-icon {
+      margin-left: sx(2);
     }
-    .input {
-      width: 100%;
+
+    .input-content {
+      flex: 1;
+      position: relative;
       height: 100%;
-      font-size: sx(4);
+      display: flex;
+      align-items: flex-end; // 输入框文字底部对齐
+      padding-bottom: sx(2);
+
+      .floating-label {
+        position: absolute;
+        left: 0;
+        pointer-events: none;
+        top: sx(1);
+        font-size: sx(4);
+        color: var(--md-sys-color-primary);
+      }
+
+      .input {
+        width: 100%;
+        background: transparent;
+      }
     }
   }
 
   /* 记住我 */
   .form-options {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    margin-bottom: sx(4);
+    margin-top: sx(1);
 
     .remember-me {
       display: flex;
       align-items: center;
-      font-size: sx(5);
+      width: fit-content;
+
+      .checkbox-wrapper {
+        margin-right: sx(2);
+        display: flex;
+        align-items: center;
+      }
+
+      .remember-text {
+        font-size: sx(4);
+        //color: var(--md-sys-color-on-surface);
+      }
     }
   }
-}
 
+  /* 按钮区域 */
+  .button-area {
+    display: flex;
 
-/* 登录按钮 */
-.login-button {
-  width: 50%;
-  font-weight: 500;
+    .login-button {
+      width: 100%; // 移动端通常全宽
+    }
+  }
 }
 </style>
