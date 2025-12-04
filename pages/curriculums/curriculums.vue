@@ -95,51 +95,47 @@ export default {
       week: 0,
       timeSlots: [{
         index: '1',
-        name: '08:30\n09:10'
+        name: '08:00\n08:45'
       },
         {
           index: '2',
-          name: '09:10\n09:50'
+          name: '08:55\n09:40'
         },
         {
           index: '3',
-          name: '10:10\n10:50'
+          name: '10:00\n10:45'
         },
         {
           index: '4',
-          name: '10:50\n11:30'
+          name: '10:55\n11:40'
         },
         {
           index: '5',
-          name: '13:50\n14:30'
+          name: '13:30\n14:15'
         },
         {
           index: '6',
-          name: '14:30\n15:10'
+          name: '14:25\n15:10'
         },
         {
           index: '7',
-          name: '15:25\n16:05'
+          name: '15:30\n16:15'
         },
         {
           index: '8',
-          name: '16:05\n16.45'
+          name: '16:25\n17.10'
         },
         {
           index: '9',
-          name: '18:00\n18:40'
+          name: '18:15\n19:00'
         },
         {
           index: '10',
-          name: '18:40\n19:20'
+          name: '19:05\n19:50'
         },
         {
           index: '11',
-          name: '19:30\n20:10'
-        },
-        {
-          index: '12',
-          name: '20:10\n20:50'
+          name: '19:55\n20:40'
         }
       ],
       range: [
