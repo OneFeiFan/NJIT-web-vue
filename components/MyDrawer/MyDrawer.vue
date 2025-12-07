@@ -1,7 +1,7 @@
 <template>
   <Drawer :value="opened" @onClose="onClose">
     <view class="menu">
-      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)"
+      <touch-ripple color="var(--md-sys-color-primary-fixed)"
                     backgroundColor="var(--md-sys-color-tertiary)">
         <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
         <view class="menu-content">
@@ -35,12 +35,14 @@
 <!--          <material-list-cell rightIcon @click="jump(`test`)">-->
 <!--            <text>测试</text>-->
 <!--          </material-list-cell>-->
+          <!--  #ifdef APP-PLUS  -->
           <material-list-cell rightIcon @click="jump(`usermanager`)">
             <text>用户管理</text>
           </material-list-cell>
           <material-list-cell rightIcon @click="jump(`WifiAuthenticator`)">
             <text>WIFI认证</text>
           </material-list-cell>
+          <!--   #endif   -->
           <material-list-cell rightIcon @click="jump(`settings`)">
             <text>设置</text>
           </material-list-cell>
