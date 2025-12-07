@@ -37,7 +37,7 @@
       </material-button>
     </view>
     <scroll-view scroll-y="true" class="scroll-table">
-      <view style="gap: 10px;display: flex;flex-direction: column;">
+      <view class="table-wrapper">
       <slot v-for="(item, index) in tableData">
         <view class="content">
           <material-card
@@ -70,8 +70,8 @@
 
     <uni-popup ref="detail" type="center" :mask-click="false">
       <material-card background-color="var(--md-sys-color-surface-container-high)"
-                     color="var(--md-sys-color-on-surface)">
-        <view class="md-dialog-surface">
+                     color="var(--md-sys-color-on-surface)" class="md-dialog-surface">
+        <view class="content">
           <!-- 1. 弹窗标题 (Dialog Title) -->
           <view class="dialog-header">
             <text class="dialog-title">{{ className }}</text>
@@ -82,27 +82,26 @@
             <text>暂无更多数据</text>
           </view>
 
-          <view v-else class="score-list">
-            <view v-for="(item, index) in detail" :key="index" class="score-item">
+          <material-list color="var(--md-sys-color-on-surface)" background-color="#ffffff00" v-else class="score-list">
+            <material-list-cell v-for="(item, index) in detail" :key="index" class="score-item" :showLeftText="false">
               <!-- 左侧：分项名称与比例 -->
               <view class="item-main">
                 <text class="item-name">{{ item.scoreItem }}</text>
                 <view class="item-meta">
-                  <uni-icons type="pie" size="12" color="var(--md-sys-color-on-surface-variant)"/>
-                  <text class="meta-text">占比 {{ item.percentage }}</text>
+                  <text class="meta-text" v-show="item.scoreItem != ' 总评 '">占比 {{ item.percentage }}</text>
                 </view>
               </view>
 
               <!-- 右侧：具体分数 -->
               <view class="item-score-wrapper">
                 <text class="score-value">{{ item.score }}</text>
-                <text class="score-label">分</text>
+                <text class="score-label" v-show="!isNaN(parseFloat(item.score)) && isFinite(item.score)">分</text>
               </view>
-            </view>
-          </view>
+            </material-list-cell>
+          </material-list>
           <view class="dialog-actions">
-            <material-button shape="square" size="medium" background-color="#ffffff00"
-                             color="var(--md-sys-color-on-surface)" @click="cancel">
+            <material-button size="small" background-color="var(--md-sys-color-primary)"
+                             color="var(--md-sys-color-on-primary)" @click="cancel">
               确 认
             </material-button>
           </view>
@@ -122,6 +121,8 @@ import {getTheme} from "@/components/material-uni/colors";
 import {http} from "@/static/util/request";
 //#endif
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialList from "@/components/material-uni/material-list/material-list.vue";
+import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 
 export default {
   computed: {
@@ -130,7 +131,7 @@ export default {
     }
   },
   components: {
-    MaterialButton, MaterialNavBar, MaterialCard
+    MaterialListCell, MaterialList, MaterialButton, MaterialNavBar, MaterialCard
   },
   data() {
     return {
@@ -322,42 +323,17 @@ export default {
 .scroll-table {
   height: calc(100vh - sx(25) - var(--status-bar-height));
 
-  .color-red {
-    color: red;
-  }
-}
-
-.btn-evaluate {
-  //width: 30rpx;
-  //height: 60rpx;
-  font-size: 30rpx;
-}
-
-.detail-modal {
-  border-radius: 20rpx;
-  border: 1px #fff solid;
-  background-color: #fff;
-  width: 90vw;
-
-  .name {
-    height: 50rpx;
-    width: 100%;
-    font-size: 35rpx;
+  .table-wrapper {
+    gap: sx(2.5);
     display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ok {
-    margin: 0 auto;
-    width: 90%;
+    flex-direction: column;
   }
 }
 
 .content {
   padding-left: sx(2.5);
   padding-right: sx(2.5);
-  margin-top: sx(2.5);
+  //margin-top: sx(2.5);
 
   .card-content {
     height: 100%;
@@ -396,34 +372,59 @@ export default {
   }
 }
 
+@media (orientation: landscape) {
+  .md-dialog-surface {
+    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
+    max-height: calc(100vh - sx(30) - var(--status-bar-height));
+    max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
+    //height: $height;
+    width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
+  }
+}
+
+@media (orientation: portrait) {
+  .md-dialog-surface {
+    --test: 0px;
+    $width: calc((90vw + sx(90)) / 2);
+    max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
+    max-width: calc(100vw - sx(15) - var(--test));
+    //height: calc($width / 90 * 100);
+    width: $width;
+  }
+}
+
 .md-dialog-surface {
-  width: 85vw; /* 移动端常见宽度 */
-  max-width: 320px;
-  border-radius: 4px;
-  overflow: hidden;
+  //width: 85vw; /* 移动端常见宽度 */
+  //max-width: 320px;
+  //overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: sx(4);
-  box-sizing: border-box;
+
+  //box-sizing: border-box;
+
+  .content {
+    padding: sx(5);
+  }
 }
 
 /* 标题区域 */
 .dialog-header {
+  margin-bottom: sx(4);
 
   .dialog-title {
     display: block;
-    font-size: 20px; /* Headline 6 */
-    font-weight: 500;
-    margin-bottom: 4px;
+    font-size: sx(7);
+    font-weight: 600;
+    //margin-bottom: 4px;
   }
 }
 
 /* 空状态 */
 .empty-state {
-  padding: 20px 0;
+  padding: sx(5);
   text-align: center;
   color: var(--md-sys-color-on-surface-variant);
-  font-size: 14px;
+  //font-size: sx(4.5);
 }
 
 /* 列表样式 */
@@ -436,12 +437,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--md-sys-color-outline-variant); /* 细分割线 */
-
-  &:last-child {
-    border-bottom: none;
-  }
 
   /* 左侧文字 */
   .item-main {
@@ -449,8 +444,7 @@ export default {
     flex-direction: column;
 
     .item-name {
-      font-size: 16px; /* Subtitle 1 */
-      margin-bottom: 4px;
+      font-size: sx(5); /* Subtitle 1 */
     }
 
     .item-meta {
@@ -458,9 +452,8 @@ export default {
       align-items: center;
 
       .meta-text {
-        font-size: 12px; /* Caption */
+        font-size: sx(3.5); /* Caption */
         color: var(--md-sys-color-on-surface-variant);
-        margin-left: 4px;
       }
     }
   }
@@ -471,14 +464,13 @@ export default {
     align-items: baseline;
 
     .score-value {
-      font-size: 24px; /* Headline 5 */
+      font-size: sx(5.5); /* Headline 5 */
       font-weight: 500;
       color: var(--md-sys-color-primary); /* 重点数据使用主色 */
     }
 
     .score-label {
-      font-size: 12px;
-      margin-left: 2px;
+      font-size: sx(4.5);
       color: var(--md-sys-color-on-surface-variant);
     }
   }
@@ -488,5 +480,6 @@ export default {
 .dialog-actions {
   display: flex;
   justify-content: flex-end; /* 按钮靠右 */
+  margin-top: sx(2.5);
 }
 </style>
