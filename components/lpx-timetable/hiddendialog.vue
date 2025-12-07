@@ -1,5 +1,5 @@
 <template>
-  <view class="mask" v-if="visible" @click="$emit('close')">
+  <uni-popup ref="HiddenDialog" mask-background-color="#ffffff00" @change="maskChange">
     <material-card class="card" color="var(--md-sys-color-on-surface)" @click.stop>
       
       <!-- 标题栏 -->
@@ -8,44 +8,43 @@
       </view>
 
       <!-- 列表区域 -->
-      <scroll-view scroll-y="true" class="list-container" v-if="list.length > 0">
-        <view class="course-item" v-for="(item, index) in list" :key="item.id + index">
+      <scroll-view v-if="list.length > 0" class="list-container" scroll-y="true">
+        <view v-for="(item, index) in list" :key="item.id + index" class="course-item">
           
           <!-- 左侧信息 -->
           <view class="info">
             <text class="course-name">{{ item.name }}</text>
             <view class="sub-info">
-              <uni-icons type="person" size="12" color="var(--md-sys-color-outline)"></uni-icons>
+              <uni-icons color="var(--md-sys-color-outline)" size="12" type="person"></uni-icons>
               <text class="text">{{ item.teacher || '无教师' }}</text>
               <view class="dot"></view>
-              <uni-icons type="calendar" size="12" color="var(--md-sys-color-outline)"></uni-icons>
+              <uni-icons color="var(--md-sys-color-outline)" size="12" type="calendar"></uni-icons>
               <!-- 关键：显示时间，帮用户回忆 -->
               <text class="text">{{ formatTime(item) }}</text>
             </view>
           </view>
 
           <material-button
-              size="small"
-              shape="square"
-              color="var(--md-sys-color-on-primary-container)"
               background-color="var(--md-sys-color-primary-container)"
+              color="var(--md-sys-color-on-primary-container)"
+              shape="square"
+              size="small"
               @click="handleRestore(item)">恢复</material-button>
 
         </view>
       </scroll-view>
 
       <!-- 空状态 -->
-      <view class="empty-state" v-else>
-        <uni-icons type="checkbox-filled" size="48" color="var(--md-sys-color-surface-variant)"></uni-icons>
+      <view v-else class="empty-state">
+        <uni-icons color="var(--md-sys-color-surface-variant)" size="48" type="checkbox-filled"></uni-icons>
         <text class="empty-text">没有被隐藏的课程</text>
       </view>
-
     </material-card>
-  </view>
+  </uni-popup>
 </template>
 
 <script>
-import { getTheme } from "@/components/material-uni/colors";
+import {getTheme} from "@/components/material-uni/colors";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 
@@ -55,9 +54,22 @@ export default {
     visible: { type: Boolean, default: false },
     list: { type: Array, default: () => [] } // 接收所有 hiddenCourses
   },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.$refs.HiddenDialog.open("center");
+      } else {
+        this.$refs.HiddenDialog.close();
+      }
+    }
+  },
   methods: {
     getTheme,
-    
+    maskChange(e) {
+      if (!e.show) {
+        this.$emit("close");
+      }
+    },
     formatTime(item) {
       const days = ['周一','周二','周三','周四','周五','周六','周日'];
       const dayStr = days[item.day - 1] || '未知';
@@ -73,18 +85,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+<style lang="scss" scoped>
 @media (orientation: landscape) {
   .card {
     $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
@@ -109,8 +110,8 @@ export default {
   border-radius: sx(3.5);
   display: flex;
   flex-direction: column;
-  transform: scale(0.95);
-  transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+  //transform: scale(0.95);
+  //transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 .header {

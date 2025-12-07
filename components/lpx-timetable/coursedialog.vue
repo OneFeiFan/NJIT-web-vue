@@ -1,18 +1,18 @@
 <template>
-  <view class="dialog-mask" v-if="visible" @click="$emit('close')">
-    <material-card class="dialog-card" @click.stop :class="{ 'animate-show': visible }" color="var(--md-sys-color-on-surface)">
+  <uni-popup ref="CourseDialog" mask-background-color="#ffffff00" @change="maskChange">
+    <material-card class="dialog-card" color="var(--md-sys-color-on-surface)" @click.stop>
       <view class="content">
       <!-- A. 多课程切换区 (冲突时显示) -->
       <view v-if="hasConflict" class="conflict-tabs">
-        <scroll-view scroll-x="true" class="tabs-scroll" show-scrollbar="false">
+        <scroll-view class="tabs-scroll" scroll-x="true" show-scrollbar="false">
           <view class="tabs-container">
             <material-button
                 v-for="(c, index) in courses"
                 :key="index"
-                size="small"
-                shape="square"
-                :color="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
                 :background-color="currentIndex === index ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-surface-variant)'"
+                :color="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
+                shape="square"
+                size="small"
                 @click="switchCourse(index)"
             >
               <!-- 截断过长的课程名 -->
@@ -33,23 +33,23 @@
         <!-- 1. 有课程数据 -->
         <view v-if="currentCourse">
           <view class="info-row">
-            <uni-icons type="location-filled" size="18" color="var(--md-sys-color-primary)"></uni-icons>
+            <uni-icons color="var(--md-sys-color-primary)" size="18" type="location-filled"></uni-icons>
             <text class="info-text">{{ currentCourse.room || '未安排地点' }}</text>
           </view>
           <view class="info-row">
-            <uni-icons type="person-filled" size="18" color="var(--md-sys-color-primary)"></uni-icons>
+            <uni-icons color="var(--md-sys-color-primary)" size="18" type="person-filled"></uni-icons>
             <text class="info-text">{{ currentCourse.teacher || '未安排教师' }}</text>
           </view>
           <view class="info-row">
-            <uni-icons type="calendar-filled" size="18" color="var(--md-sys-color-primary)"></uni-icons>
+            <uni-icons color="var(--md-sys-color-primary)" size="18" type="calendar-filled"></uni-icons>
             <text class="info-text">{{ currentCourse.raw_weeks || "周次未知" }}</text>
           </view>
 
           <material-button
-              size="small"
-              shape="square"
+              :background-color="currentCourse.source === 1 ? 'var(--md-sys-color-tertiary-container)' : 'var(--md-sys-color-secondary-container)'"
               :color="currentCourse.source === 1 ? 'var(--md-sys-color-on-tertiary-container)' : 'var(--md-sys-color-on-secondary-container)'"
-              :background-color="currentCourse.source === 1 ? 'var(--md-sys-color-tertiary-container)' : 'var(--md-sys-color-secondary-container)'">
+              shape="square"
+              size="small">
             {{ currentCourse.source === 1 ? '本地手动添加' : '教务系统同步' }}
           </material-button>
         </view>
@@ -63,46 +63,46 @@
       <!-- D. 操作栏 -->
       <view  v-if="mode !== 'view'">
         <!-- 添加模式 -->
-        <view class="card-actions" v-if="mode === 'add'">
+        <view v-if="mode === 'add'" class="card-actions">
           <material-button
-              size="small"
-              color="var(--md-sys-color-surface)"
               background-color="var(--md-sys-color-primary)"
+              color="var(--md-sys-color-surface)"
+              size="small"
               @click="$emit('add')">添加</material-button>
         </view>
 
         <!-- 编辑模式 (针对当前选中的课程) -->
-        <view class="card-actions" v-else-if="mode === 'edit' && currentCourse">
+        <view v-else-if="mode === 'edit' && currentCourse" class="card-actions">
           <material-button
-              size="small"
-              color="var(--md-sys-color-error)"
               background-color="#ffffff00"
+              color="var(--md-sys-color-error)"
+              size="small"
               @click="$emit('delete', currentCourse)">删除</material-button>
           <view class="spacer"></view>
           <material-button
-              size="small"
-              color="var(--md-sys-color-primary)"
               background-color="#ffffff00"
+              color="var(--md-sys-color-primary)"
+              size="small"
               @click="$emit('add')">添加</material-button>
           <material-button
-              size="small"
-              color="var(--md-sys-color-surface)"
               background-color="var(--md-sys-color-primary)"
+              color="var(--md-sys-color-surface)"
+              size="small"
               @click="$emit('edit', currentCourse)">编辑</material-button>
         </view>
       </view>
 
       <!-- 查看模式关闭 -->
-      <view class="card-actions" v-else>
+      <view v-else class="card-actions">
         <material-button
-            size="small"
-            color="var(--md-sys-color-primary)"
             background-color="#ffffff00"
+            color="var(--md-sys-color-primary)"
+            size="small"
             @click="$emit('close')">确定</material-button>
       </view>
       </view>
     </material-card>
-  </view>
+  </uni-popup>
 </template>
 
 <script>
@@ -132,6 +132,9 @@ export default {
     visible(val) {
       if (val) {
         this.currentIndex = 0;
+        this.$refs.CourseDialog.open("center");
+      } else {
+        this.$refs.CourseDialog.close();
       }
     },
     courses() {
@@ -164,6 +167,11 @@ export default {
   },
   methods: {
     getTheme,
+    maskChange(e) {
+      if (!e.show) {
+        this.$emit("close");
+      }
+    },
     switchCourse(index) {
       this.currentIndex = index;
     },
@@ -175,19 +183,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.dialog-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+<style lang="scss" scoped>
 @media (orientation: landscape) {
   .dialog-card {
     $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
@@ -212,16 +208,9 @@ export default {
   border-radius: sx(3.5);
   display: flex;
   flex-direction: column;
-  transform: scale(0.95);
-  transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
 
   .content {
     padding: sx(5);
-  }
-
-  &.animate-show {
-    //opacity: 1;
-    //transform: scale(1);
   }
 
   // 冲突切换标签栏
