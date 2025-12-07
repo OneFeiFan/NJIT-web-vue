@@ -69,6 +69,7 @@ import MaterialList from "@/components/material-uni/material-list/material-list.
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
 import MyDrawer from "@/components/MyDrawer/MyDrawer.vue";
+import {http} from "@/static/util/request";
 
 
 export default {
@@ -120,10 +121,24 @@ export default {
   onReady() {
   },
   onShow() {
-    // this.refreshTheme()
+    // #ifdef APP-PLUS
     this.$manager.getNoticeInformation().then(res => {
       this.noticeInformation = res;
     })
+    // #endif
+
+    // #ifdef H5
+
+    http.get("/getNotice")
+        .then(res => {
+          if (res.code === 200) {
+            this.noticeInformation = res.data;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    // #endif
   },
   methods: {
     refreshTheme() {
