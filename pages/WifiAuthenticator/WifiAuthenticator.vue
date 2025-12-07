@@ -16,17 +16,8 @@
           <!--          <switch v-else :checked="false" @change="switchChange"/>-->
         </view>
       </material-list-cell>
-
-      <material-list-cell :rightIcon="false" :showLeftText="false">
-        <view class="content">
-          <text>悬浮窗权限：必要</text>
-          <async-switch :checked="canOverlay" @change="switchPermission"/>
-          <!--          <switch v-else :checked="false" @change="switchPermission"/>-->
-        </view>
-      </material-list-cell>
-
-      <material-list-cell v-if="hasWidget" :showLeftText="false" backgroundColor="var(--md-sys-color-primary-container)"
-                          color="var(--md-sys-color-surface-container)"
+      <material-list-cell v-if="hasWidget" :showLeftText="false" backgroundColor="var(--md-sys-color-surface)"
+                          color="var(--md-sys-color-on-surface)"
                           @click="pickType = true">
         <view class="content">
           <view class="title">类型：{{ typeName }}</view>
@@ -47,15 +38,6 @@
 </template>
 
 <script>
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
-import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
-import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import {SXData} from "@/components/material-uni/sx";
@@ -70,10 +52,7 @@ export default {
     }
   },
   components: {
-    AsyncSwitch,
-    MaterialListCell, MaterialList,
-    MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    AsyncSwitch, MaterialListCell, MaterialList, MaterialNavBar
   },
   data() {
     return {
@@ -97,13 +76,12 @@ export default {
   },
   onShow() {
     // #ifdef APP-PLUS
-    this.canOverlay = this.$manager.checkOverlayWindowPermission()
-    this.hasWidget = this.$manager.isWifiAuthWidgetAlreadyCreated()
+    // this.canOverlay = this.$manager.checkOverlayWindowPermission()
+    this.hasWidget = this.$manager.isEnabled()
     this.typeId = this.$manager.getWifiAuthTupe()
     console.log(this.typeId)
     if (this.typeId) {
       for (let key in this.typesMap) {
-        console.log(key, this.typeId, this.typesMap[key] === this.typeId)
         if (this.typesMap[key] === this.typeId) {
           this.typeName = key
           break
@@ -140,15 +118,15 @@ export default {
     back() {
       uni.navigateBack();
     },
-    switchPermission() {
-      if (this.canOverlay == false) {
-        this.$manager.requestOverlayWindowPermission().then(() => {
-          this.canOverlay = true;
-        }).catch(() => {
-          this.canOverlay = false;
-        })
-      }
-    },
+    // switchPermission() {
+    //   if (this.canOverlay == false) {
+    //     this.$manager.requestOverlayWindowPermission().then(() => {
+    //       this.canOverlay = true;
+    //     }).catch(() => {
+    //       this.canOverlay = false;
+    //     })
+    //   }
+    // },
     switchChange() {
       console.log(this.hasWidget)
       if (this.hasWidget == false) {
@@ -170,51 +148,17 @@ export default {
         });
         wait.then(() => {
           // #ifdef APP-PLUS
-          let res = this.$manager.createWifiAuthWidget()
-          let value = JSON.parse(res)
-          if (value.state === "error") {
-            uni.showModal({
-              title: '异常',
-              showCancel: false,
-              content: value.message,
-              success: (res) => {
-
-              }
-            });
-          } else if (value.state === "success") {
-            uni.showModal({
-              title: '提示',
-              showCancel: false,
-              content: value.message,
-              success: (res) => {
-                this.hasWidget = true;
-                this.$manager.goHome()
-              }
-            });
-          } else if (value.state === "need_permission") {
-            uni.showModal({
-              title: '提示',
-              showCancel: false,
-              content: "当前系统大概率为小米系统，需要手动授予桌面快捷方式权限，请授权后重试？",
-              success: (res) => {
-                this.$manager.getWifiAuthWidgetPermission()
-              }
-            });
-          }
+          this.$manager.switchStatus(true)
+          setTimeout(() => {
+            this.hasWidget = this.$manager.isEnabled()
+          })
           // #endif
-        }).catch((err) => {
-          this.hasWidget = false
-          return
         })
       } else {
-        uni.showModal({
-          title: '提示',
-          showCancel: false,
-          content: "安卓没有自动删除小部件的功能，请手动删除小部件。",
-          success: (res) => {
-            this.$manager.goHome()
-          }
-        });
+        this.$manager.switchStatus(false)
+        setTimeout(() => {
+          this.hasWidget = this.$manager.isEnabled()
+        })
       }
     }
   }

@@ -6,7 +6,8 @@
 import { CourseParams, DeleteCourse, RestoreCourse } from "./types";
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
 import DemoMainWidget from 'com.feifan.fuckingnjit.widget.DemoMainWidget'
-import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
+// import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
+import PortalManager from "com.feifan.fuckingnjit.utils.wifiauth.PortalManager";
 
 function parseUTSResponse(data: string): UTSJSONObject | Error {
     try{
@@ -100,15 +101,25 @@ export class Core {
 		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
 	}
 	
-	public createWifiAuthWidget() : string {
-		return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
+	public switchStatus(status : boolean) : void {
+		PortalManager.switchStatus(UTSAndroid.getAppContext()!,status)
+		// return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
 	}
-	public getWifiAuthWidgetPermission() {
-		return (new WifiAuth(UTSAndroid.getAppContext()!)).getPermission()
+	
+	public isEnabled() : boolean {
+		return PortalManager.isEnabled(UTSAndroid.getAppContext()!)
 	}
-	public isWifiAuthWidgetAlreadyCreated() : boolean {
-		return (new WifiAuth(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
-	}
+	
+	
+	// public createWifiAuthWidget() : string {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
+	// }
+	// public getWifiAuthWidgetPermission() {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).getPermission()
+	// }
+	// public isWifiAuthWidgetAlreadyCreated() : boolean {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
+	// }
 	public setWifiAuthTupe(type : string) {
 		Manager.setWifiAuthTupe(type)
 	}
