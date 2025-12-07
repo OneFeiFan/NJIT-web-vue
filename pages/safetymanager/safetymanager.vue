@@ -12,7 +12,7 @@
       <material-list-cell :rightIcon="false" :showLeftText="false">
         <view class="content">
           <text>储存用户密码</text>
-          <switch :checked="isStoragePassword" @change="switchChange"/>
+          <async-switch :checked="isStoragePassword" @change="switchChange"/>
         </view>
       </material-list-cell>
     </material-list>
@@ -26,6 +26,7 @@ import MaterialList from "@/components/material-uni/material-list/material-list.
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import {SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
+import AsyncSwitch from "@/components/helang-asyncSwitch/helang-asyncSwitch.vue";
 
 export default {
   computed: {
@@ -34,7 +35,7 @@ export default {
     }
   },
   components: {
-    MaterialListCell, MaterialList, MaterialNavBar, MaterialCard
+    AsyncSwitch, MaterialListCell, MaterialList, MaterialNavBar, MaterialCard
   },
   data() {
     return {
@@ -69,55 +70,13 @@ export default {
     back() {
       uni.navigateBack();
     },
-    switchChange(e) {
-      console.log(e.detail.value)
-      this.$manager.setPasswordStorageEnabled(e.detail.value)
-      if (e.detail.value) {
-        // #ifdef APP-PLUS
-
-        // let res = this.$manager.createWidget()
-        // let value = JSON.parse(res)
-        // if (value.state === "error") {
-        //   uni.showModal({
-        //     title: '异常',
-        //     showCancel: false,
-        //     content: value.message,
-        //     success: (res) => {
-        //
-        //     }
-        //   });
-        // } else if (value.state === "success") {
-        //   uni.showModal({
-        //     title: '提示',
-        //     showCancel: false,
-        //     content: value.message,
-        //     success: (res) => {
-        //       this.$manager.goHome()
-        //     }
-        //   });
-        // } else if (value.state === "need_permission") {
-        //   uni.showModal({
-        //     title: '提示',
-        //     showCancel: false,
-        //     content: "当前系统大概率为小米系统，需要手动授予桌面快捷方式权限，请授权后重试？",
-        //     success: (res) => {
-        //       this.$manager.getWidgetPermission()
-        //     }
-        //   });
-        // }
-
-        // #endif
-      } else {
-        // uni.showModal({
-        //   title: '提示',
-        //   showCancel: false,
-        //   content: "安卓没有自动删除小部件的功能，请手动删除小部件。",
-        //   success: (res) => {
-        //     this.$manager.goHome()
-        //   }
-        // });
-      }
-      this.isStoragePassword = e.detail.value;
+    switchChange() {
+      // #ifdef APP-PLUS
+      this.$manager.setPasswordStorageEnabled(!this.isStoragePassword)
+      setTimeout(() => {
+        this.isStoragePassword = this.$manager.isPasswordStorageEnabled()
+      })
+      // #endif
     }
   }
 }

@@ -12,7 +12,7 @@
       <material-list-cell :rightIcon="false" :showLeftText="false">
         <view class="content">
           <text>开启小部件</text>
-          <switch :checked="hasWidget" @change="switchChange"/>
+          <async-switch :checked="hasWidget" @change="switchChange"/>
         </view>
       </material-list-cell>
     </material-list>
@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import {SXData} from "@/components/material-uni/sx";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import {getTheme} from "@/components/material-uni/colors";
+import AsyncSwitch from "@/components/helang-asyncSwitch/helang-asyncSwitch.vue";
 
 export default {
   computed: {
@@ -43,7 +43,7 @@ export default {
     }
   },
   components: {
-    MaterialListCell, MaterialList, MaterialNavBar, MaterialCard,
+    AsyncSwitch, MaterialListCell, MaterialList, MaterialNavBar
   },
   data() {
     return {
@@ -78,9 +78,9 @@ export default {
     back() {
       uni.navigateBack();
     },
-    switchChange(e) {
-      console.log(e.detail.value)
-      if (e.detail.value) {
+    switchChange() {
+      // console.log(e.detail.value)
+      if (this.hasWidget === false) {
         // #ifdef APP-PLUS
 
         let res = this.$manager.createWidget()
@@ -125,7 +125,7 @@ export default {
           }
         });
       }
-      this.hasWidget = e.detail.value;
+      // this.hasWidget = e.detail.value;
     }
   }
 }

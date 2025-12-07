@@ -20,15 +20,6 @@
 </template>
 
 <script>
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
-import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
-import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
@@ -43,10 +34,7 @@ export default {
     }
   },
   components: {
-    AsyncSwitch,
-    MaterialListCell, MaterialList,
-    MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    AsyncSwitch, MaterialListCell, MaterialList, MaterialNavBar,
   },
   data() {
     return {
@@ -84,7 +72,9 @@ export default {
     switchChange() {
       // console.log(e.detail.value)
       this.$manager.setSmartUpdate(!this.isSmartUpate)
-      this.isSmartUpate = this.$manager.isSmartUpdate()
+      setTimeout(() => {
+        this.isSmartUpate = this.$manager.isSmartUpdate()
+      })
     }
   }
 }
