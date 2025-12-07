@@ -1,15 +1,16 @@
 <template>
   <table class="calendar-table">
-
     <thead class="header">
     <view class="month">
       {{ activeYear }}年{{ monthName }}
     </view>
-    <material-button type="text" size="small" fontColor="#000" @click="$emit('clickPrevMonth')">
+    <material-button size="small" color="var(--md-sys-color-on-surface)" background-color="#ffffff00"
+                     @click="$emit('clickPrevMonth')">
       <zui-svg-icon collection="material-filled" :width="mx(5)" :height="mx(5)" icon="chevron_left"/>
     </material-button>
 
-    <material-button type="text" size="small" fontColor="#000" @click="$emit('clickNextMonth')">
+    <material-button size="small" color="var(--md-sys-color-on-surface)" background-color="#ffffff00"
+                     @click="$emit('clickNextMonth')">
       <zui-svg-icon collection="material-filled" :width="mx(5)" :height="mx(5)" icon="chevron_right"/>
     </material-button>
     </thead>
@@ -23,24 +24,26 @@
       <!-- 日期单元格 -->
       <slot v-for="(dateRow, rowIndex) in calendar"><!-- 一个月六行 -->
         <slot v-for="(date, dateIndex) in dateRow" name="date-slot"><!-- 每行7列数据 -->
-          <view
-              class="calendar-cell"
-              :class="dayClass(date)"
-              @click="$emit('dateClick', date)"
-          >
+          <view class="calendar-cell" :class="dayClass(date)">
+            <touch-ripple :color="fontColor(date)" :background-color="backgroundColor(date)" class="calendar-wrap"
+                          @click="$emit('dateClick', date)">
             <view class="calendar-cell__content">
               {{ date | dateNum }}
             </view>
+            </touch-ripple>
           </view>
         </slot>
       </slot>
     </view>
 
     <view class="button_wrap">
-      <material-button type="text" size="small" fontColor="#000" @click="$emit('clickCancel')">
+      <material-button size="small" color="var(--md-sys-color-on-surface)" background-color="#ffffff00"
+                       @click="$emit('clickCancel')">
         取消
       </material-button>
-      <material-button type="text" size="small" fontColor="#000" @click="$emit('clickApply')" :disabled="isDisable">
+      <material-button size="small" color="var(--md-sys-color-on-primary)"
+                       background-color="var(--md-sys-color-primary)" @click="$emit('clickApply')"
+                       :disabled="isDisable">
         确定
       </material-button>
     </view>
@@ -49,7 +52,8 @@
 
 <script>
 import moment from 'moment';
-import materialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import TouchRipple from "@/components/material-uni/ripple/component.vue";
 import {mx} from "@/components/material-uni/sx";
 
 function clean(momentDate) {
@@ -73,7 +77,7 @@ function clean(momentDate) {
 
 export default {
   name: 'calendar',
-  components: {materialButton},
+  components: {MaterialButton, TouchRipple},
   inject: ['picker'],
   props: {
     location: String,
@@ -90,6 +94,32 @@ export default {
     clickApply(e) {
       this.$emit('clickApply');
     },
+    fontColor(date) {
+      const dt = date.clone();
+      const cleanDt = clean(dt);
+      const cleanStart = clean(this.start);
+      const cleanEnd = clean(this.end);
+
+      if (cleanDt.isSame(cleanStart) || cleanDt.isSame(cleanEnd)) {
+        return "var(--md-sys-color-on-primary)";
+      } else if (date.month() !== this.month) {
+        return "var(--md-sys-color-outline)"
+      }
+
+      return "var(--md-sys-color-on-surface)"
+    },
+    backgroundColor(date) {
+      const dt = date.clone();
+      const cleanDt = clean(dt);
+      const cleanStart = clean(this.start);
+      const cleanEnd = clean(this.end);
+
+      if (cleanDt.isSame(cleanStart) || cleanDt.isSame(cleanEnd)) {
+        return "var(--md-sys-color-primary)";
+      }
+
+      return "#ffffff00"
+    },
     dayClass(date) {
       const dt = date.clone();
       const cleanDt = clean(dt);
@@ -98,8 +128,6 @@ export default {
       const cleanEnd = clean(this.end);
 
       return {
-        off: dt.month() !== this.month,
-        weekend: dt.isoWeekday() > 5,
         today: cleanDt.isSame(cleanToday),
         active: cleanDt.isSame(cleanStart) || cleanDt.isSame(cleanEnd),
         'in-range': (dt >= cleanStart && dt <= cleanEnd),
