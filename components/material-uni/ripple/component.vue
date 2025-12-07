@@ -59,13 +59,19 @@ export default {
     this.rippleContainer = this.$ownerInstance.$el.querySelector(':scope > .ripples-container');
 
     // 2. 绑定原生事件
+    // #ifdef APP-PLUS
     this.$el.addEventListener('touchstart', this.handleTouchStart, {passive: true});
+    // #endif
+    // #ifdef H5
+    this.$el.addEventListener('mousedown', this.handleTouchStart, {passive: true});
+    // #endif
 
     this.duration_ = parseInt(this.$el.dataset.duration);
   },
   beforeDestroy() {
     if (this.$el) {
       this.$el.removeEventListener('touchstart', this.handleTouchStart);
+      this.$el.removeEventListener('mousedown', this.handleTouchStart);
     }
   },
   methods: {
