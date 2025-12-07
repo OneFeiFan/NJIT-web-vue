@@ -100,8 +100,8 @@
             </material-list-cell>
           </material-list>
           <view class="dialog-actions">
-            <material-button size="small" background-color="var(--md-sys-color-primary)"
-                             color="var(--md-sys-color-on-primary)" @click="cancel">
+            <material-button size="small" background-color="#ffffff00"
+                             color="var(--md-sys-color-primary)" @click="cancel">
               确 认
             </material-button>
           </view>
