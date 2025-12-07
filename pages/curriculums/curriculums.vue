@@ -42,7 +42,7 @@
     <course-dialog :courses="dialog.courses" :mode="dialog.mode" :time-info="dialog.timeInfo" :visible="dialog.visible"
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
-    <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false}" :show="isDrawerOpen"/>
+    <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
     <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
   </view>
 </template>
@@ -145,7 +145,7 @@ export default {
       weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
       timetableData: [],
       other: [],
-      weekStartDate: '2025-02-17',
+      weekStartDate: '-1',
       dialog: {
         visible: false,
         mode: 'view',
@@ -167,12 +167,13 @@ export default {
     })
   },
   onShow() {
-    if (this.weekStartDate !== '2025-02-17') {
+    if (this.weekStartDate !== '-1') {
       this.update()
     }
   },
   mounted() {
     setTimeout(() => {
+      this.weekStartDate = '2025-02-17'
       this.update()
     })
   },
@@ -229,9 +230,11 @@ export default {
       }).catch(res => {
         console.log(res)
       })
-      http.post("/getCurriculum", {
-        forceRefresh
-      }).then(res => {
+      let postData = {}
+      if (forceRefresh) {
+        postData.forceRefresh = forceRefresh
+      }
+      http.post("/getCurriculum", postData).then(res => {
         if (forceRefresh) {
           setTimeout(() => {
             uni.showToast({
@@ -279,7 +282,6 @@ export default {
       this.dialog.visible = true;
       this.dialog.mode = 'add';
       this.dialog.course = null;
-      console.log(e)
       this.dialog.timeInfo = {
         dayInt: e.dayIndex,
         nodeIndex: e.nodeIndex
