@@ -168,13 +168,13 @@ export default {
   },
   onShow() {
     if (this.weekStartDate !== '-1') {
-      this.update()
+      this.update(false)
     }
   },
   mounted() {
     setTimeout(() => {
       this.weekStartDate = '2025-02-17'
-      this.update()
+      this.update(false)
     })
   },
   methods: {

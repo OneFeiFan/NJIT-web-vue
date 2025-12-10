@@ -53,8 +53,6 @@
 </template>
 
 <script>
-import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import {getTheme} from "@/components/material-uni/colors";
@@ -70,7 +68,7 @@ export default {
       return SXData
     }
   },
-  components: {MaterialProgress, MaterialNavBar, MaterialCard, UniIcons, UPicker},
+  components: {MaterialProgress, MaterialNavBar, MaterialCard},
   data() {
     return {
       theme: {},
@@ -84,7 +82,6 @@ export default {
     this.update(false)
   },
   onShow() {
-    this.theme = getTheme()
   },
   methods: {
     mx,
@@ -102,24 +99,61 @@ export default {
       }
       // #ifdef APP-PLUS
       this.$manager.getAcademicProgress(forceRefresh).then(res => {
-        let value = JSON.parse(res)
-        console.log(value)
-        this.datas = value
-      }).catch(res => {
+		  if(res.code == 200){
+			  if (forceRefresh) {
+			    setTimeout(() => {
+			      uni.showToast({
+			        title: '成功',
+			        duration: 2000
+			      });
+			    }, 500)
+			  }
+			  this.datas = res.data;
+		  }else{
         console.log(res)
-      })
-      // #endif
-      // #ifdef H5
-      http.post("/getAcademicProgress", {forceRefresh}).then(res => {
+			  setTimeout(() => {
+			    uni.showToast({
+			      title: '失败',
+			      icon: "error",
+			      duration: 2000
+			    });
+			  }, 500)
+		  }
+      }).catch(res => {
         if (forceRefresh) {
           setTimeout(() => {
             uni.showToast({
-              title: '成功',
+              title: '失败',
+              icon: "error",
               duration: 2000
             });
           }, 500)
         }
-        this.datas = res.data;
+      }).finally(() => {
+        uni.hideLoading()
+      })
+      // #endif
+      // #ifdef H5
+      http.post("/getAcademicProgress", {forceRefresh}).then(res => {
+		  if(res.code == 200){
+			  if (forceRefresh) {
+			    setTimeout(() => {
+			      uni.showToast({
+			        title: '成功',
+			        duration: 2000
+			      });
+			    }, 500)
+			  }
+			  this.datas = res.data;
+		  }else{
+			  setTimeout(() => {
+			    uni.showToast({
+			      title: '失败',
+			      icon: "error",
+			      duration: 2000
+			    });
+			  }, 500)
+		  }
       }).catch(res => {
         console.log(res)
         if (forceRefresh) {
