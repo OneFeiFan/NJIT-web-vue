@@ -61,12 +61,6 @@ export default {
     refreshTheme() {
       this.theme = getTheme()
     },
-    jump(page) {
-      // this.isDrawerOpen = false;
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      });
-    },
     back() {
       uni.navigateBack();
     },

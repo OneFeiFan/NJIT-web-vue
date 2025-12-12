@@ -83,7 +83,6 @@ import MaterialList from "@/components/material-uni/material-list/material-list.
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 
 export default {
-  name: 'Login',
   components: {MaterialListCell, MaterialList, MaterialCard, MaterialButton},
   computed: {
     SXData() {
