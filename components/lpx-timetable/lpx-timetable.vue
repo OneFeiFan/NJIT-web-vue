@@ -299,6 +299,8 @@ export default {
   $basewidth: calc(100vw - sx(12));
   $itemwidth: calc($basewidth / 7);
   $time-item-height: sx(18);
+  display: flex;
+  flex-direction: column;
 
   .header {
     background-color: var(--md-sys-color-surface);
@@ -328,7 +330,9 @@ export default {
   .main {
     background-color: var(--md-sys-color-surface);
     position: relative;
-    height: calc(100vh - var(--status-bar-height) - sx(38));
+    flex: 1;
+    overflow: hidden;
+
 
     .scroll-Y {
       height: 100%;

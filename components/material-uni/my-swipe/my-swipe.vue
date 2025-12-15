@@ -196,16 +196,13 @@ export default {
 
 <style scoped>
 .my-swipe {
+  display: flex;
   position: relative;
-  overflow: hidden;
   width: 100%;
-  /*
-   * 核心动画：父容器高度随内容变化
-   * 因为只有一个子元素是 relative，父容器高度 = 该子元素高度
-   */
   transition: height 0.3s ease-out;
 }
 .my-swipe__track {
+  display: flex;
   width: 100%;
   position: relative;
 }

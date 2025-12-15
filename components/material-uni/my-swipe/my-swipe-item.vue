@@ -72,10 +72,11 @@ export default {
 
 <style scoped>
 .my-swipe-item {
+  display: flex;
   width: 100%;
-  display: block;
 }
 .my-swipe-item__content {
+  display: flex;
   width: 100%;
   overflow: hidden; /* 防止内容溢出影响定位 */
 }

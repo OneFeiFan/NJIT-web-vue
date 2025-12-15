@@ -11,7 +11,7 @@
                    @click="update(true)"/>
       </view>
     </material-nav-bar>
-    <my-swipe ref="swiper" :default-index="week" :loop="true" @change="changeSwipe">
+    <my-swipe class="swipe" ref="swiper" :default-index="week" :loop="true" @change="changeSwipe">
       <my-swipe-item v-for="(w, index) in weeks" :key="w">
         <timetable
             :courses="timetableData"
@@ -42,7 +42,6 @@
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
-    <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
   </view>
 </template>
 
@@ -362,6 +361,13 @@ export default {
 .container {
   height: 100vh;
   background-color: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+
+  .swipe{
+    flex: 1;
+    overflow: hidden;
+  }
 }
 
 .float-btn {
