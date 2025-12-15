@@ -5,7 +5,7 @@
  */
 import { CourseParams, DeleteCourse, RestoreCourse } from "./types";
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
-import DemoMainWidget from 'com.feifan.fuckingnjit.widget.DemoMainWidget'
+import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
 // import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
 import PortalManager from "com.feifan.fuckingnjit.utils.wifiauth.PortalManager";
 
@@ -91,13 +91,13 @@ export class Core {
 		return Manager.getWebService().getDate()
 	}
 	public createWidget() : string {
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).createWidget()
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).createWidget()
 	}
 	public getWidgetPermission() {
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).getPermission()
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).getPermission()
 	}
 	public isWidgetAlreadyCreated() : boolean {
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
 	}
 	
 	public switchStatus(status : boolean) : void {
@@ -181,9 +181,16 @@ export class Core {
 	public setSmartUpdate(isSmart: boolean){
 		Manager.getPermissionsManager().setSmartUpdate(isSmart)
 	}
-	public setLocalCurriculums(data : string) {
-		Manager.setLocalCurriculums(data)
+	
+	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject | Error>{
+		const data = await Manager.initYiBan(mobile,password).toJSONString();
+		return parseUTSResponse(data)
 	}
+	
+	
+	//public setLocalCurriculums(data : string) {
+	//	Manager.setLocalCurriculums(data)
+	//}
 	// public modifyLocalCurriculums(keys : string) {
 	// 	Manager.modifyLocalCurriculums(keys)
 	// }
