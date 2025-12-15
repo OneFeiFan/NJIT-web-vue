@@ -154,6 +154,15 @@
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
+    },
+    {
+    	"path" : "pages/killyiban/killyiban",
+    	"style" : 
+    	{
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false,
+          "navigationStyle": "custom"
+    	}
     }
   ],
   "tabBar": {

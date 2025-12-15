@@ -42,6 +42,9 @@
           <material-list-cell rightIcon @click="jump(`WifiAuthenticator`)">
             <text>WIFI认证</text>
           </material-list-cell>
+          <material-list-cell rightIcon @click="jump(`killyiban`)">
+            <text>易班签到</text>
+          </material-list-cell>
           <!--   #endif   -->
           <material-list-cell rightIcon @click="jump(`settings`)">
             <text>设置</text>
