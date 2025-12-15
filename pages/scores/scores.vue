@@ -8,7 +8,7 @@
         <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
-    <zmm-watermark :watermark="'爱点小灵通'" :column="3" :margin="50" :opacity="0.35"/>
+
     <view class="select-bar">
       <material-button
           background-color="var(--md-sys-color-primary-container)"
@@ -116,7 +116,9 @@ import MaterialCard from "@/components/material-uni/material-card/material-card.
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
+//#ifdef H5
 import {http} from "@/static/util/request";
+//#endif
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
@@ -132,7 +134,7 @@ export default {
   },
   data() {
     return {
-      theme:{},
+      theme: {},
       className: 'test',
       detail: [],
       tableData: [{
@@ -151,7 +153,7 @@ export default {
         "xqmmc": "",
         "kcmc": "请查询数据"
       }],
-      yearOptions: ['2026-2027','2025-2026','2024-2025','2023-2024','2022-2023', '2021-2022', '2020-2021','2019-2020'], // 学年选项
+      yearOptions: ['2026-2027', '2025-2026', '2024-2025', '2023-2024', '2022-2023', '2021-2022', '2020-2021', '2019-2020'], // 学年选项
       termOptions: ['第一学期', '第二学期'], // 学期选项
       selectedYear: '',
       selectedTerm: '',
@@ -165,7 +167,7 @@ export default {
   },
   methods: {
     mx,
-    refreshTheme(){
+    refreshTheme() {
       this.theme = getTheme()
     },
     onYearChange(e) {
@@ -181,45 +183,91 @@ export default {
       uni.navigateBack();
     },
     update(forceRefresh) {
-      if(forceRefresh){
+      if (forceRefresh) {
         uni.showLoading({
           title: '尝试刷新成绩'
         });
       }
       const year = this.selectedYear.split('-')[0];
       const term = this.selectedTerm === '' ? '' : this.selectedTerm === '第一学期' ? '3' : '12';
-      http.post("/getAllSorces",{xnm:year,xqm:term,forceRefresh}).
-      then(res=>{
-        if(forceRefresh){
-          setTimeout(()=>{
+      // #ifdef APP-PLUS
+      this.$manager.getSorces(year, term, forceRefresh).then(res => {
+        this.tableData = JSON.parse(res).data;
+        this.tableData = this.tableData.reverse()
+      }).catch(err => {
+        console.error(err)
+        // uni.hideLoading();
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
+        });
+      }).finally(() => {
+        uni.hideLoading();
+      })
+      //#endif
+
+      // #ifdef H5
+      http.post("/getAllSorces", {xnm: year, xqm: term, forceRefresh}).then(res => {
+        if (forceRefresh) {
+          setTimeout(() => {
             uni.showToast({
               title: '成功',
               duration: 2000
             });
-          },500)
+          }, 500)
         }
         this.tableData = res.data;
         this.tableData = this.tableData.reverse()
-      }).catch(res=>{
+      }).catch(res => {
         console.log(res)
-        if(forceRefresh){
-          setTimeout(()=>{
+        if (forceRefresh) {
+          setTimeout(() => {
             uni.showToast({
               title: '失败',
-              icon:"error",
+              icon: "error",
               duration: 2000
             });
-          },500)
+          }, 500)
         }
-      }).finally(()=>{
+      }).finally(() => {
         uni.hideLoading()
       })
+      // #endif
     },
     getDetail(id, xnm, xqm, kcmc) {
       uni.showLoading({
         title: '加载详细信息'
       });
       this.className = kcmc;
+      // #ifdef APP-PLUS
+      this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          uni.hideLoading();
+          this.detail = res.data;
+          this.$refs.detail.open('center');
+        }else{
+          console.error(res.message)
+          uni.showToast({
+            title: '获取成绩失败',
+            icon: 'error',
+            duration: 2000
+          });
+        }
+        // this.detail = JSON.parse(res)
+
+        // uni.hideLoading();
+        // this.$refs.detail.open('center');
+      }).catch(err => {
+        console.error(err)
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
+        });
+      })
+      //#endif
       // #ifdef H5
       http.post("/getSorcesDetail", {classId: id, schoolYear: xnm, semester: xqm, courseName: kcmc}).then(res => {
         if (res.code === 200) {

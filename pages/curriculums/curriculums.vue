@@ -35,6 +35,7 @@
                       icon="visibility_off"/>
       </material-button>
     </view>
+    <welcome :visible="showWelcome" @close="showWelcome = false"></welcome>
     <!-- 2. 引入隐藏管理弹窗 -->
     <hidden-course-dialog :list="hiddenCourses" :visible="showHiddenManager" @close="showHiddenManager = false"
                           @restore="handleRestoreFromManager"/>
@@ -53,11 +54,14 @@ import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-
 import MySwipe from "@/components/material-uni/my-swipe/my-swipe.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
 import {getColor, getTheme} from "@/components/material-uni/colors";
+//#ifdef H5
 import {http} from "@/static/util/request";
+//#endif
 import CourseDialog from '@/components/lpx-timetable/coursedialog.vue';
 import HiddenCourseDialog from '@/components/lpx-timetable/hiddendialog.vue';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MySwipeItem from "@/components/material-uni/my-swipe/my-swipe-item.vue";
+import Welcome from "@/pages/curriculums/welcome.vue";
 
 export default {
   computed: {
@@ -66,7 +70,7 @@ export default {
     }
   },
   components: {
-    MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
+    Welcome, MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
   },
   data() {
     return {
@@ -83,39 +87,39 @@ export default {
         },
         {
           index: '3',
-          name: '10:00\n10:45'
+          name: '10:10\n10:55'
         },
         {
           index: '4',
-          name: '10:55\n11:40'
+          name: '11:05\n11:50'
         },
         {
           index: '5',
-          name: '13:30\n14:15'
+          name: '13:40\n14:25'
         },
         {
           index: '6',
-          name: '14:25\n15:10'
+          name: '14:35\n15:20'
         },
         {
           index: '7',
-          name: '15:30\n16:15'
+          name: '15:40\n16:25'
         },
         {
           index: '8',
-          name: '16:25\n17.10'
+          name: '16:35\n17:20'
         },
         {
           index: '9',
-          name: '18:15\n19:00'
+          name: '18:30\n19:15'
         },
         {
           index: '10',
-          name: '19:05\n19:50'
+          name: '19:25\n20:10'
         },
         {
           index: '11',
-          name: '19:55\n20:40'
+          name: '20:20\n21:05'
         }
       ],
       range: [
@@ -154,6 +158,7 @@ export default {
       },
       hiddenCourses: [], // 后端返回的完整列表
       showHiddenManager: false, // 控制新弹窗显示
+      showWelcome: false, // 控制欢迎页显示
     };
   },
   onLoad() {
@@ -186,6 +191,45 @@ export default {
           title: '尝试刷新课表'
         });
       }
+      // #ifdef APP-PLUS
+      let res = this.$manager.getDate()
+      if (res !== "{}") {
+        let value = JSON.parse(res)
+        this.week = value.currentWeek - 1; //第一周的index为0
+        this.weekStartDate = value.startDate
+      }
+
+
+      this.$manager.getCurriculum(forceRefresh).then(value => {
+        if (Object.keys(value).length > 0) {
+          this.timetableData = value.validTimeCourses;
+          this.other = value.nullTimeCourses;
+          this.hiddenCourses = value.hiddenCourses || [];
+          let welcome = uni.getStorageSync("welcome")
+          if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
+            this.showWelcome = true;
+            uni.setStorageSync("welcome", "1.2.5")
+          }
+        }
+      }).catch(res => {
+        if (forceRefresh) {
+          setTimeout(() => {
+            uni.showToast({
+              title: '失败',
+              icon: "error",
+              duration: 2000
+            });
+          }, 500)
+        }
+        console.log(res)
+      }).finally(() => {
+        uni.hideLoading()
+      })
+
+
+      // console.log(result)
+      // #endif
+
       // #ifdef H5
       http.post("/getDateData").then(res => {
         this.week = res.data.currentWeek - 1; //第一周的index为0
@@ -209,22 +253,25 @@ export default {
         this.other = res.data.nullTimeCourses
         this.timetableData = res.data.validTimeCourses
         this.hiddenCourses = res.data.hiddenCourses || [];
-
-
+        let welcome = uni.getStorageSync("welcome")
+        if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
+          this.showWelcome = true;
+          uni.setStorageSync("welcome", "1.2.5")
+        }
       }).catch(res => {
-              if (forceRefresh) {
-                setTimeout(() => {
-                  uni.showToast({
-                    title: '失败',
-                    icon: "error",
-                    duration: 2000
-                  });
-                }, 500)
-              }
-              console.log(res)
-            }).finally(() => {
-              uni.hideLoading()
-            })
+        if (forceRefresh) {
+          setTimeout(() => {
+            uni.showToast({
+              title: '失败',
+              icon: "error",
+              duration: 2000
+            });
+          }, 500)
+        }
+        console.log(res)
+      }).finally(() => {
+        uni.hideLoading()
+      })
       // #endif
     },
     showDetail(courses) {

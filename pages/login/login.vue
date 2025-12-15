@@ -39,27 +39,6 @@
           </material-list-cell>
         </material-list>
 
-        <!-- 验证码（根据条件显示） -->
-        <view v-if="captchaImage !== ''" class="form-group">
-          <text class="label">验证码</text>
-          <view class="input-wrapper">
-            <uni-icons class="icon-captcha" type="shield-filled" size="" color="var(--md-sys-color-on-surface)"/>
-            <input
-                class="input"
-                v-model="captcha"
-                type="text"
-                placeholder="请输入验证码"
-                placeholder-style="{ color: '#bbb' }"
-            />
-            <image
-                class="captcha-image"
-                :src="captchaImage"
-                @click="refreshCaptcha"
-                mode="aspectFit"
-            />
-          </view>
-        </view>
-
         <!-- 记住我 -->
         <view class="form-options">
           <label class="remember-me" @click="toggleRemember">
@@ -113,19 +92,13 @@ export default {
   data() {
     return {
       theme: {},          // 主题样式
-      uuid: '',           // 验证码 uuid
       username: '',
       password: '',
-      captcha: '',        // 验证码
-      captchaImage: '',   // 验证码图片URL
       showPassword: false,
       loading: false,
       rememberMe: false,
       error: '',
     };
-  },
-  onLoad() {
-    this.refreshCaptcha()
   },
   // uni‑app 生命周期：页面加载完成后执行
   onReady() {
@@ -135,51 +108,6 @@ export default {
   methods: {
     toggleRemember() {
       this.rememberMe = !this.rememberMe;
-    },
-    refreshCaptcha() {
-      uni.showToast({
-        title: '正在获取验证码...',
-        icon: 'loading',
-        duration: 5000
-      })
-      let request = new Promise((resolve, reject) => uni.request({
-            url: baseUrl + `/perLogin?uuid=${this.uuid}`,
-            method: 'GET',
-            success: (res) => {
-              if (res.data.code === 200) {
-                resolve(res.data)
-              } else {
-                reject(res.data)
-              }
-            },
-            fail: (res) => {
-              reject(res)
-            }
-          })
-      )
-      request.then(res => {
-        let data = res.data;
-        this.uuid = data.uuid;
-        this.captchaImage = data.captcha;
-        if(this.captchaImage == ''){
-          uni.showToast({
-            title: '本次登录不需要验证码',
-            icon: 'success',
-            duration: 2000
-          })
-        }else{
-          uni.showToast({
-            title: '验证码已刷新',
-            icon:'success',
-            duration: 2000
-          })
-        }
-        console.log(data)
-      }).catch(err => {
-        uni.showToast({title: err.data, icon: 'error', duration: 2000})
-        console.log(err)
-      })
-      // console.log(request)
     },
     /** 读取本地记住的账号 */
     initRemember() {
@@ -194,7 +122,6 @@ export default {
           this.rememberMe = false;
         }
       }
-
     },
 
     /** 刷新主题 */
@@ -217,14 +144,13 @@ export default {
       this.loading = true;
       uni.showLoading({title: '登录中...'});
 
+      // 保持原有逻辑不变
       let request = new Promise((resolve, reject) => uni.request({
             url: baseUrl+'/login',
             method: 'POST',
             data: {
-              "uuid": this.uuid,
               "studentId": this.username,
-              "password": this.password,
-              "captcha": this.captcha,
+              "password": this.password
             },
             header: {
               "Content-Type": "application/x-www-form-urlencoded"
@@ -248,25 +174,22 @@ export default {
           duration: 2000
         });
         if (this.rememberMe) {
-          uni.removeStorageSync('loginInfo');
           uni.setStorageSync('loginInfo', {
             username: this.username,
             password: this.password  // 存储密码
           });
         } else {
+          // 如果之前存了，现在不记住了，只存用户名或者清除
           uni.setStorageSync('loginInfo', {
-            username: this.username,  // 只存储账号
-            password: ''  // 密码置空
+            username: this.username,
+            password: ''
           });
         }
         // 登录成功后跳转
         uni.navigateBack();
       }).catch(err => {
-        this.error = err.data;
-        if (err.data === 'Timed out waiting for 15000 ms') {
-          this.uuid = '';
-        }
-        this.refreshCaptcha()
+        // 错误处理逻辑不变，只展示文字
+        this.error = (err && err.msg) ? err.msg : (typeof err === 'string' ? err : '登录失败，请检查网络');
       }).finally(() => {
         this.loading = false;
         uni.hideLoading();
