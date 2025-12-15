@@ -1,105 +1,90 @@
 <template>
   <uni-popup ref="CourseDialog" mask-background-color="#ffffff00" @change="maskChange">
-    <material-card class="dialog-card" color="var(--md-sys-color-on-surface)" @click.stop>
-      <view class="content">
-      <!-- A. 多课程切换区 (冲突时显示) -->
-      <view v-if="hasConflict" class="conflict-tabs">
-        <scroll-view class="tabs-scroll" scroll-x="true" show-scrollbar="false">
-          <view class="tabs-container">
+    <material-card color="var(--md-sys-color-on-surface)" @click.stop>
+      <view class="dialog-card">
+        <!-- A. 多课程切换区 (冲突时显示) -->
+        <view v-if="hasConflict" class="conflict-tabs">
+          <scroll-view class="tabs-scroll" scroll-x="true" show-scrollbar="false">
+            <view class="tabs-container">
+              <material-button v-for="(c, index) in courses" :key="index"
+                               :background-color="currentIndex === index ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-surface-variant)'"
+                               :color="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
+                               shape="square" size="small" @click="switchCourse(index)">
+                <!-- 截断过长的课程名 -->
+                {{ formatName(c.name) }}
+              </material-button>
+            </view>
+          </scroll-view>
+        </view>
+
+        <!-- B. 标题区 (动态显示当前选中的课程) -->
+        <view class="card-header">
+          <text class="title">{{ displayTitle }}</text>
+          <text class="subtitle">{{ displaySubtitle }}</text>
+        </view>
+
+        <!-- C. 内容区 -->
+        <view class="card-content">
+          <!-- 1. 有课程数据 -->
+          <view v-if="currentCourse">
+            <view class="info-row">
+              <uni-icons color="var(--md-sys-color-primary)" size="18" type="location-filled"></uni-icons>
+              <text class="info-text">{{ currentCourse.room || '未安排地点' }}</text>
+            </view>
+            <view class="info-row">
+              <uni-icons color="var(--md-sys-color-primary)" size="18" type="person-filled"></uni-icons>
+              <text class="info-text">{{ currentCourse.teacher || '未安排教师' }}</text>
+            </view>
+            <view class="info-row">
+              <uni-icons color="var(--md-sys-color-primary)" size="18" type="calendar-filled"></uni-icons>
+              <text class="info-text">{{ currentCourse.raw_weeks || "周次未知" }}</text>
+            </view>
+
             <material-button
-                v-for="(c, index) in courses"
-                :key="index"
-                :background-color="currentIndex === index ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-surface-variant)'"
-                :color="currentIndex === index ? 'var(--md-sys-color-on-primary)' : 'var(--md-sys-color-on-surface-variant)'"
-                shape="square"
-                size="small"
-                @click="switchCourse(index)"
-            >
-              <!-- 截断过长的课程名 -->
-              {{formatName(c.name) }}
+                :background-color="currentCourse.source === 1 ? 'var(--md-sys-color-tertiary-container)' : 'var(--md-sys-color-secondary-container)'"
+                :color="currentCourse.source === 1 ? 'var(--md-sys-color-on-tertiary-container)' : 'var(--md-sys-color-on-secondary-container)'"
+                shape="square" size="small">
+              {{ currentCourse.source === 1 ? '本地手动添加' : '教务系统同步' }}
             </material-button>
           </view>
-        </scroll-view>
-      </view>
 
-      <!-- B. 标题区 (动态显示当前选中的课程) -->
-      <view class="card-header">
-        <text class="title">{{ displayTitle }}</text>
-        <text class="subtitle">{{ displaySubtitle }}</text>
-      </view>
+          <!-- 2. 空白格子 (添加模式) -->
+          <view v-else>
+            <view class="empty-tip">当前时段暂无课程</view>
+          </view>
+        </view>
 
-      <!-- C. 内容区 -->
-      <view class="card-content">
-        <!-- 1. 有课程数据 -->
-        <view v-if="currentCourse">
-          <view class="info-row">
-            <uni-icons color="var(--md-sys-color-primary)" size="18" type="location-filled"></uni-icons>
-            <text class="info-text">{{ currentCourse.room || '未安排地点' }}</text>
-          </view>
-          <view class="info-row">
-            <uni-icons color="var(--md-sys-color-primary)" size="18" type="person-filled"></uni-icons>
-            <text class="info-text">{{ currentCourse.teacher || '未安排教师' }}</text>
-          </view>
-          <view class="info-row">
-            <uni-icons color="var(--md-sys-color-primary)" size="18" type="calendar-filled"></uni-icons>
-            <text class="info-text">{{ currentCourse.raw_weeks || "周次未知" }}</text>
+        <!-- D. 操作栏 -->
+        <view v-if="mode !== 'view'">
+          <!-- 添加模式 -->
+          <view v-if="mode === 'add'" class="card-actions">
+            <material-button background-color="var(--md-sys-color-primary)"
+                             color="var(--md-sys-color-surface)" size="small" @click="$emit('add')">添加
+            </material-button>
           </view>
 
-          <material-button
-              :background-color="currentCourse.source === 1 ? 'var(--md-sys-color-tertiary-container)' : 'var(--md-sys-color-secondary-container)'"
-              :color="currentCourse.source === 1 ? 'var(--md-sys-color-on-tertiary-container)' : 'var(--md-sys-color-on-secondary-container)'"
-              shape="square"
-              size="small">
-            {{ currentCourse.source === 1 ? '本地手动添加' : '教务系统同步' }}
+          <!-- 编辑模式 (针对当前选中的课程) -->
+          <view v-else-if="mode === 'edit' && currentCourse" class="card-actions">
+            <material-button background-color="#ffffff00" color="var(--md-sys-color-error)" size="small"
+                             @click="$emit('delete', currentCourse)">删除
+            </material-button>
+            <view class="spacer"></view>
+            <material-button background-color="#ffffff00" color="var(--md-sys-color-primary)" size="small"
+                             @click="$emit('add')">添加
+            </material-button>
+            <material-button background-color="var(--md-sys-color-primary)"
+                             color="var(--md-sys-color-surface)" size="small"
+                             @click="$emit('edit', currentCourse)">编辑
+            </material-button>
+          </view>
+        </view>
+
+        <!-- 查看模式关闭 -->
+        <view v-else class="card-actions">
+          <material-button background-color="#ffffff00" color="var(--md-sys-color-primary)" size="small"
+                           @click="$emit('close')">确定
           </material-button>
         </view>
-
-        <!-- 2. 空白格子 (添加模式) -->
-        <view v-else>
-          <view class="empty-tip">当前时段暂无课程</view>
-        </view>
-      </view>
-
-      <!-- D. 操作栏 -->
-      <view  v-if="mode !== 'view'">
-        <!-- 添加模式 -->
-        <view v-if="mode === 'add'" class="card-actions">
-          <material-button
-              background-color="var(--md-sys-color-primary)"
-              color="var(--md-sys-color-surface)"
-              size="small"
-              @click="$emit('add')">添加</material-button>
-        </view>
-
-        <!-- 编辑模式 (针对当前选中的课程) -->
-        <view v-else-if="mode === 'edit' && currentCourse" class="card-actions">
-          <material-button
-              background-color="#ffffff00"
-              color="var(--md-sys-color-error)"
-              size="small"
-              @click="$emit('delete', currentCourse)">删除</material-button>
-          <view class="spacer"></view>
-          <material-button
-              background-color="#ffffff00"
-              color="var(--md-sys-color-primary)"
-              size="small"
-              @click="$emit('add')">添加</material-button>
-          <material-button
-              background-color="var(--md-sys-color-primary)"
-              color="var(--md-sys-color-surface)"
-              size="small"
-              @click="$emit('edit', currentCourse)">编辑</material-button>
-        </view>
-      </view>
-
-      <!-- 查看模式关闭 -->
-      <view v-else class="card-actions">
-        <material-button
-            background-color="#ffffff00"
-            color="var(--md-sys-color-primary)"
-            size="small"
-            @click="$emit('close')">确定</material-button>
-      </view>
       </view>
     </material-card>
   </uni-popup>
@@ -113,14 +98,31 @@ import MaterialButton from "@/components/material-uni/material-button/material-b
 
 export default {
   name: "CourseDialog",
-  components: {MaterialButton, MaterialCard, UniIcons},
+  components: {
+    MaterialButton, MaterialCard, UniIcons
+  },
   props: {
-    visible: {type: Boolean, default: false},
+    visible: {
+      type: Boolean,
+      default: false
+    },
     // 接收整个数组，而不仅是单个对象
-    courses: {type: Array, default: () => []},
+    courses: {
+      type: Array,
+      default: () => []
+    },
     // 空白格子时的默认信息
-    timeInfo: {type: Object, default: () => ({dayInt: '', nodeIndex: 0})},
-    mode: {type: String, default: 'view'}
+    timeInfo: {
+      type: Object,
+      default: () => ({
+        dayInt: '',
+        nodeIndex: 0
+      })
+    },
+    mode: {
+      type: String,
+      default: 'view'
+    }
   },
   data() {
     return {
@@ -193,6 +195,7 @@ export default {
     width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
   }
 }
+
 @media (orientation: portrait) {
   .dialog-card {
     --test: 0px;
@@ -205,13 +208,8 @@ export default {
 }
 
 .dialog-card {
-  border-radius: sx(3.5);
-  display: flex;
-  flex-direction: column;
-
-  .content {
-    padding: sx(5);
-  }
+  padding: sx(5);
+  box-sizing: border-box;
 
   // 冲突切换标签栏
   .conflict-tabs {
