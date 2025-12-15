@@ -48,7 +48,7 @@ export default {
       },
       success: (res) => {
         if(res.statusCode === 200){
-          this.content = `${res.data.dev}`;
+          this.content = `${res.data.about}`;
         }
       }
     });
