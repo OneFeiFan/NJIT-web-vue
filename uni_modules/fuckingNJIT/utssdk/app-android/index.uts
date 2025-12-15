@@ -3,174 +3,198 @@
  * import { Context } from "android.content.Context";
  * [可选实现，按需引入]
  */
+import { CourseParams, DeleteCourse, RestoreCourse } from "./types";
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
-import WebServiceImpl from "com.feifan.fuckingnjit.service.impl.WebServiceImpl"
-import UserManagerImpl from "com.feifan.fuckingnjit.service.impl.UserManagerImpl"
-import User from "com.feifan.fuckingnjit.Model.User"
-import Build from "android.os.Build";
-import RequiresApi from "androidx.annotation.RequiresApi"
-import Toast from 'android.widget.Toast';
-import DemoMainWidget from 'com.feifan.fuckingnjit.widget.DemoMainWidget'
-/* 引入 interface.uts 文件中定义的变量 */
-// import { MyApiOptions, MyApiResult, MyApi, MyApiSync } from '../interface.uts';
+import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
+// import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
+import PortalManager from "com.feifan.fuckingnjit.utils.wifiauth.PortalManager";
 
-/* 引入 unierror.uts 文件中定义的变量 */
-// import { MyApiFailImpl } from '../unierror';
-
-/**
- * 引入三方库
- * [可选实现，按需引入]
- *
- * 在 Android 平台引入三方库有以下两种方式：
- * 1、[推荐] 通过 仓储 方式引入，将 三方库的依赖信息 配置到 config.json 文件下的 dependencies 字段下。详细配置方式[详见](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#dependencies)
- * 2、直接引入，将 三方库的aar或jar文件 放到libs目录下。更多信息[详见](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#android%E5%B9%B3%E5%8F%B0%E5%8E%9F%E7%94%9F%E9%85%8D%E7%BD%AE)
- *
- * 在通过上述任意方式依赖三方库后，使用时需要在文件中 import，如下示例：
- * import { LottieAnimationView } from 'com.airbnb.lottie.LottieAnimationView'
- */
-
-/**
- * UTSAndroid 为平台内置对象，不需要 import 可直接调用其API，[详见](https://uniapp.dcloud.net.cn/uts/utsandroid.html#utsandroid)
- */
-
-
-/**
- * 异步方法
- *
- * uni-app项目中（vue/nvue）调用示例：
- * 1、引入方法声明 import { myApi } from "@/uni_modules/uts-api"
- * 2、方法调用
- * myApi({
- *   paramA: false,
- *   complete: (res) => {
- *      console.log(res)
- *   }
- * });
- * uni-app x项目（uvue）中调用示例：
- * 1、引入方法及参数声明 import { myApi, MyApiOptions } from "@/uni_modules/uts-api";
- * 2、方法调用
- * let options = {
- *   paramA: false,
- *   complete: (res : any) => {
- *     console.log(res)
- *   }
- * } as MyApiOptions;
- * myApi(options);
- *
- */
-// export const myApi : MyApi = function (options : MyApiOptions) {
-//   if (options.paramA == true) {
-//     // 返回数据
-//     const res : MyApiResult = {
-//       fieldA: 85,
-//       fieldB: true,
-//       fieldC: 'some message'
-//     };
-//     options.success?.(res);
-//     options.complete?.(res);
-//   } else {
-//     // 返回错误
-//     const err = new MyApiFailImpl(9010001);
-//     options.fail?.(err)
-//     options.complete?.(err)
-//   }
-// }
-
-/**
- * 同步方法
- *
- * uni-app项目中（vue/nvue）调用示例：
- * 1、引入方法声明 import { myApiSync } from "@/uni_modules/uts-api"
- * 2、方法调用 myApiSync(true)
- *
- * uni-app x项目（uvue）中调用示例：
- * 1、引入方法及参数声明 import { myApiSync } from "@/uni_modules/uts-api";
- * 2、方法调用 myApiSync(true)
- */
-// export const myApiSync : MyApiSync = function (paramA : boolean) : MyApiResult {
-//   // 返回数据，根据插件功能获取实际的返回值
-//   const res : MyApiResult = {
-//     fieldA: 85,
-//     fieldB: paramA,
-//     fieldC: 'some message'
-//   };
-//   return res;
-// }
+function parseUTSResponse(data: string): UTSJSONObject | Error {
+    try{
+    	// 使用 JSON.parseObject 进行解析
+    	const result = JSON.parseObject(data);
+    	
+    	// 检查解析结果是否为空（可能是因为 JSON 字符串格式错误）
+    	if (result === null) {
+    	    throw new Error("数据解析失败：JSON格式可能不正确或数据为空");
+    	}
+    	return result;
+    }catch(e){
+    	return e
+    }
+}
 
 export class Core {
 
-    public showToast(str : string){
+	public showToast(str : string) {
 		Manager.showToast(str);
 	}
-		
+
 	public startLogin(relogin : boolean) {
 		Manager.startLogin(relogin)
 	}
-
-	public async getCurriculum(refresh:boolean) : Promise<string> {
-		return Manager.getUserManager().getCurriculum(refresh)
-	}
 	
+
+	public async getCurriculum(refresh : boolean) : Promise<UTSJSONObject> {
+		return JSON.parse<UTSJSONObject>(await Manager.getUserManager().getCurriculum(refresh)) ?? {}
+	}
+
 	public getAllUsers() : string {
 		return Manager.getUserManager().getAllUsers()
 	}
-	
-	public setCurrentUser(id:String){
+
+	public setCurrentUser(id : string) {
 		return Manager.getUserManager().setCurrentUser(id)
 	}
 
 	public async deleteUser(id : string) : Promise<boolean> {
-		return await Manager.getUserManager()!.deleteUser(id)
+		return await Manager.getUserManager().deleteUser(id)
 	}
-	
+
 	public async getEmptyClassrooms(dateRange : string, coursePeriod : string, buildingId : string) : Promise<string> {
 		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
 	}
-	public async getAllSorces(refresh:boolean) : Promise<string> {
-		return await Manager.getUserManager().getUserScores(refresh)
-	}
-	public async getSorcesDetail(classId : String, schoolYear : String, semester : String, courseName : String) : Promise<string> {
-		return await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName)
-	}
-	public async getNoticeInformation() : Promise<string> {
-		return await Manager.getWebService().getNoticeInformation()
+	public async getSorces(xnm:String,xqm:String,refresh : boolean) : Promise<string> {
+		return await Manager.getUserManager().getUserScores(xnm,xqm,refresh)
 	}
 	
-	public async getAcademicProgress(refresh:boolean) : Promise<string> {
-		return await Manager.getWebService().getAcademicProgress(refresh)
+	public async getSorcesDetail(classId : string, schoolYear : string, semester : string, courseName : string) : Promise<UTSJSONObject | Error> {
+		const data = await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName).toJSONString();
+		return parseUTSResponse(data)
+	}
+	public async getNoticeInformation() : Promise<UTSJSONObject | Error> {
+		const data = await await Manager.getWebService().getNoticeInformation().toJSONString();
+		return parseUTSResponse(data)
+	}
+
+	public async getAcademicProgress(refresh : boolean) : Promise<UTSJSONObject | Error> {
+		const data = await await Manager.getUserManager().getAcademicProgress(refresh).toJSONString();
+		return parseUTSResponse(data)
 	}
 	
-	public createWidget():string{
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).createWidget()
+	public saveCourse(data: CourseParams): UTSJSONObject {
+		return JSON.parse<UTSJSONObject>(
+			Manager.getWebService().saveCourse(data.course, data.hideRule).toJSONString()
+		) ?? {}
 	}
-	public getWidgetPermission(){
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).getPermission()
+	public deleteCourse(data: DeleteCourse): UTSJSONObject {
+		return JSON.parse<UTSJSONObject>(
+			Manager.getWebService().deleteCourse(data.courseId, data.isSystem, data.day,data.start).toJSONString()
+		) ?? {}
 	}
-	public isWidgetAlreadyCreated():boolean{
-		return (new DemoMainWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
+	public restoreCourse(data: RestoreCourse): UTSJSONObject {
+		return JSON.parse<UTSJSONObject>(
+			Manager.getWebService().restoreCourse(data.courseId, data.day,data.start).toJSONString()
+		) ?? {}
+	}
+	public getDate() : string {
+		return Manager.getWebService().getDate()
+	}
+	public createWidget() : string {
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).createWidget()
+	}
+	public getWidgetPermission() {
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).getPermission()
+	}
+	public isWidgetAlreadyCreated() : boolean {
+		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
 	}
 	
-	public goHome(){
+	public switchStatus(status : boolean) : void {
+		PortalManager.switchStatus(UTSAndroid.getAppContext()!,status)
+		// return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
+	}
+	
+	public isEnabled() : boolean {
+		return PortalManager.isEnabled(UTSAndroid.getAppContext()!)
+	}
+	
+	
+	// public createWifiAuthWidget() : string {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
+	// }
+	// public getWifiAuthWidgetPermission() {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).getPermission()
+	// }
+	// public isWifiAuthWidgetAlreadyCreated() : boolean {
+	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
+	// }
+	public setWifiAuthTupe(type : string) {
+		Manager.setWifiAuthTupe(type)
+	}
+	public getWifiAuthTupe() : string {
+		return Manager.getWifiAuthTupe()
+	}
+
+	public goHome() {
 		Manager.goHome()
 	}
-	
-	
-	public setPasswordStorageEnabled(enable: boolean) {
-	    Manager.getUserManager().setPasswordStorageEnabled(enable)
+
+
+	public setPasswordStorageEnabled(enable : boolean) {
+		Manager.getUserManager().setPasswordStorageEnabled(enable)
 	}
-	
-	public isPasswordStorageEnabled(): boolean {
+
+	public isPasswordStorageEnabled() : boolean {
 		return Manager.getUserManager().isPasswordStorageEnabled()
 	}
 
-	public getSemesterStartDate(): string {
-		return Manager.getSemesterStartDate()
-	}
-	
-	public async updateApp(url:string):Promise<boolean>{
+	// public getSemesterStartDate() : string {
+	// 	return Manager.getSemesterStartDate()
+	// }
+
+	public async updateApp(url : string) : Promise<boolean> {
 		return await Manager.updateApp(url)
 	}
+	// public checkOverlayWindowPermission() : boolean {
+	// 	return Manager.getPermissionsManager().checkOverlayWindowPermission()
+	// }
+	// public requestOverlayWindowPermission() : Promise<boolean> {
+	// 	return new Promise((resolve, reject) => {
+	// 		Manager.getPermissionsManager().requestOverlayWindowPermission((isGranted: boolean) => {
+	// 			if (isGranted) {
+	// 				resolve(true)
+	// 			} else {
+	// 				reject(false)
+	// 			}
+	// 		})
+	// 	})
+	// }
+	public checkRequestInstallPackagePermission() : boolean {
+		return Manager.getPermissionsManager().checkRequestInstallPackagePermission()
+	}
+	public requestRequestInstallPackagePermission() : Promise<boolean> {
+		return new Promise((resolve, reject) => {
+			Manager.getPermissionsManager().requestRequestInstallPackagePermission((isGranted: boolean) => {
+				if (isGranted) {
+					resolve(true)
+				} else {
+					reject(false)
+				}
+			})
+		})
+	}
+
+	public isSmartUpdate() : boolean {
+		return Manager.getPermissionsManager().isSmartUpdate()
+	}
+	public setSmartUpdate(isSmart: boolean){
+		Manager.getPermissionsManager().setSmartUpdate(isSmart)
+	}
+	
+	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject | Error>{
+		const data = await Manager.initYiBan(mobile,password).toJSONString();
+		return parseUTSResponse(data)
+	}
+	
+	
+	//public setLocalCurriculums(data : string) {
+	//	Manager.setLocalCurriculums(data)
+	//}
+	// public modifyLocalCurriculums(keys : string) {
+	// 	Manager.modifyLocalCurriculums(keys)
+	// }
+	// public reSetLocalCurriculums() {
+	// 	Manager.reSetLocalCurriculums()
+	// }
 }
-/**
- * 更多插件开发的信息详见：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html
- */

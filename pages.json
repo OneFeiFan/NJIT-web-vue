@@ -18,28 +18,28 @@
     {
       "path": "pages/about/about",
       "style": {
-        "navigationBarTitleText": "关于",
+        "navigationStyle": "custom",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/dev/dev",
       "style": {
-        "navigationBarTitleText": "画饼",
+        "navigationStyle": "custom",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/faq/faq",
       "style": {
-        "navigationBarTitleText": "FAQ",
+        "navigationStyle": "custom",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/privacy/privacy",
       "style": {
-        "navigationBarTitleText": "隐私政策",
+        "navigationStyle": "custom",
         "enablePullDownRefresh": false
       }
     },
@@ -122,16 +122,48 @@
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
-    }
-    ,
+    },
     {
-  "path": "pages/login/login",
-  "style": {
-    "navigationBarTitleText": "",
-    "enablePullDownRefresh": false,
-    "navigationStyle": "custom"
-  }
-}
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/WifiAuthenticator/WifiAuthenticator",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/smartupdate/smartupdate",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/courseeditor/editor",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+    	"path" : "pages/killyiban/killyiban",
+    	"style" : 
+    	{
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false,
+          "navigationStyle": "custom"
+    	}
+    }
   ],
   "tabBar": {
     "color": "#000000",

@@ -2,7 +2,6 @@
 const pleaseSetTranspileDependencies = {}, babelTest = pleaseSetTranspileDependencies?.test
 
 
-
 // 引入全局mixin
 import mixin from './libs/mixin/mixin.js'
 // 小程序特有的mixin

@@ -72,9 +72,9 @@
 </template>
 
 <script>
-	import props from './props.js';
+import props from './props.js';
 
-	/**
+/**
 	 * search 搜索框
 	 * @description 搜索组件，集成了常见搜索框所需功能，用户可以一键引入，开箱即用。
 	 * @tutorial https://www.uviewui.com/components/search.html

@@ -1,5 +1,6 @@
 <template>
-  <touch-ripple :color="color" :opacity="opacity" :duration="duration" :transition="transition" :backgroundColor="backgroundColor" style="position: sticky;top:0;z-index: 9999999999">
+  <touch-ripple :backgroundColor="backgroundColor" :color="color" :duration="duration" :opacity="opacity"
+                :transition="transition" style="position: sticky;top:0; z-index: 5">
     <status-bar :background-color="backgroundColor"/>
     <view class="nav-bar-container">
       <slot></slot>
@@ -20,7 +21,7 @@ export default {
 <style scoped lang="scss">
 .nav-bar-container {
   width: 100%;
-  background-color: #ffffff00;
-  height: sx(10);
+  //background-color: #ffffff00;
+  height: sx(15);
 }
 </style>

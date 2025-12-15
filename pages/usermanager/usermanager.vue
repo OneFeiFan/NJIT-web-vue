@@ -1,16 +1,16 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar id="nav-bar">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)" class="icon-left"/>
+        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-primary)" class="icon-left"/>
         <text class="title">用户管理</text>
-        <uni-icons type="plusempty" size="" @click="login" color="var(--md-sys-color-on-secondary-container)" class="icon-right"/>
+        <uni-icons type="plusempty" size="" @click="login" color="var(--md-sys-color-on-primary)" class="icon-right"/>
       </view>
     </material-nav-bar>
 
     <scroll-view scroll-y="true" class="scroll-container">
       <view class="content">
-        <material-card width="100%"
+        <material-card
                        :color="user.current? 'var(--md-sys-color-on-primary)':'var(--md-sys-color-primary-fixed)'"
                        :backgroundColor="user.current? 'var(--md-sys-color-primary-container)':'var(--md-sys-color-surface-container)'"
                        v-for="(user, id) in users"
@@ -60,8 +60,10 @@ export default {
   onShow() {
     //#ifdef APP-PLUS
     this.users = JSON.parse(this.$manager.getAllUsers());
-    console.log(this.users);
-
+    //#endif
+    //#ifdef H5
+    this.users["111"]={"current":true,"name":"aaa","gpa":"3.13"}
+    this.users["222"]={"current":false,"name":"bbb","gpa":"3.13"}
     //#endif
   },
   methods: {
@@ -146,21 +148,13 @@ export default {
 
 .content {
   padding: sx(3);
-
-  .card {
-    margin-top: sx(4);
-
-    &:first-child {
-      margin-top: 0;
-    }
-  }
+  gap: sx(3);
+  display: grid;
 }
 
 .user {
   padding: sx(3);
-  box-sizing: border-box;
   height: 100%;
-  background-color: #ffffff00;
   display: flex;
   justify-content: space-between;
   color: var(--md-sys-color-on-secondary-container);

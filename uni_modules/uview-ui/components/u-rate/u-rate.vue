@@ -76,9 +76,9 @@
 </template>
 
 <script>
-	import props from './props.js';
+import props from './props.js';
 
-	// #ifdef APP-NVUE
+// #ifdef APP-NVUE
 	const dom = weex.requireModule("dom");
 	// #endif
 	/**

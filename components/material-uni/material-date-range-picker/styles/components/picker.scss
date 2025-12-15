@@ -1,53 +1,30 @@
-.mdrp__panel {
+.wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
   font-size: sx(4.5);
-  border-radius: sx(5);
+  padding: sx(5);
+  box-sizing: border-box;
 
-  .wrapper {
-    width: 100%;
-    height: 100%;
-    padding: sx(5);
-    box-sizing: border-box;
-
-    .edit {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-}
-
-// 响应式布局优化
-@mixin orientation-styles($orientation) {
-  @if $orientation == landscape or $orientation == portrait {
-    @media (orientation: $orientation) {
-      .mdrp__panel {
-        @content;
-      }
-    }
-  } @else {
-    @warn "Unsupported orientation #{$orientation}. Please use 'landscape' or 'portrait'.";
+  .edit {
+    display: flex;
+    justify-content: space-between;
   }
 }
 
 // 横屏样式
-@include orientation-styles(landscape) {
-  $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
-  max-height: calc(100vh - sx(30) - var(--status-bar-height));
-  max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
-  height: $height;
-  width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
-
-
-
+@media (orientation: landscape) {
   .wrapper {
-    display: flex;
+    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
+    max-height: calc(100vh - sx(30) - var(--status-bar-height));
+    max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
+    height: $height;
+    width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
 
     .edit {
       flex-direction: column;
       align-items: flex-start;
+      height: 100%;
       width: 20%;
 
       .time-range-l {
@@ -61,22 +38,24 @@
     }
 
     .calendar-wrap {
+      height: 100%;
       width: 80%;
     }
   }
 }
 
 // 竖屏样式 (移除非常规单位rpx)
-@include orientation-styles(portrait) {
-  --test: 0px;
-  $width: calc((90vw + sx(90)) / 2);
-  max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
-  max-width: calc(100vw - sx(15) - var(--test));
-  height: calc($width / 90 * 100);
-  width: $width;
-
+@media (orientation: portrait) {
   .wrapper {
+    $width: calc((90vw + sx(90)) / 2);
+    max-height: calc(calc(100vw - sx(15)) / 90 * 100);
+    max-width: calc(100vw - sx(15));
+    height: calc($width / 90 * 100);
+    width: $width;
+    flex-direction: column;
+
     .edit {
+      width: 100%;
       align-items: center;
       height: 5%;
 
@@ -86,6 +65,7 @@
     }
 
     .calendar-wrap {
+      width: 100%;
       height: 95%;
     }
   }

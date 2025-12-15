@@ -84,9 +84,10 @@
 	// #ifdef APP-NVUE
 	const animation = uni.requireNativePlugin('animation')
 	const dom = uni.requireNativePlugin('dom')
-	// #endif
-	import props from './props.js';
-	/**
+  // #endif
+  import props from './props.js';
+
+  /**
 	 * Tabs 标签
 	 * @description tabs标签组件，在标签多的时候，可以配置为左右滑动，标签少的时候，可以禁止滑动。 该组件的一个特点是配置为滚动模式时，激活的tab会自动移动到组件的中间位置。
 	 * @tutorial https://www.uviewui.com/components/tabs.html

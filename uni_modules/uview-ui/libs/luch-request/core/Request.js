@@ -15,7 +15,7 @@ import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './InterceptorManager'
 import mergeConfig from './mergeConfig'
 import defaults from './defaults'
-import { isPlainObject } from '../utils'
+import {isPlainObject} from '../utils'
 import clone from '../utils/clone'
 
 export default class Request {

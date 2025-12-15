@@ -35,8 +35,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * radio 单选框
 	 * @description 单选框用于有一个选择，用户只能选择其中一个的场景。搭配u-radio-group使用
 	 * @tutorial https://www.uviewui.com/components/radio.html

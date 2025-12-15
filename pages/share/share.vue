@@ -1,40 +1,31 @@
 <template>
   <view class="container" :style="[theme,SXData]">
-    <material-nav-bar>
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
                    class="icon-left"/>
         <text class="title">分享软件</text>
-        <uni-icons type="loop" size="" color="#ffffff00" class="icon-right"/>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
-    <view class="content">
-      <material-card class="wrap">
-        <text>
-          觉得软件实用的话可以和同学分享一下哦。
-        </text>
-        <image src="@/static/qq.jpg" mode="widthFix">
 
-        </image>
-      </material-card>
+    <view class="wrap" >
+    <material-card class="card" color="var(--md-sys-color-on-primary-container">
+      <view class="content">
+        <view class="text-area">
+          觉得软件实用的话可以和同学分享一下哦。
+        </view>
+        <image class="share-img" mode="widthFix" src="@/static/qq.jpg"/>
+      </view>
+    </material-card>
     </view>
   </view>
 </template>
 
 <script>
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
-import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
-import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import {SXData} from "@/components/material-uni/sx";
-import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import {getTheme} from "@/components/material-uni/colors";
 
 export default {
@@ -44,9 +35,7 @@ export default {
     }
   },
   components: {
-    MaterialListCell, MaterialList,
-    MaterialNavBar,
-    MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialNavBar, MaterialCard
   },
   data() {
     return {
@@ -71,26 +60,60 @@ export default {
 
 <style lang="scss">
 .container {
-  background-color: var(--md-sys-color-primary-container);
+  background-color: var(--md-sys-color-surface);
   height: 100vh;
 }
 
-.content {
+.wrap {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  height: calc(100% - sx(10) - var(--status-bar-height));
-  margin-left: sx(6.5);
-  margin-right: sx(6.5);
-  font-size: sx(5);
-  color: var(--md-sys-color-on-primary-container);
+  width: 100%;
+  height: calc(100vh - var(--status-bar-height) - sx(15));
+}
 
-  .wrap {
+.card {
+  font-size: sx(5);
+  box-sizing: border-box;
+
+  .content {
     padding: sx(5);
+  }
+}
+
+@media (orientation: portrait) {
+  .card {
+    --test: 0px;
+    $width: calc((90vw + sx(90)) / 2);
+    max-width: calc(100vw - sx(15) - var(--test));
+    width: $width;
+  }
+  .share-img {
+    width: 100%;
+    margin-top: sx(2);
+  }
+}
+
+/* 横屏适配 */
+@media screen and (orientation: landscape) {
+  .card {
+    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
+    max-width: calc(100 / 80 * #{$height});
+    width: calc(100 / 80 * #{$height});
+
+    .content {
+      display: flex;
+    }
+  }
+  .text-area {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    flex-direction: column;
+  }
+  .share-img {
+    flex: 2.5;
+    margin-top: 0;
   }
 }
 </style>

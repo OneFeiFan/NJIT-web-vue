@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 // export const props =
 
 // export const EventKey = {

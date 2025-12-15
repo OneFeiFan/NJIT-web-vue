@@ -60,8 +60,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/**
+import props from './props.js';
+
+/**
 	 * Alert  警告提示
 	 * @description 警告提示，展现需要关注的信息。
 	 * @tutorial https://www.uviewui.com/components/alertTips.html

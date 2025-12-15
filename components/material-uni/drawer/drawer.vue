@@ -14,7 +14,7 @@
         ref="drawer"
         class="drawer"
         :style="drawerStyles"
-        @touchstart.stop="onStart"
+        @touchstart="onStart"
         @touchmove.stop="onMovedMobile"
         @touchend.stop="onEnd"
     >

@@ -5,8 +5,9 @@
 </template>
 
 <script>
-	import props from './props.js';
-	/** 
+import props from './props.js';
+
+/**
 	 * Td 表格中的单元格
 	 * @description 
 	 * @tutorial url

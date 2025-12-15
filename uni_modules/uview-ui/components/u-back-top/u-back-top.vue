@@ -24,8 +24,8 @@
 </template>
 
 <script>
-	import props from './props.js';
-	// #ifdef APP-NVUE
+import props from './props.js';
+// #ifdef APP-NVUE
 	const dom = weex.requireModule('dom')
 	// #endif
 	/**

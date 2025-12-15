@@ -21,8 +21,9 @@
 </template>
 
 <script>
-	import props from './props.js'
-	export default {
+import props from './props.js'
+
+export default {
 		name: 'u--slider',
 		mixins: [uni.$u.mpMixin, uni.$u.mixin, props],
 		methods: {

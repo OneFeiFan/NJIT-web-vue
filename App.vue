@@ -1,7 +1,5 @@
 <script>
-
 import {getThemeName, setTheme} from "@/components/material-uni/colors";
-
 export default {
   onThemeChange(res) {
     const themeName = getThemeName();
@@ -23,23 +21,11 @@ export default {
       }
     });
     uni.$emit('ThemeUpdate')
-    // console.log(currPage.$vm.test())
-    // if (!currPage.route.includes("curriculums") && !currPage.route.includes("notice")) {
-    //   uni.redirectTo({
-    //     url: "/" + currPage.route
-    //   })
-    // } else {
-    //   console.log("非课程页面")
-    //   uni.reLaunch({
-    //     url: "/" + currPage.route
-    //   })
-    //   console.log("非课程页面")
-    // }
-    // 根据res.theme动态调整样式或逻辑
   },
   onLaunch: function () {
+    // #ifdef APP-PLUS
     const themeName = getThemeName();
-    var style = "light";
+    var style = plus.navigator.getUIStyle();
     if (style === 'dark') {
       if (!themeName.includes('dark')) {
         setTheme("dark_" + themeName);
@@ -48,14 +34,42 @@ export default {
       setTheme(themeName.replace('dark_', ''));
     }
 
+    // 重写openWeb方法
+    plus.runtime.openWeb = function(options) {
+      // 提取URL参数（兼容字符串和对象传参）
+      var url = (typeof options === 'string') ? options : (options && options.url);
+
+      if (url) {
+        // 核心：调用openURL实现外部浏览器打开
+        plus.runtime.openURL(url);
+      } else {
+        console.error("Hook failed: Invalid URL provided to openWeb");
+      }
+    };
+    // #endif
     const systemInfo = uni.getSystemInfoSync();
     console.log('App Launch')
-    // 获取当前app的版本
-// 应用程序版本号
-// 条件编译，只在APP渲染
 // #ifdef APP
     plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
-    // initUM("67d77c8948ac1b4f87e98e5f", "android");
+    if (this.$manager.isSmartUpdate() && !this.$manager.checkRequestInstallPackagePermission()) {
+      uni.showModal({
+        title: '增量更新启用提示',
+        content: "增量更新功能可以加快更新速度并减少流量消耗。\n如需开启增量更新，请点击“确认”授予安装包权限。否则，请点击“取消”永久关闭此功能。\n如果后续更新异常，可以去设置中关闭增量更新功能。",
+        showCancel: true,
+        success: (res) => {
+          if (res.confirm) {
+            this.$manager.requestRequestInstallPackagePermission()
+          } else {
+            uni.showToast({
+              title: '后续可以在设置中重新开启增量更新功能。',
+              icon: 'none'
+            })
+            this.$manager.setSmartUpdate(false);
+          }
+        }
+      })
+    }
+    // 获取当前app的版本
     let version_number = systemInfo.appWgtVersion;
     uni.request({
       url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
@@ -67,24 +81,32 @@ export default {
       },
       success: (res) => {
         const data = res.data;
-        if (version_number !== data.version) {
+        // console.log(data.version)
+        if (data.version !== undefined && version_number !== data.version) {
           const url = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data.version}.apk`;
-          console.log('发现新版本', data.version, data.description);
-          if (data[version_number]) {
-            const bin = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data[version_number]}`;
-            console.log('增量更新', bin);
-            this.$manager.updateApp(bin)
-                .then((res) => {
-                  if (!res) {
-                    this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
-                  }
-                })
-                .catch(() => {
-                  this.showUpdateModal('增量更新失败，尝试全量更新', `更新内容：\n${data.description}`, url);
-                });
-          } else {
-            this.showUpdateModal('版本升级', `更新内容：\n${data.description}`, url);
-          }
+          // console.log('发现新版本', data.version, data.description);
+          uni.showModal({
+            showCancel: false,
+            title: "版本升级",
+            content: `更新内容：\n${data.description}`,
+            complete: () => {
+              if (data[version_number] && this.$manager.checkRequestInstallPackagePermission()) {
+                const bin = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data[version_number]}`;
+                console.log('增量更新', bin);
+                this.$manager.updateApp(bin)
+                    .then((res) => {
+                      if (!res) {
+                        plus.runtime.openURL(url);
+                      }
+                    })
+                    .catch(() => {
+                      plus.runtime.openURL(url);
+                    });
+              } else {
+                plus.runtime.openURL(url);
+              }
+            }
+          });
         }
       }
     });
@@ -93,42 +115,46 @@ export default {
     // #endif
   },
   onShow: function () {
+    // #ifdef APP-PLUS
+    console.log('app onReady')
+    plus.navigator.closeSplashscreen()
+    // #endif
     console.log('App Show')
   },
   onHide: function () {
     console.log('App Hide')
   },
-  methods: {
-    showUpdateModal(title, content, url) {
-      uni.showModal({
-        showCancel: false,
-        title: title,
-        content: content,
-        success: function (res) {
-          if (res.confirm) {
-            plus.runtime.openURL(url);
-          }
-        },
-        complete: function (res) {
-          plus.runtime.openURL(url);
-        }
-      });
-
-    }
-  }
+  // methods: {
+  //   showUpdateModal(title, content, url) {
+  //     uni.showModal({
+  //       showCancel: false,
+  //       title: title,
+  //       content: content,
+  //       success: function (res) {
+  //         if (res.confirm) {
+  //           plus.runtime.openURL(url);
+  //         }
+  //       },
+  //       complete: function (res) {
+  //         plus.runtime.openURL(url);
+  //       }
+  //     });
+  //
+  //   }
+  // }
 }
 </script>
 
 <style lang="scss">
 /*每个页面公共css */
-.uni-navbar__header-container {
-  padding: 0 !important;
-}
-
-.uni-navbar__header {
-  padding: 0 !important;
-}
-
+//.uni-navbar__header-container {
+//  padding: 0 !important;
+//}
+//
+//.uni-navbar__header {
+//  padding: 0 !important;
+//}
+//
 .uni-table-loading {
   visibility: collapse;
 }
@@ -136,7 +162,7 @@ export default {
 .nav-bar {
   height: 100%;
   width: 100%;
-
+  //background-color: var(--md-sys-color-primary);
   display: flex;
   align-items: center;
 
@@ -161,13 +187,11 @@ export default {
     font-size: sx(8);
   }
 
-
   .title {
-    margin: 0 auto;
+    margin: 0 auto 0 sx(8);
     font-size: sx(6.5);
     display: block;
     text-align: center;
-    color: var(--md-sys-color-on-secondary-container);
   }
 }
 </style>

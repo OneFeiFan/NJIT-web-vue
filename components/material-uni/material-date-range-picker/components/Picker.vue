@@ -1,6 +1,6 @@
 <template>
-  <uni-popup ref="dateRangePicker">
-    <view class="mdrp__panel dropdown-menu show-calendar">
+  <uni-popup ref="dateRangePicker" mask-background-color="#ffffff00">
+    <material-card  color="var(--md-sys-color-on-surface)">
       <view class="wrapper">
         <view class="edit">
           <view class="time-range-l">
@@ -15,7 +15,7 @@
             <text>-</text>
             <text>{{ " " }}{{ endText.slice(5) }}</text>
           </view>
-          <material-button type="text" size="small" fontColor="#000" @click="handleButtonClick" v-show="true">
+          <material-button type="text" size="small" color="var(--md-sys-color-on-surface)" background-color="#ffffff00" @click="handleButtonClick" v-show="false">
             test
           </material-button>
         </view>
@@ -35,21 +35,21 @@
           ></calendar>
         </view>
       </view>
-    </view>
+    </material-card>
   </uni-popup>
 </template>
 
 <script>
 import moment from 'moment';
 import Calendar from './Calendar.vue';
-// import DefaultActivator from './widgets/activator.vue';
 import {defaultPresets} from '../constant';
 import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import materialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 
 export default {
   name: 'v-md-date-range-picker',
-  components: {UniPopup, Calendar, materialButton},
+  components: {UniPopup, Calendar, MaterialCard,MaterialButton},
   provide() {
     return {
       'picker': this,

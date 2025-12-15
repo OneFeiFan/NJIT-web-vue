@@ -1,7 +1,7 @@
 <template>
   <Drawer :value="opened" @onClose="onClose">
     <view class="menu">
-      <touch-ripple id="menu-top" color="var(--md-sys-color-primary-fixed)"
+      <touch-ripple color="var(--md-sys-color-primary-fixed)"
                     backgroundColor="var(--md-sys-color-tertiary)">
         <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
         <view class="menu-content">
@@ -12,10 +12,13 @@
         </view>
       </touch-ripple>
       <scroll-view scroll-y="true" class="scroll-table">
-        <material-list>
+        <material-list color="var(--md-sys-color-on-surface)">
           <material-list-cell rightIcon @click="jump(`share`)">
             <text>分享</text>
           </material-list-cell>
+<!--          <material-list-cell rightIcon @click="jump(`editcurriculums`)">-->
+<!--            <text>编辑课表</text>-->
+<!--          </material-list-cell>-->
           <material-list-cell rightIcon @click="jump(`classroom`)">
             <text>空教室查询</text>
           </material-list-cell>
@@ -32,9 +35,17 @@
 <!--          <material-list-cell rightIcon @click="jump(`test`)">-->
 <!--            <text>测试</text>-->
 <!--          </material-list-cell>-->
+          <!--  #ifdef APP-PLUS  -->
           <material-list-cell rightIcon @click="jump(`usermanager`)">
             <text>用户管理</text>
           </material-list-cell>
+          <material-list-cell rightIcon @click="jump(`WifiAuthenticator`)">
+            <text>WIFI认证</text>
+          </material-list-cell>
+          <material-list-cell rightIcon @click="jump(`killyiban`)">
+            <text>易班签到</text>
+          </material-list-cell>
+          <!--   #endif   -->
           <material-list-cell rightIcon @click="jump(`settings`)">
             <text>设置</text>
           </material-list-cell>
@@ -74,12 +85,9 @@ export default {
     jump(page) {
       console.log(page)
       this.$emit("onClose");
-
-      setTimeout(() => {
         uni.navigateTo({
           url: `/pages/${page}/${page}`
         });
-      }, 250);
     },
   }
 }

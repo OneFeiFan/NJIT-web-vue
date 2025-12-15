@@ -2,8 +2,8 @@
     "name" : "你的门户",
     "appid" : "__UNI__2090008",
     "description" : "",
-    "versionName" : "1.2.3",
-    "versionCode" : 123,
+    "versionName" : "1.2.5",
+    "versionCode" : 125,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -12,9 +12,9 @@
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : true,
+            "alwaysShowBeforeRender" : false,
             "waiting" : true,
-            "autoclose" : true,
+            "autoclose" : false,
             "delay" : 0
         },
         /* 模块配置 */
@@ -45,7 +45,7 @@
                     "<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\" />",
                     "<uses-permission android:name=\"android.permission.SYSTEM_OVERLAY_WINDOW\" />"
                 ],
-                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
+                "abiFilters" : [ "arm64-v8a" ],
                 "minSdkVersion" : 26
             },
             /* ios打包配置 */

@@ -1,32 +1,49 @@
 <template>
-  <view :style="[theme,SXData]">
-    <material-nav-bar>
+  <view class="container" :style="[theme,SXData]">
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="" color="var(--md-sys-color-surface-container)" class="icon-left"/>
+        <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
+                   @click="back"/>
         <text class="title">成绩查询</text>
-        <uni-icons type="loop" size="" @click="" color="var(--md-sys-color-surface-container)" class="icon-right"/>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
     <zmm-watermark :watermark="'爱点小灵通'" :column="3" :margin="50" :opacity="0.35"/>
     <view class="select-bar">
-      <picker mode="selector" :range="yearOptions" @change="onYearChange">
-        <view class="select-item">学年：{{ selectedYear || '请选择' }}</view>
-      </picker>
-      <picker mode="selector" :range="termOptions" @change="onTermChange">
-        <view class="select-item">学期：{{ selectedTerm || '请选择' }}</view>
-      </picker>
-      <view>
-      <view class="select-item query-btn" @click="update(true)">查询</view>
-      </view>
+      <material-button
+          background-color="var(--md-sys-color-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
+          shape="square"
+          size="small">
+        <picker :range="yearOptions" mode="selector" @change="onYearChange">
+          <view class="select-item">学年：{{ selectedYear || '请选择' }}</view>
+        </picker>
+      </material-button>
+      <material-button
+          background-color="var(--md-sys-color-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
+          shape="square"
+          size="small">
+        <picker :range="termOptions" mode="selector" @change="onTermChange">
+          <view class="select-item">学期：{{ selectedTerm || '请选择' }}</view>
+        </picker>
+      </material-button>
+      <material-button
+          background-color="var(--md-sys-color-primary-container)"
+          color="var(--md-sys-color-on-primary-container)"
+          shape="square"
+          size="small"
+          @click="update(true)">查询
+      </material-button>
     </view>
     <scroll-view scroll-y="true" class="scroll-table">
+      <view class="table-wrapper">
       <slot v-for="(item, index) in tableData">
         <view class="content">
-          <material-card width="100%" color="var(--md-sys-color-on-primary)"
-                         :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'"
-                         @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
-            <view class="card-content"
-                  :style="{color: item.jd === `0.00`?'var(--md-sys-color-on-tertiary-container)':'var(--md-sys-color-on-primary-container)'}">
+          <material-card
+              :backgroundColor="item.jd === `0.00` ? 'var(--md-sys-color-tertiary-container)':'var(--md-sys-color-primary-container)'"
+              :color="item.jd === `0.00`?'var(--md-sys-color-on-tertiary-container)':'var(--md-sys-color-on-primary-container)'">
+            <view class="card-content" @click="getDetail(item.jxb_id,item.xnm,item.xqm,item.kcmc)">
               <view class="time">
                 {{ item.xnmmc }}
                 <uni-icons v-if="item.jd !== `0.00`" type="checkbox-filled" :size="mx(8)"
@@ -47,45 +64,62 @@
             </view>
           </material-card>
         </view>
-
       </slot>
-
-    </scroll-view>
-    <uni-popup ref="detail">
-      <view class="detail-modal" :mask-click="false">
-        <view class="name">{{ className }}</view>
-        <uni-table border stripe emptyText="暂无更多数据">
-          <uni-tr>
-            <uni-th width="1" align="center">成绩分项</uni-th>
-            <uni-th width="1" align="center">成绩分项比例</uni-th>
-            <uni-th width="1" align="center">成绩</uni-th>
-          </uni-tr>
-          <uni-tr v-for="(item, index) in detail" :key="index">
-            <uni-td align="center">{{ item.scoreItem }}</uni-td>
-            <uni-td align="center">{{ item.percentage }}</uni-td>
-            <uni-td align="center">{{ item.score }}</uni-td>
-          </uni-tr>
-        </uni-table>
-        <button class="ok" type="primary" @click="cancel">确认</button>
       </view>
+    </scroll-view>
+
+    <uni-popup ref="detail" type="center" :mask-click="false">
+      <material-card background-color="var(--md-sys-color-surface-container-high)"
+                     color="var(--md-sys-color-on-surface)" class="md-dialog-surface">
+        <view class="content">
+          <!-- 1. 弹窗标题 (Dialog Title) -->
+          <view class="dialog-header">
+            <text class="dialog-title">{{ className }}</text>
+          </view>
+
+          <!-- 2. 内容区域：使用列表代替表格 (Dialog Content) -->
+          <view v-if="!detail || detail.length === 0" class="empty-state">
+            <text>暂无更多数据</text>
+          </view>
+
+          <material-list color="var(--md-sys-color-on-surface)" background-color="#ffffff00" v-else class="score-list">
+            <material-list-cell v-for="(item, index) in detail" :key="index" class="score-item" :showLeftText="false">
+              <!-- 左侧：分项名称与比例 -->
+              <view class="item-main">
+                <text class="item-name">{{ item.scoreItem }}</text>
+                <view class="item-meta">
+                  <text class="meta-text" v-show="item.scoreItem != ' 总评 '">占比 {{ item.percentage }}</text>
+                </view>
+              </view>
+
+              <!-- 右侧：具体分数 -->
+              <view class="item-score-wrapper">
+                <text class="score-value">{{ item.score }}</text>
+                <text class="score-label" v-show="!isNaN(parseFloat(item.score)) && isFinite(item.score)">分</text>
+              </view>
+            </material-list-cell>
+          </material-list>
+          <view class="dialog-actions">
+            <material-button size="small" background-color="#ffffff00"
+                             color="var(--md-sys-color-primary)" @click="cancel">
+              确 认
+            </material-button>
+          </view>
+      </view>
+      </material-card>
     </uni-popup>
   </view>
 </template>
 
 <script>
-import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue";
-import UniPopup from "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue";
-import UniNavBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
 import {getTheme} from "@/components/material-uni/colors";
 import {http} from "@/static/util/request";
+import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialList from "@/components/material-uni/material-list/material-list.vue";
+import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 
 export default {
   computed: {
@@ -94,7 +128,7 @@ export default {
     }
   },
   components: {
-    MaterialNavBar, MaterialCard, UniTh, UniTd, UniTr, UniTable, UniNavBar, UniPopup, UniEasyinput, UniIcons
+    MaterialListCell, MaterialList, MaterialButton, MaterialNavBar, MaterialCard
   },
   data() {
     return {
@@ -153,7 +187,7 @@ export default {
         });
       }
       const year = this.selectedYear.split('-')[0];
-      const term = this.selectedTerm === '第一学期' ? '3' : '12';
+      const term = this.selectedTerm === '' ? '' : this.selectedTerm === '第一学期' ? '3' : '12';
       http.post("/getAllSorces",{xnm:year,xqm:term,forceRefresh}).
       then(res=>{
         if(forceRefresh){
@@ -165,8 +199,8 @@ export default {
           },500)
         }
         this.tableData = res.data;
-      }).
-      catch(res=>{
+        this.tableData = this.tableData.reverse()
+      }).catch(res=>{
         console.log(res)
         if(forceRefresh){
           setTimeout(()=>{
@@ -177,66 +211,58 @@ export default {
             });
           },500)
         }
-      }).
-      finally(()=>{
+      }).finally(()=>{
         uni.hideLoading()
       })
-
-      // this.$manager.getAllSorces(refresh).then(res => {
-      //   this.tableData = JSON.parse(res).data;
-      //   this.tableData = this.tableData.reverse()
-      //   console.log(this.tableData)
-      // }).catch(err => {
-      //   console.error(err)
-      //   // uni.hideLoading();
-      //   uni.showToast({
-      //     title: '获取成绩失败',
-      //     icon: 'error',
-      //     duration: 2000
-      //   });
-      // })
     },
     getDetail(id, xnm, xqm, kcmc) {
-      // uni.showLoading({
-      //   title: '加载详细信息'
-      // });
-      // this.className = kcmc;
-      // this.$manager.getSorcesDetail(id, xnm, xqm, kcmc).then(res => {
-      //   console.log(res)
-      //   this.detail = JSON.parse(res)
-      //
-      //   uni.hideLoading();
-      //   this.$refs.detail.open('center');
-      // }).catch(err => {
-      //   console.error(err)
-      //   uni.hideLoading();
-      //   uni.showToast({
-      //     title: '获取成绩失败',
-      //     icon: 'error',
-      //     duration: 2000
-      //   });
-      // })
+      uni.showLoading({
+        title: '加载详细信息'
+      });
+      this.className = kcmc;
+      // #ifdef H5
+      http.post("/getSorcesDetail", {classId: id, schoolYear: xnm, semester: xqm, courseName: kcmc}).then(res => {
+        if (res.code === 200) {
+          uni.hideLoading();
+          this.detail = res.data;
+          this.$refs.detail.open('center');
+        } else {
+          uni.showToast({
+            title: '获取成绩失败',
+            icon: 'error',
+            duration: 2000
+          });
+        }
+        console.log(res)
+      }).catch(res => {
+        console.error(res)
+        uni.showToast({
+          title: '获取成绩失败',
+          icon: 'error',
+          duration: 2000
+        });
+      })
+      // #endif
     }
   }
 }
 </script>
 
 <style lang="scss">
+.container{
+  height: 100vh;
+  background-color: var(--md-sys-color-surface);
+}
 .select-bar {
   display: flex;
   height: sx(10);
-  background-color: var(--md-sys-color-surface-container);
   align-items: center;
+  padding-left: sx(2.5);
+  gap: sx(2.5);
 
   .select-item {
-    flex: 1;
-    height: 100%;
-    margin-left: sx(2.5);
-    padding: 0 sx(2.5);
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    border-radius: 8rpx;
-    text-align: center;
+    //margin-left: sx(2.5);
+
   }
 
   .query-btn {
@@ -244,83 +270,21 @@ export default {
     color: var(--md-sys-color-on-primary);
   }
 }
-//.select {
-//  .group {
-//    margin-top: 40rpx;
-//    display: flex;
-//
-//    .select-scroll {
-//      white-space: nowrap;
-//      width: 100%;
-//    }
-//
-//    .select-item {
-//      display: inline-block;
-//      width: 150rpx;
-//      text-align: center;
-//      border-right: #3a3a3a solid 1px;
-//
-//      &:first-child {
-//        border-left: #3a3a3a solid 1px;
-//      }
-//
-//      .text {
-//        width: 100%;
-//        text-align: center;
-//        font-size: 40rpx;
-//        color: #959595;
-//      }
-//    }
-//
-//    .active {
-//      background-color: #cdcfd5;
-//
-//      .text {
-//        color: #5489f5;
-//      }
-//    }
-//  }
-//}
 
 .scroll-table {
-  height: calc(100vh - sx(20) - var(--status-bar-height));
+  height: calc(100vh - sx(25) - var(--status-bar-height));
 
-  .color-red {
-    color: red;
-  }
-}
-
-.btn-evaluate {
-  //width: 30rpx;
-  //height: 60rpx;
-  font-size: 30rpx;
-}
-
-.detail-modal {
-  border-radius: 20rpx;
-  border: 1px #fff solid;
-  background-color: #fff;
-  width: 90vw;
-
-  .name {
-    height: 50rpx;
-    width: 100%;
-    font-size: 35rpx;
+  .table-wrapper {
+    gap: sx(2.5);
     display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ok {
-    margin: 0 auto;
-    width: 90%;
+    flex-direction: column;
   }
 }
 
 .content {
   padding-left: sx(2.5);
   padding-right: sx(2.5);
-  margin-top: sx(2.5);
+  //margin-top: sx(2.5);
 
   .card-content {
     height: 100%;
@@ -357,5 +321,116 @@ export default {
       justify-content: flex-end;
     }
   }
+}
+
+@media (orientation: landscape) {
+  .md-dialog-surface {
+    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
+    max-height: calc(100vh - sx(30) - var(--status-bar-height));
+    max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
+    //height: $height;
+    width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
+  }
+}
+
+@media (orientation: portrait) {
+  .md-dialog-surface {
+    --test: 0px;
+    $width: calc((90vw + sx(90)) / 2);
+    max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
+    max-width: calc(100vw - sx(15) - var(--test));
+    //height: calc($width / 90 * 100);
+    width: $width;
+  }
+}
+
+.md-dialog-surface {
+  //width: 85vw; /* 移动端常见宽度 */
+  //max-width: 320px;
+  //overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  //box-sizing: border-box;
+
+  .content {
+    padding: sx(5);
+  }
+}
+
+/* 标题区域 */
+.dialog-header {
+  margin-bottom: sx(4);
+
+  .dialog-title {
+    display: block;
+    font-size: sx(7);
+    font-weight: 600;
+    //margin-bottom: 4px;
+  }
+}
+
+/* 空状态 */
+.empty-state {
+  padding: sx(5);
+  text-align: center;
+  color: var(--md-sys-color-on-surface-variant);
+  //font-size: sx(4.5);
+}
+
+/* 列表样式 */
+.score-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* 左侧文字 */
+  .item-main {
+    display: flex;
+    flex-direction: column;
+
+    .item-name {
+      font-size: sx(5); /* Subtitle 1 */
+    }
+
+    .item-meta {
+      display: flex;
+      align-items: center;
+
+      .meta-text {
+        font-size: sx(3.5); /* Caption */
+        color: var(--md-sys-color-on-surface-variant);
+      }
+    }
+  }
+
+  /* 右侧分数 */
+  .item-score-wrapper {
+    display: flex;
+    align-items: baseline;
+
+    .score-value {
+      font-size: sx(5.5); /* Headline 5 */
+      font-weight: 500;
+      color: var(--md-sys-color-primary); /* 重点数据使用主色 */
+    }
+
+    .score-label {
+      font-size: sx(4.5);
+      color: var(--md-sys-color-on-surface-variant);
+    }
+  }
+}
+
+/* 底部按钮区域 */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end; /* 按钮靠右 */
+  margin-top: sx(2.5);
 }
 </style>

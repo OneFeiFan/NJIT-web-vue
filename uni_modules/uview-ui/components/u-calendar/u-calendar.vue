@@ -67,9 +67,9 @@
 import uHeader from './header.vue'
 import uMonth from './month.vue'
 import props from './props.js'
-import util from './util.js'
 import dayjs from '../../libs/util/dayjs.js'
 import Calendar from '../../libs/util/calendar.js'
+
 /**
  * Calendar 日历
  * @description  此组件用于单个选择日期，范围选择日期等，日历被包裹在底部弹起的容器中.

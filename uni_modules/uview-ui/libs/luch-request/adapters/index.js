@@ -1,7 +1,7 @@
 import buildURL from '../helpers/buildURL'
 import buildFullPath from '../core/buildFullPath'
 import settle from '../core/settle'
-import { isUndefined } from '../utils'
+import {isUndefined} from '../utils'
 
 /**
  * 返回可选值存在的配置

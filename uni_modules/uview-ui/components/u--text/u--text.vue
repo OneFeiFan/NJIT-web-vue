@@ -34,6 +34,7 @@
  */
 import uvText from "../u-text/u-text.vue";
 import props from "../u-text/props.js";
+
 export default {
     name: "u--text",
     mixins: [uni.$u.mpMixin, props, uni.$u.mixin],

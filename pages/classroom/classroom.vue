@@ -1,42 +1,36 @@
 <template>
   <view class="container" :style="[theme,SXData]">
     <!-- 头部控制栏 -->
-    <material-nav-bar>
+    <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-secondary-container)"
+        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
                    class="icon-left"/>
-
         <view class="title">空教室查询</view>
-
-        <uni-icons type="loop" size="" @click="" class="icon-right"
-                   color="rgba(255, 255, 255, 0)"/>
+        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
     <!-- 选择区 -->
     <view class="main">
       <view class="select" id="select">
-        <material-list>
+        <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-secondary-container)">
           <!--   日期选择区     -->
-          <material-list-cell @click="openDatePicker" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell @click="openDatePicker">
             <view class="list-content">
               <zui-svg-icon icon="md-event_available" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view>日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell @click="pickBuilding = true" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell @click="pickBuilding = true">
             <view class="list-content">
               <zui-svg-icon icon="md-location" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view class="title">地点：{{ building }}</view>
             </view>
           </material-list-cell>
-          <material-list-cell :showLeftText="false" color="var(--md-sys-color-surface-container)"
-                              backgroundColor="var(--md-sys-color-secondary-container)">
+          <material-list-cell :showLeftText="false">
             <view class="group">
               <woTag mult row :options="coursesList" @changeSelect="onChangeTagOne"
-                     color="var(--md-sys-color-primary-fixed)"
-                     backgroundColor="var(--md-sys-color-secondary)" fontColor="var(--md-sys-color-on-secondary)"
+                     color="var(--md-sys-color-on-secondary)"
+                     backgroundColor="var(--md-sys-color-secondary)"
                      :activateStyle="{'background-color': 'var(--md-sys-color-primary)', 'color': 'var(--md-sys-color-on-primary)'}"/>
             </view>
           </material-list-cell>
@@ -96,7 +90,7 @@ import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
 import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
-import {mx, SXData} from "@/components/material-uni/sx"
+import {SXData} from "@/components/material-uni/sx"
 import {getColor, getTheme} from "@/components/material-uni/colors";
 
 export default {
@@ -232,11 +226,6 @@ export default {
   onLoad() {
     this.refreshTheme()
   },
-  onReady() {
-  },
-  onShow() {
-
-  },
   methods: {
     getColor,
     refreshTheme(){
@@ -298,14 +287,13 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: var(--md-sys-color-secondary-container);
+  background-color: var(--md-sys-color-surface);
 }
 
 .select {
   .list-content {
     display: flex;
     align-items: center;
-    color: var(--md-sys-color-on-secondary-container);
   }
 
   .group {
@@ -331,7 +319,7 @@ export default {
   flex: 1;
 
   .table-container {
-    height: calc(100vh - var(--status-bar-height) - sx(55));
+    height: calc(100vh - var(--status-bar-height) - sx(60));
   }
 
   @media (orientation: landscape) {
@@ -341,7 +329,7 @@ export default {
     justify-content: space-between; /* 根据需要调整 */
 
     .table-container {
-      height: calc(100vh - var(--status-bar-height) - sx(10));
+      height: calc(100vh - var(--status-bar-height) - sx(15));
     }
 
     .select {

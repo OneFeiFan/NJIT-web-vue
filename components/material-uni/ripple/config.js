@@ -23,7 +23,6 @@
   }
 
 const DEFAULT_CONFIG = {
-  color: '#fff',
   opacity: 0.3,
   duration: 380,
   transition: 'ease-out',

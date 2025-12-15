@@ -8,6 +8,7 @@
  * @FilePath     : /u-view2.0/uview-ui/libs/config/props/navbar.js
  */
 import color from '../color'
+
 export default {
     // navbar 组件
     navbar: {

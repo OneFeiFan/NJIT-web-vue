@@ -2,7 +2,7 @@
   <view class="tag-layout">
     <scroll-view scroll-x="true" :class="{'scroll': row}">
       <materialButton
-          :color="color" :opacity="opacity" :transition="transition" :duration="duration" :backgroundColor="BackgroundColor(item)" :fontColor="fontColor"
+          :color="color" :opacity="opacity" :transition="transition" :duration="duration" :backgroundColor="BackgroundColor(item)"
           size="small"
           v-for="(item, index) in options"
           :key="index"
@@ -23,6 +23,7 @@
 import materialButton from "@/components/material-uni/material-button/material-button.vue";
 import {mx} from "@/components/material-uni/sx";
 import {DEFAULT_RIPPLE_PROPS} from "@/components/material-uni/ripple/config";
+
 export default {
   name: 'tag-list',
   components: {
@@ -83,10 +84,6 @@ export default {
     limit: {
       type: Number,
       default: undefined
-    },
-    fontColor:{
-      type: String,
-      default: '#000'
     },
     ...DEFAULT_RIPPLE_PROPS
   },
