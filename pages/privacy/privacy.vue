@@ -84,7 +84,8 @@ export default {
   color: var(--md-sys-color-on-surface);
 
   .scroll-table {
-    height: calc(100vh - sx(15) - var(--status-bar-height));
+    flex: 1;
+    overflow: hidden;
   }
 }
 </style>

@@ -8,9 +8,9 @@
         <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
       </view>
     </material-nav-bar>
-    <view class="footer">
-      <zero-markdown-view :markdown="content" themeColor="#000"></zero-markdown-view>
-    </view>
+    <scroll-view scroll-y="true" class="scroll-table">
+      <zero-markdown-view :markdown="content" themeColor="#000"/>
+    </scroll-view>
   </view>
 </template>
 
@@ -48,7 +48,7 @@ export default {
       },
       success: (res) => {
         if(res.statusCode === 200){
-          this.content = `${res.data.dev}`;
+          this.content = `${res.data.FAQ}`;
         }
       }
     });
@@ -82,5 +82,10 @@ export default {
   flex-direction: column;
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
+
+  .scroll-table {
+    flex: 1;
+    overflow: hidden;
+  }
 }
 </style>
