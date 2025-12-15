@@ -35,7 +35,7 @@
                       icon="visibility_off"/>
       </material-button>
     </view>
-
+    <welcome :visible="showWelcome" @close="showWelcome = false"></welcome>
     <!-- 2. 引入隐藏管理弹窗 -->
     <hidden-course-dialog :list="hiddenCourses" :visible="showHiddenManager" @close="showHiddenManager = false"
                           @restore="handleRestoreFromManager"/>
@@ -61,6 +61,7 @@ import CourseDialog from '@/components/lpx-timetable/coursedialog.vue';
 import HiddenCourseDialog from '@/components/lpx-timetable/hiddendialog.vue';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MySwipeItem from "@/components/material-uni/my-swipe/my-swipe-item.vue";
+import Welcome from "@/pages/curriculums/welcome.vue";
 
 export default {
   computed: {
@@ -69,7 +70,7 @@ export default {
     }
   },
   components: {
-    MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
+    Welcome, MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
   },
   data() {
     return {
@@ -157,6 +158,7 @@ export default {
       },
       hiddenCourses: [], // 后端返回的完整列表
       showHiddenManager: false, // 控制新弹窗显示
+      showWelcome: false, // 控制欢迎页显示
     };
   },
   onLoad() {
@@ -203,6 +205,11 @@ export default {
           this.timetableData = value.validTimeCourses;
           this.other = value.nullTimeCourses;
           this.hiddenCourses = value.hiddenCourses || [];
+          let welcome = uni.getStorageSync("welcome")
+          if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
+            this.showWelcome = true;
+            uni.setStorageSync("welcome", "1.2.5")
+          }
         }
       }).catch(res => {
         if (forceRefresh) {
@@ -243,10 +250,14 @@ export default {
             });
           }, 500)
         }
-        console.log(res.data.hiddenCourses)
         this.other = res.data.nullTimeCourses
         this.timetableData = res.data.validTimeCourses
         this.hiddenCourses = res.data.hiddenCourses || [];
+        let welcome = uni.getStorageSync("welcome")
+        if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
+          this.showWelcome = true;
+          uni.setStorageSync("welcome", "1.2.5")
+        }
       }).catch(res => {
         if (forceRefresh) {
           setTimeout(() => {
@@ -389,7 +400,7 @@ export default {
         weekIndex = 6
       }
       return weekIndex
-    },
+    }
   }
 };
 </script>
