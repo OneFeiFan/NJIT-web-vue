@@ -42,6 +42,7 @@
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
+    <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
   </view>
 </template>
 
