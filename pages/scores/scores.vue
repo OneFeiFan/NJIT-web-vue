@@ -108,7 +108,6 @@
       </view>
       </material-card>
     </uni-popup>
-
   </view>
 </template>
 

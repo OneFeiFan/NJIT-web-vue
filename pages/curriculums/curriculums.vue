@@ -11,7 +11,7 @@
                    @click="update(true)"/>
       </view>
     </material-nav-bar>
-    <my-swipe ref="swiper" :default-index="week" :loop="true" @change="changeSwipe">
+    <my-swipe class="swipe" ref="swiper" :default-index="week" :loop="true" @change="changeSwipe">
       <my-swipe-item v-for="(w, index) in weeks" :key="w">
         <timetable
             :courses="timetableData"
@@ -409,6 +409,13 @@ export default {
 .container {
   height: 100vh;
   background-color: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+
+  .swipe{
+    flex: 1;
+    overflow: hidden;
+  }
 }
 
 .float-btn {
@@ -416,21 +423,5 @@ export default {
   bottom: sx(25); // 根据你的 TabBar 高度调整
   right: sx(6);
   z-index: 5;
-
-  //.badge {
-  //  position: absolute;
-  //  top: -5px;
-  //  right: -5px;
-  //  background-color: var(--md-sys-color-error);
-  //  color: white;
-  //  font-size: 10px;
-  //  width: 18px;
-  //  height: 18px;
-  //  border-radius: 50%;
-  //  display: flex;
-  //  align-items: center;
-  //  justify-content: center;
-  //  font-weight: bold;
-  //}
 }
 </style>
