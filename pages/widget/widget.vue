@@ -22,7 +22,7 @@
         <br>
         不同手机厂商机制不同，比如小米系统需要手动授予桌面快捷方式权限。其他系统请自行尝试，存在不能自动创建小部件的情况，此时可以尝试在桌面手动创建小部件。
         <br>
-        <uni-link href="https://www.baidu.cn" text="手动创建教程：点这儿"></uni-link>
+        <uni-link href="https://www.bilibili.com/video/BV121mqBPEPc/" text="使用创建教程：点这儿"></uni-link>
       </text>
     </view>
   </view>
