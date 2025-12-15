@@ -21,19 +21,6 @@ export default {
       }
     });
     uni.$emit('ThemeUpdate')
-    // console.log(currPage.$vm.test())
-    // if (!currPage.route.includes("curriculums") && !currPage.route.includes("notice")) {
-    //   uni.redirectTo({
-    //     url: "/" + currPage.route
-    //   })
-    // } else {
-    //   console.log("非课程页面")
-    //   uni.reLaunch({
-    //     url: "/" + currPage.route
-    //   })
-    //   console.log("非课程页面")
-    // }
-    // 根据res.theme动态调整样式或逻辑
   },
   onLaunch: function () {
     // #ifdef APP-PLUS
@@ -46,12 +33,22 @@ export default {
     } else {
       setTheme(themeName.replace('dark_', ''));
     }
+
+    // 重写openWeb方法
+    plus.runtime.openWeb = function(options) {
+      // 提取URL参数（兼容字符串和对象传参）
+      var url = (typeof options === 'string') ? options : (options && options.url);
+
+      if (url) {
+        // 核心：调用openURL实现外部浏览器打开
+        plus.runtime.openURL(url);
+      } else {
+        console.error("Hook failed: Invalid URL provided to openWeb");
+      }
+    };
     // #endif
     const systemInfo = uni.getSystemInfoSync();
     console.log('App Launch')
-    // 获取当前app的版本
-// 应用程序版本号
-// 条件编译，只在APP渲染
 // #ifdef APP
     plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
     if (this.$manager.isSmartUpdate() && !this.$manager.checkRequestInstallPackagePermission()) {
@@ -72,6 +69,7 @@ export default {
         }
       })
     }
+    // 获取当前app的版本
     let version_number = systemInfo.appWgtVersion;
     uni.request({
       url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
