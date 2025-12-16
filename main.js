@@ -1,19 +1,20 @@
 import App from './App'
 import uView from '@/uni_modules/uview-ui'
-// import store from './store';
 import {updateRippleConfig} from "@/components/material-uni/ripple/config";
-import {getThemeName, setTheme} from "@/components/material-uni/colors";
+import {themeStore,getColor} from "@/components/material-uni/colors";
 import {SvgIconLib} from "@/static/svg-icons-lib";
 import {SvgIconLib as MaterialFilled} from "@/uni_modules/zui-material-icons/static/material-filled";
 import materialTabBar from '@/components/material-uni/material-tab-bar/material-tab-bar.vue'
 import moment from "moment";
 
 moment.locale('zh-cn');
-// Vue.prototype.$store = store;
+
 // #ifdef APP-PLUS
 import {Core} from "@/uni_modules/fuckingNJIT"
 Vue.prototype.$manager = new Core();
 // #endif
+
+Vue.prototype.getColor = getColor;
 
 SvgIconLib.registerCollection("material-filled", MaterialFilled);
 
@@ -30,7 +31,18 @@ Vue.use(materialTabBar,[
   }
 ])
 
-setTheme(getThemeName())
+Vue.mixin({
+  computed: {
+    // 页面直接用 :style="themeStyle"
+    themeStyle() {
+      return themeStore.styleString;
+    },
+    // 如果 JS 逻辑里偶尔要判断是不是暗黑模式
+    isDarkMode() {
+      return themeStore.currentThemeName.includes('dark');
+    }
+  }
+})
 updateRippleConfig({
   opacity: 0.085,
   transition: "ease-out",
@@ -38,11 +50,6 @@ updateRippleConfig({
   backgroundColor: "var(--md-sys-color-surface)"
 })
 
-//初始化主题，从本地存储中获取之前保存的主题
-const savedTheme = uni.getStorageSync('currentTheme');
-if (savedTheme && store.state.themes[savedTheme]) {
-  store.commit('changeTheme', savedTheme);
-}
 Vue.use(uView)
 // #ifndef VUE3
 import Vue from 'vue'

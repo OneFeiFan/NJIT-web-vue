@@ -3,7 +3,7 @@
     <view class="menu">
       <touch-ripple color="var(--md-sys-color-primary-fixed)"
                     backgroundColor="var(--md-sys-color-tertiary)">
-        <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"></status-bar>
+        <status-bar backgroundColor="var(--md-sys-color-on-tertiary-container)"/>
         <view class="menu-content">
           <view class="container">
             <image src="@/static/logo.png" class="logo"></image>

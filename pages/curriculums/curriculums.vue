@@ -1,5 +1,5 @@
 <template>
-  <view :style="[theme,SXData]" class="container">
+  <view :style="themeStyle+SXData" class="container">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="--md-sys-color-on-primary" size="" type="bars"
@@ -43,20 +43,19 @@
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
     <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
-    <material-tab-bar :update="theme['--md-sys-color-primary']" color="var(--md-sys-color-outline)"/>
+    <material-tab-bar color="var(--md-sys-color-outline)"/>
   </view>
 </template>
 
 <script>
+//#ifdef H5
+import {http} from "@/static/util/request";
+//#endif
 import Timetable from '@/components/lpx-timetable/lpx-timetable'
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialTabBar from "@/components/material-uni/material-tab-bar/material-tab-bar.vue";
 import MySwipe from "@/components/material-uni/my-swipe/my-swipe.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
-import {getColor, getTheme} from "@/components/material-uni/colors";
-//#ifdef H5
-import {http} from "@/static/util/request";
-//#endif
 import CourseDialog from '@/components/lpx-timetable/coursedialog.vue';
 import HiddenCourseDialog from '@/components/lpx-timetable/hiddendialog.vue';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
@@ -74,7 +73,6 @@ export default {
   },
   data() {
     return {
-      theme: {},
       isDrawerOpen: false,
       week: 0,
       timeSlots: [{
@@ -162,8 +160,6 @@ export default {
     };
   },
   onLoad() {
-    this.refreshTheme()
-    uni.$on('ThemeUpdate', this.refreshTheme)
     uni.$on('refreshTimetable', () => {
       this.update(true)
     })
@@ -180,11 +176,7 @@ export default {
     })
   },
   methods: {
-    getColor,
     mx,
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     update(forceRefresh) {
       if (forceRefresh) {
         uni.showLoading({

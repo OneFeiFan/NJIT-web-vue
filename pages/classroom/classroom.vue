@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="[theme,SXData]">
+  <view class="container" :style="themeStyle+SXData">
     <!-- 头部控制栏 -->
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
@@ -16,13 +16,13 @@
           <!--   日期选择区     -->
           <material-list-cell @click="openDatePicker">
             <view class="list-content">
-              <zui-svg-icon icon="md-event_available" :color="getColor('--md-sys-color-on-secondary-container')"/>
+              <zui-svg-icon icon="event_available" collection="material-filled" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view>日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
           <material-list-cell @click="pickBuilding = true">
             <view class="list-content">
-              <zui-svg-icon icon="md-location" :color="getColor('--md-sys-color-on-secondary-container')"/>
+              <zui-svg-icon icon="location_on" collection="material-filled" :color="getColor('--md-sys-color-on-secondary-container')"/>
               <view class="title">地点：{{ building }}</view>
             </view>
           </material-list-cell>
@@ -91,7 +91,6 @@ import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
 import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
 import {SXData} from "@/components/material-uni/sx"
-import {getColor, getTheme} from "@/components/material-uni/colors";
 
 export default {
   computed: {
@@ -115,7 +114,6 @@ export default {
   },
   data() {
     return {
-      theme:{},
       pickBuilding: false,
       dateRange: "yyyy-mm-dd/yyyy-mm-dd",
       coursesList: [{
@@ -224,13 +222,8 @@ export default {
     }
   },
   onLoad() {
-    this.refreshTheme()
   },
   methods: {
-    getColor,
-    refreshTheme(){
-      this.theme = getTheme()
-    },
     onChangeTagOne(e) {
       console.log(e)
       // [{"value":1,"label":"第一节"}]

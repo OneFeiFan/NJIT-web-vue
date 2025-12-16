@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import {getTheme} from "@/components/material-uni/colors";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
@@ -168,7 +167,6 @@ export default {
     }
   },
   methods: {
-    getTheme,
     maskChange(e) {
       if (!e.show) {
         this.$emit("close");

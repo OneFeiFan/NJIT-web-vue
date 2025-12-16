@@ -1,5 +1,5 @@
 <template>
-  <view class="login-container" :style="[theme, SXData]">
+  <view class="login-container" :style="themeStyle+SXData">
     <!-- MD2 风格通常 Card 圆角较小，阴影较深 -->
     <material-card background-color="var(--md-sys-color-surface-container-low)" class="login-box "
                    color="var(--md-sys-color-on-surface)">
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import {getTheme} from '@/components/material-uni/colors';
 import {SXData} from '@/components/material-uni/sx';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
@@ -91,7 +90,6 @@ export default {
   },
   data() {
     return {
-      theme: {},          // 主题样式
       username: '',
       password: '',
       showPassword: false,
@@ -102,7 +100,6 @@ export default {
   },
   // uni‑app 生命周期：页面加载完成后执行
   onReady() {
-    this.refreshTheme();
     this.initRemember();
   },
   methods: {
@@ -123,12 +120,6 @@ export default {
         }
       }
     },
-
-    /** 刷新主题 */
-    refreshTheme() {
-      this.theme = getTheme();
-    },
-
     /** 登录主流程（async/await） */
     async handleLogin() {
       if (!this.username || !this.password) {

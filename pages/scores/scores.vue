@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="[theme,SXData]">
+  <view class="container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
@@ -112,13 +112,12 @@
 </template>
 
 <script>
-import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
-import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
-import {mx, SXData} from "@/components/material-uni/sx";
-import {getTheme} from "@/components/material-uni/colors";
 //#ifdef H5
 import {http} from "@/static/util/request";
 //#endif
+import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
+import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
+import {mx, SXData} from "@/components/material-uni/sx";
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
@@ -134,7 +133,6 @@ export default {
   },
   data() {
     return {
-      theme: {},
       className: 'test',
       detail: [],
       tableData: [{
@@ -163,13 +161,9 @@ export default {
     this.update(false)
   },
   onLoad() {
-    this.refreshTheme()
   },
   methods: {
     mx,
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     onYearChange(e) {
       this.selectedYear = this.yearOptions[e.detail.value];
     },

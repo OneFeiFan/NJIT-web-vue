@@ -1,5 +1,5 @@
 <template>
-  <view class="login-container" :style="[theme, SXData]">
+  <view class="login-container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
@@ -87,7 +87,6 @@
 </template>
 
 <script>
-import {getTheme} from '@/components/material-uni/colors';
 import {SXData} from '@/components/material-uni/sx';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
@@ -104,7 +103,6 @@ export default {
   },
   data() {
     return {
-      theme: {},          // 主题样式
       username: '',
       password: '',
       showPassword: false,
@@ -114,7 +112,6 @@ export default {
     };
   },
   onReady() {
-    this.refreshTheme();
     this.initRemember();
   },
   methods: {
@@ -134,11 +131,6 @@ export default {
           this.rememberMe = false;
         }
       }
-    },
-
-    /** 刷新主题 */
-    refreshTheme() {
-      this.theme = getTheme();
     },
     back(){
       uni.navigateBack()

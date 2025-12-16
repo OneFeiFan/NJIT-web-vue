@@ -5,10 +5,15 @@
     <view class="material-tab-bar">
       <view class="material-tab-bar-item" v-for="(value, key) in pages" @click="changePage(key)">
         <view class="wrap">
-          <zui-svg-icon :height="mx(6.5)" :width="mx(6.5)" class="material-tab-bar-icon" collection="material-filled"
+          <zui-svg-icon v-if="value.active" :height="mx(6.5)" :width="mx(6.5)" class="material-tab-bar-icon"
+                        collection="material-filled"
                         :icon="value.icon"
-                        :color="value.active ? tabActiveColor() : tabInactiveColor()"/>
-          <text class="material-tab-bar-name" :style="{color:value.active ? tabActiveColor() : tabInactiveColor()}">
+                        :color='getColor("--md-sys-color-primary")'/>
+          <zui-svg-icon v-else :height="mx(6.5)" :width="mx(6.5)" class="material-tab-bar-icon"
+                        collection="material-filled"
+                        :icon="value.icon"
+                        :color='getColor("--md-sys-color-outline")'/>
+          <text class="material-tab-bar-name" :class="value.active ? '' : 'inactive'">
             {{ value.name }}
           </text>
         </view>
@@ -21,7 +26,6 @@
 import zuiSvgIcon from "@/uni_modules/zui-svg-icon/components/zui-svg-icon/zui-svg-icon.vue";
 import TouchRipple from "../ripple/component.vue";
 import {DEFAULT_RIPPLE_PROPS} from "@/components/material-uni/ripple/config";
-import {tabActiveColor, tabInactiveColor} from "@/components/material-uni/colors";
 import {mx} from "@/components/material-uni/sx";
 
 export default {
@@ -31,10 +35,6 @@ export default {
     TouchRipple
   },
   props: {
-    update:{
-      type:String,
-      default:''
-    },
     pages: {
       type: Object,
       default: () => ({})
@@ -65,16 +65,8 @@ export default {
     }
     Vue.component(this.name, this);
   },
-  watch: {
-    update(newVal) {
-      // 强制重新渲染所有图标
-      this.$forceUpdate();
-    }
-  },
   methods: {
     mx,
-    tabInactiveColor,
-    tabActiveColor,
     shadow() {
       return `0 ${this.mx(-0.25)} ${this.mx(1)} rgba(0, 0, 0, 0.1)`;
     },
@@ -123,9 +115,13 @@ export default {
 
       .material-tab-bar-name {
         font-size: sx(3.5);
+        color: var(--md-sys-color-primary);
+      }
+
+      .inactive {
+        color: var(--md-sys-color-outline);
       }
     }
-
   }
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
-  <touch-ripple :color="getColor" :opacity="opacity" :duration="duration" :transition="transition" :background-color="background" @click="handleClick">
+  <touch-ripple :color="getFontColor" :opacity="opacity" :duration="duration" :transition="transition" :background-color="background" @click="handleClick">
     <view class="material-list-cell">
       <view class="left-text" v-if="showLeftText">
         <slot></slot>
       </view>
       <slot v-else></slot>
       <view class="right-icon" v-if="rightIcon">
-        <uni-icons type="right" size="" :color="getColor"/>
+        <uni-icons type="right" size="" :color="getFontColor"/>
       </view>
     </view>
   </touch-ripple>
@@ -37,7 +37,7 @@ export default {
     ...DEFAULT_RIPPLE_PROPS
   },
   computed:{
-    getColor(){
+    getFontColor(){
       return this.color || this.materialList.color
     },
     background(){

@@ -1,38 +1,15 @@
 <script>
-import {getThemeName, setTheme} from "@/components/material-uni/colors";
+import {themeLogic } from "@/components/material-uni/colors";
 export default {
   onThemeChange(res) {
-    const themeName = getThemeName();
-    console.log('系统主题变化:', res.theme, themeName); // 输出"dark"或"light"
-
-    if (res.theme === 'dark') {
-      if (!themeName.includes('dark')) {
-        setTheme("dark_" + themeName);
-      }
-    } else {
-      setTheme(themeName.replace('dark_', ''));
-    }
-    var pages = getCurrentPages(); //获取所有页面的数组对象
-    var currPage = pages[pages.length - 1]; //当前页面
-    pages.forEach(page => {
-      console.log(page.route)
-      if (page.$vm && page.$vm.refreshTheme) {
-        page.$vm.refreshTheme();
-      }
-    });
-    uni.$emit('ThemeUpdate')
+    themeLogic.handleSystemChange(res.theme);
   },
   onLaunch: function () {
+    // 初始化主题
+    themeLogic.init();
     // #ifdef APP-PLUS
-    const themeName = getThemeName();
-    var style = plus.navigator.getUIStyle();
-    if (style === 'dark') {
-      if (!themeName.includes('dark')) {
-        setTheme("dark_" + themeName);
-      }
-    } else {
-      setTheme(themeName.replace('dark_', ''));
-    }
+    const style = plus.navigator.getUIStyle();
+    themeLogic.handleSystemChange(style);
 
     // 重写openWeb方法
     plus.runtime.openWeb = function(options) {

@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="[theme,SXData]">
+  <view class="container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"/>
@@ -55,7 +55,6 @@
 <script>
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
-import {getTheme} from "@/components/material-uni/colors";
 import {mx, SXData} from "@/components/material-uni/sx";
 import MaterialProgress from "@/components/material-uni/material-progress/material-progress.vue";
 // #ifdef H5
@@ -71,12 +70,11 @@ export default {
   components: {MaterialProgress, MaterialNavBar, MaterialCard},
   data() {
     return {
-      theme: {},
       datas: {},
     }
   },
   onLoad() {
-    this.refreshTheme()
+
   },
   onReady() {
     this.update(false)
@@ -85,9 +83,6 @@ export default {
   },
   methods: {
     mx,
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     back() {
       uni.navigateBack();
     },
