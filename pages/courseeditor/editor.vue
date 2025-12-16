@@ -1,5 +1,5 @@
 <template>
-  <view class="editor-container" :style="[theme,SXData]">
+  <view class="editor-container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-primary)"
@@ -142,7 +142,6 @@
 //#ifdef H5
 import {http} from "@/static/util/request";
 //#endif
-import {getTheme} from "@/components/material-uni/colors";
 import {SXData} from "@/components/material-uni/sx";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
@@ -167,7 +166,6 @@ export default {
   },
   data() {
     return {
-      theme: {},
       // 基础数据源
       days: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
       nodes: Array.from({
@@ -198,7 +196,6 @@ export default {
     };
   },
   onLoad(options) {
-    this.refreshTheme()
     if (options.mode === 'create') {
     } else if (options.course) {
       // 2. 编辑模式
@@ -228,9 +225,6 @@ export default {
     }
   },
   methods: {
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     // Picker 事件
     onDayChange(e) {
       this.form.day = e.detail.value + 1;

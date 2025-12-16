@@ -86,7 +86,6 @@
 <script>
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import {mx, mxValue, SXData} from "@/components/material-uni/sx";
-import {getTheme} from "@/components/material-uni/colors";
 import TouchRipple from "@/components/material-uni/ripple/component.vue";
 
 export default {
@@ -251,7 +250,7 @@ export default {
     }
   },
   methods: {
-    mx, getTheme, mxValue,
+    mx,  mxValue,
     getDateOfWeek(dayName) {
       if (!this.thisWeek) return '';
       const dayIndex = this.text2num[dayName];

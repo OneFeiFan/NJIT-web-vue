@@ -1,5 +1,5 @@
 <template>
-  <view :style="[theme,SXData]" class="container">
+  <view :style="themeStyle+SXData" class="container">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
@@ -42,7 +42,6 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import {SXData} from "@/components/material-uni/sx";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
-import {getTheme} from "@/components/material-uni/colors";
 import AsyncSwitch from "@/components/helang-asyncSwitch/helang-asyncSwitch.vue";
 
 export default {
@@ -56,7 +55,6 @@ export default {
   },
   data() {
     return {
-      theme: {},
       pickType: false,
       typeNames: [[
         "校园网",
@@ -91,7 +89,6 @@ export default {
     // #endif
   },
   onLoad() {
-    this.refreshTheme()
   },
   onResize() {
 
@@ -100,9 +97,6 @@ export default {
 
   },
   methods: {
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     selectType({value}) {
       this.typeName = value[0];
     },

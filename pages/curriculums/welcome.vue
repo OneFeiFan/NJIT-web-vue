@@ -134,7 +134,6 @@
 			}
 		},
 		methods: {
-			getTheme,
 			startTimer() {
 				this.timeLeft = this.duration;
 				this.canClose = false;

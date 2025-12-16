@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="[theme,SXData]">
+  <view class="container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons type="left" size="" @click="back" color="var(--md-sys-color-on-primary)" class="icon-left"/>
@@ -39,7 +39,6 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import {mx, SXData} from "@/components/material-uni/sx";
-import {getTheme} from "@/components/material-uni/colors";
 
 export default {
   computed: {
@@ -50,12 +49,11 @@ export default {
   components: {UniIcons, MaterialCard, MaterialNavBar},
   data() {
     return {
-      theme:{},
+
       users: {},
     }
   },
   onLoad() {
-    this.refreshTheme();
   },
   onShow() {
     //#ifdef APP-PLUS
@@ -67,9 +65,6 @@ export default {
     //#endif
   },
   methods: {
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     mx,
     back() {
       uni.navigateBack();

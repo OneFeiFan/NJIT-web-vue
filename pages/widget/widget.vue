@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="[theme,SXData]">
+  <view class="container" :style="themeStyle+SXData">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="left"
@@ -33,7 +33,6 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import {SXData} from "@/components/material-uni/sx";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
-import {getTheme} from "@/components/material-uni/colors";
 import AsyncSwitch from "@/components/helang-asyncSwitch/helang-asyncSwitch.vue";
 
 export default {
@@ -47,7 +46,6 @@ export default {
   },
   data() {
     return {
-      theme:{},
       hasWidget: false,
     }
   },
@@ -57,7 +55,6 @@ export default {
     // #endif
   },
   onLoad() {
-    this.refreshTheme()
   },
   onResize() {
 
@@ -66,9 +63,6 @@ export default {
 
   },
   methods: {
-    refreshTheme() {
-      this.theme = getTheme()
-    },
     jump(page) {
       // this.isDrawerOpen = false;
       uni.navigateTo({

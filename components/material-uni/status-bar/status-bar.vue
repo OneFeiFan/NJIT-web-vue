@@ -1,25 +1,15 @@
 <template>
-  <view :style="{'background-color': '#ffffff00','width': '100vw','height': 'var(--status-bar-height)'}">
-    <!-- 这里是状态栏占位 -->
-  </view>
+  <view class="status-bar"/>
 </template>
 <script>
 export default {
   name: "status-bar",
-  props: {
-    backgroundColor: {
-      type: String,
-      default: '#fff'
-    }
-  },
-
-  // data() {
-  //   return {
-  //     backgroundColor: this.backgroundColor
-  //   }
-  // }
 }
 </script>
 <style scoped lang="scss">
-
+  .status-bar{
+    background-color: #ffffff00;
+    width: 100%;
+    height: var(--status-bar-height);
+  }
 </style>

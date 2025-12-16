@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import {getTheme} from "@/components/material-uni/colors";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 
@@ -72,7 +71,6 @@ export default {
     }
   },
   methods: {
-    getTheme,
     maskChange(e) {
       if (!e.show) {
         this.$emit("close");
