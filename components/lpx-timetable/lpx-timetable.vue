@@ -1,7 +1,7 @@
 <template>
   <view class="timetable">
     <!-- 顶部星期栏 -->
-    <view class="header">
+    <view class="header app-is-resizing">
       <view class="header-item" v-for="(item, index) in week" :key="item"
             :style="{ color: todayWeekIndex === index ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-on-surface-variant)' }">
         {{ item }}<br/>{{ getDateOfWeek(item) }}
@@ -10,7 +10,7 @@
 
     <!-- 课表主体 -->
     <view class="main">
-      <scroll-view scroll-y="true" class="scroll-Y">
+      <scroll-view scroll-y="true" class="scroll-Y app-is-resizing">
 
         <!-- 背景网格行（包含左侧时间） -->
         <view class="row" v-for="(item, index) in timetableType" :key="index">

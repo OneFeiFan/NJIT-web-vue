@@ -1,7 +1,7 @@
 <template>
   <uni-popup ref="CourseDialog" mask-background-color="#ffffff00" @change="maskChange">
     <material-card color="var(--md-sys-color-on-surface)" @click.stop>
-      <view class="dialog-card">
+      <view class="dialog-card app-is-resizing">
         <!-- A. 多课程切换区 (冲突时显示) -->
         <view v-if="hasConflict" class="conflict-tabs">
           <scroll-view class="tabs-scroll" scroll-x="true" show-scrollbar="false">
@@ -184,28 +184,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media (orientation: landscape) {
-  .dialog-card {
-    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
-    max-height: calc(100vh - sx(30) - var(--status-bar-height));
-    max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
-    //height: $height;
-    width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
-  }
-}
-
-@media (orientation: portrait) {
-  .dialog-card {
-    --test: 0px;
-    $width: calc((90vw + sx(90)) / 2);
-    max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
-    max-width: calc(100vw - sx(15) - var(--test));
-    //height: calc($width / 90 * 100);
-    width: $width;
-  }
-}
-
 .dialog-card {
+  width: sx(100);
+  height: max-content;
   padding: sx(5);
   box-sizing: border-box;
 

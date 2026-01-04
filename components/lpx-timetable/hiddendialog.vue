@@ -1,7 +1,7 @@
 <template>
   <uni-popup ref="HiddenDialog" mask-background-color="#ffffff00" @change="maskChange">
     <material-card color="var(--md-sys-color-on-surface)" @click.stop>
-      <view class="card">
+      <view class="card app-is-resizing">
         <!-- 标题栏 -->
         <view class="header">
           <text class="title">已隐藏课程 ({{ list.length }})</text>
@@ -92,32 +92,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media (orientation: landscape) {
-  .card {
-    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
-    max-height: calc(100vh - sx(30) - var(--status-bar-height));
-    max-width: calc(100 / 90 * calc(100vh - sx(30) - var(--status-bar-height)));
-    height: $height;
-    width: calc(100 / 90 * #{$height}); // 保持100:90的宽高比例
-  }
-}
-
-@media (orientation: portrait) {
-  .card {
-    --test: 0px;
-    $width: calc((90vw + sx(90)) / 2);
-    max-height: calc(calc(100vw - sx(15) - var(--test)) / 90 * 100);
-    max-width: calc(100vw - sx(15) - var(--test));
-    height: calc($width / 90 * 100);
-    width: $width;
-  }
-}
-
 .card {
   display: flex;
   flex-direction: column;
   padding: sx(5);
   box-sizing: border-box;
+  height: sx(110);
+  width: sx(100);
 }
 
 .header {
