@@ -69,20 +69,20 @@ export default {
   data() {
     return {
       isDrawerOpen: false,
-      noticeInformation: '暂无信息'
+      noticeInformation: '此功能因为某些原因下线。。。'
     }
   },
   onLoad() {
   },
   onShow() {
     // #ifdef APP-PLUS
-    this.$manager.getNoticeInformation().then(res => {
-		if (res.code === 200) {
-		  this.noticeInformation = res.data;
-		}else{
-			this.noticeInformation = "不晓得为啥,没获取到数据QAQ";
-		}
-    })
+    // this.$manager.getNoticeInformation().then(res => {
+		// if (res.code === 200) {
+		//   this.noticeInformation = res.data;
+		// }else{
+		// 	this.noticeInformation = "不晓得为啥,没获取到数据QAQ";
+		// }
+    // })
     // #endif
 
     // #ifdef H5
