@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="themeStyle+sxStyle">
+  <view class="container" :style="themeStyle">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"

@@ -1,5 +1,5 @@
 <template>
-  <view class="login-container" :style="themeStyle+sxStyle">
+  <view class="login-container" :style="themeStyle">
     <!-- MD2 风格通常 Card 圆角较小，阴影较深 -->
     <material-card background-color="var(--md-sys-color-surface-container-low)" class="login-box "
                    color="var(--md-sys-color-on-surface)">

@@ -40,10 +40,6 @@ Vue.mixin({
     themeStyle() {
       return themeStore.styleString;
     },
-    sxStyle() {
-      return SXState.styleStr;
-    },
-    // 如果 JS 逻辑里偶尔要判断是不是暗黑模式
     isDarkMode() {
       return themeStore.currentThemeName.includes('dark');
     }
