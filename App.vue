@@ -124,14 +124,6 @@ export default {
 
 <style lang="scss">
 /*每个页面公共css */
-//.uni-navbar__header-container {
-//  padding: 0 !important;
-//}
-//
-//.uni-navbar__header {
-//  padding: 0 !important;
-//}
-//
 .uni-table-loading {
   visibility: collapse;
 }

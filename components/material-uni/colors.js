@@ -328,12 +328,13 @@ export const themeLogic = {
 
     applyTheme(themeName, customColors = null) {
         uni.setStorageSync("APP_THEME", themeName);
+        themeStore.currentThemeName = themeName;
         // 处理圣诞彩蛋逻辑
         const today = new Date();
         const isXmasPeriod = today.getMonth() === 11 && (today.getDate() === 24 || today.getDate() === 25);
 
         // 如果是特定日期且随机选中，强制覆写 themeName
-        if (isXmasPeriod && Math.random() < 0.5 && !customColors) {
+        if (isXmasPeriod && !customColors) {
             const isDarkMode = themeName.includes('dark');
             const christmasThemes = isDarkMode
                 ? ["dark_xmas_red", "dark_xmas_green"]
@@ -346,9 +347,6 @@ export const themeLogic = {
         if (!customColors) {
             vars = staticThemes[themeName] || staticThemes["blue"];
         }
-
-        // C. 更新状态 (核心！)
-        themeStore.currentThemeName = themeName;
         themeStore.cssVars = vars;
 
         // 生成 style 字符串
@@ -361,14 +359,12 @@ export const themeLogic = {
         // if(customColors) {
         //     uni.setStorageSync("CUSTOM_THEME_COLORS", customColors);
         // }
-        // this.updateNativeUI(vars);
+        // this.updateNativeUI();
     },
 
     // 响应系统暗黑模式变化 (完美复刻你原来的逻辑)
     handleSystemChange(sysTheme) {
         let currentName = themeStore.currentThemeName;
-
-        console.log('系统主题变化:', sysTheme, '当前应用主题:', currentName);
 
         if (sysTheme === 'dark') {
             // 如果系统变黑，且当前不是黑，加上前缀
@@ -385,7 +381,7 @@ export const themeLogic = {
     generateDynamicTheme(baseColor) {
     },
 
-    updateNativeUI(vars) {
+    updateNativeUI() {
     }
 };
 

@@ -70,7 +70,6 @@
     {
       "path": "pages/test/test",
       "style": {
-        "navigationBarTitleText": "",
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }

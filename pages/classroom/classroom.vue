@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="themeStyle+SXData">
+  <view class="container" :style="themeStyle">
     <!-- 头部控制栏 -->
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">

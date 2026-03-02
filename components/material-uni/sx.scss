@@ -1,3 +1,7 @@
+:root {
+  --sx-base: calc(40vw + 60vh);
+}
+
 @function sx($num) {
-  @return calc(#{$num} * var(--base-ratio) * 1px);
+  @return calc(#{$num} * var(--sx-base) / 190);
 }

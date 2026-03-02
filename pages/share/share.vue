@@ -1,5 +1,5 @@
 <template>
-  <view class="container" :style="themeStyle+SXData">
+  <view class="container" :style="themeStyle">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
         <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
@@ -9,13 +9,13 @@
       </view>
     </material-nav-bar>
 
-    <view class="wrap" >
-    <material-card class="card" color="var(--md-sys-color-on-primary-container">
+    <view class="wrap">
+      <material-card color="var(--md-sys-color-on-primary-container">
       <view class="content">
         <view class="text-area">
-          觉得软件实用的话可以和同学分享一下哦。
+          觉得软件实用的话可以和同学分享一下
         </view>
-        <image class="share-img" mode="widthFix" src="@/static/qq.jpg"/>
+        <image class="share-img" mode="widthFix" src="@/static/qq.png"/>
       </view>
     </material-card>
     </view>
@@ -64,50 +64,47 @@ export default {
   align-items: center;
   width: 100%;
   height: calc(100vh - var(--status-bar-height) - sx(15));
-}
-
-.card {
-  font-size: sx(5);
-  box-sizing: border-box;
 
   .content {
-    padding: sx(5);
+    font-size: sx(5);
+    box-sizing: border-box;
+    display: flex;
+
   }
 }
 
 @media (orientation: portrait) {
-  .card {
-    --test: 0px;
-    $width: calc((90vw + sx(90)) / 2);
-    max-width: calc(100vw - sx(15) - var(--test));
-    width: $width;
-  }
-  .share-img {
-    width: 100%;
-    margin-top: sx(2);
+  .content {
+    width: sx(95);
+    padding: sx(5);
+    flex-direction: column;
+
+    .share-img {
+      width: 100%;
+      margin-top: sx(2);
+    }
   }
 }
 
-/* 横屏适配 */
-@media screen and (orientation: landscape) {
-  .card {
-    $height: calc((100vh - sx(30) - var(--status-bar-height) + sx(90)) / 2);
-    max-width: calc(100 / 80 * #{$height});
-    width: calc(100 / 80 * #{$height});
-
+@media (orientation: landscape) {
     .content {
-      display: flex;
+      width: sx(90);
+      align-items: center;
+      padding: sx(5) sx(5) sx(5) sx(0);
+
+      .text-area {
+        flex: 0.3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        writing-mode: tb;
+
+      }
+
+      .share-img {
+        flex: 0.7;
+        //margin-left: sx(2);
+      }
     }
-  }
-  .text-area {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .share-img {
-    flex: 2.5;
-    margin-top: 0;
-  }
 }
 </style>

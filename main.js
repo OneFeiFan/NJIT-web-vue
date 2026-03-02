@@ -1,7 +1,7 @@
 import App from './App'
 import uView from '@/uni_modules/uview-ui'
 import {updateRippleConfig} from "@/components/material-uni/ripple/config";
-import {themeStore,getColor} from "@/components/material-uni/colors";
+import {themeStore,getColor,rgbToHex} from "@/components/material-uni/colors";
 import {SvgIconLib} from "@/static/svg-icons-lib";
 import {SvgIconLib as MaterialFilled} from "@/uni_modules/zui-material-icons/static/material-filled";
 import materialTabBar from '@/components/material-uni/material-tab-bar/material-tab-bar.vue'
@@ -33,11 +33,12 @@ Vue.use(materialTabBar,[
 
 Vue.mixin({
   computed: {
-    // 页面直接用 :style="themeStyle"
+    themeColors(){
+      return themeStore.cssVars;
+    },
     themeStyle() {
       return themeStore.styleString;
     },
-    // 如果 JS 逻辑里偶尔要判断是不是暗黑模式
     isDarkMode() {
       return themeStore.currentThemeName.includes('dark');
     }

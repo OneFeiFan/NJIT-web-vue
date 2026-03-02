@@ -21,7 +21,6 @@ export default {
 <style scoped lang="scss">
 .nav-bar-container {
   width: 100%;
-  //background-color: #ffffff00;
   height: sx(15);
 }
 </style>
