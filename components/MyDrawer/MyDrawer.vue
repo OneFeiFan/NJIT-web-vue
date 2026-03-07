@@ -31,9 +31,9 @@
           <material-list-cell rightIcon @click="jump(`academicprogress`)">
             <text>学业进度</text>
           </material-list-cell>
-<!--                    <material-list-cell rightIcon @click="jump(`test`)">-->
-<!--                      <text>测试</text>-->
-<!--                    </material-list-cell>-->
+                    <material-list-cell rightIcon @click="jump(`test`)">
+                      <text>测试</text>
+                    </material-list-cell>
           <!--  #ifdef APP-PLUS  -->
           <material-list-cell rightIcon @click="jump(`usermanager`)">
             <text>用户管理</text>
