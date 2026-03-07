@@ -194,9 +194,9 @@ export default {
 
       this.$manager.getCurriculum(forceRefresh).then(value => {
         if (Object.keys(value).length > 0) {
-          this.timetableData = value.validTimeCourses;
-          this.other = value.nullTimeCourses;
-          this.hiddenCourses = value.hiddenCourses || [];
+          this.timetableData = Object.freeze(value.validTimeCourses);
+          this.other = Object.freeze(value.nullTimeCourses);
+          this.hiddenCourses = Object.freeze(value.hiddenCourses || []);
           let welcome = uni.getStorageSync("welcome")
           if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
             this.showWelcome = true;
