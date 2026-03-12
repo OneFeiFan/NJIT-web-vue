@@ -13,39 +13,42 @@
       <view class="section-title">基础运行权限</view>
       <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-surface)">
 
-        <material-list-cell rightIcon @click="handlePermission('Audio')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handlePermission('RecordAudio')">
           <view class="cell-content">
-            <text>麦克风 (环境音防沉迷)</text>
-            <text class="status-text" :class="{ 'status-on': status.isAudioOn }">
-              {{ status.isAudioOn ? '已授权' : '去授权' }}
-            </text>
+            <text>麦克风权限</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isRecordAudio }">-->
+<!--              {{ status.isRecordAudio ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isRecordAudioOn" @change="switchChange"/>
           </view>
         </material-list-cell>
 
-        <material-list-cell rightIcon @click="handlePermission('Notification')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handlePermission('NotificationService')">
           <view class="cell-content">
-            <text>通知权限 (前台服务保活)</text>
-            <text class="status-text" :class="{ 'status-on': status.isNotificationOn }">
-              {{ status.isNotificationOn ? '已授权' : '去授权' }}
-            </text>
+            <text>通知权限</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isNotificationServiceOn }">-->
+<!--              {{ status.isNotificationServiceOn ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isNotificationServiceOn" @change="switchChange"/>
           </view>
         </material-list-cell>
 
-        <material-list-cell rightIcon @click="handlePermission('Storage')">
-          <view class="cell-content">
-            <text>存储空间 (日志与配置保存)</text>
-            <text class="status-text" :class="{ 'status-on': status.isStorageOn }">
-              {{ status.isStorageOn ? '已授权' : '去授权' }}
-            </text>
-          </view>
-        </material-list-cell>
+<!--        <material-list-cell rightIcon @click="handlePermission('Storage')">-->
+<!--          <view class="cell-content">-->
+<!--            <text>存储空间 (日志与配置保存)</text>-->
+<!--            <text class="status-text" :class="{ 'status-on': status.isStorageOn }">-->
+<!--              {{ status.isStorageOn ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+<!--          </view>-->
+<!--        </material-list-cell>-->
 
-        <material-list-cell rightIcon @click="handlePermission('ExactAlarm')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handlePermission('ExactAlarm')">
           <view class="cell-content">
-            <text>精确闹钟 (定时唤醒与心跳)</text>
-            <text class="status-text" :class="{ 'status-on': status.isExactAlarmOn }">
-              {{ status.isExactAlarmOn ? '已授权' : '去授权' }}
-            </text>
+            <text>精确闹钟</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isExactAlarmOn }">-->
+<!--              {{ status.isExactAlarmOn ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isExactAlarmOn" :showLeftText="false" @change="switchChange"/>
           </view>
         </material-list-cell>
 
@@ -55,30 +58,32 @@
       <view class="section-title">高级系统权限</view>
       <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-surface)">
 
-        <material-list-cell rightIcon @click="handlePermission('UsageStats')">
-          <view class="cell-content">
-            <text>应用使用情况 (识别当前运行App)</text>
-            <text class="status-text" :class="{ 'status-on': status.isUsageStatsOn }">
-              {{ status.isUsageStatsOn ? '已授权' : '去授权' }}
-            </text>
-          </view>
-        </material-list-cell>
+<!--        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handlePermission('UsageStats')">-->
+<!--          <view class="cell-content">-->
+<!--            <text>应用使用情况</text>-->
+<!--&lt;!&ndash;            <text class="status-text" :class="{ 'status-on': status.isUsageStatsOn }">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ status.isUsageStatsOn ? '已授权' : '去授权' }}&ndash;&gt;-->
+<!--&lt;!&ndash;            </text>&ndash;&gt;-->
+<!--            <async-switch :checked="status.isUsageStatsOn" @change="switchChange"/>-->
+<!--          </view>-->
+<!--        </material-list-cell>-->
 
-        <material-list-cell rightIcon @click="handlePermission('Overlay')">
-          <view class="cell-content">
-            <text>悬浮窗 (桌面挂件/全局提示)</text>
-            <text class="status-text" :class="{ 'status-on': status.isOverlayOn }">
-              {{ status.isOverlayOn ? '已授权' : '去授权' }}
-            </text>
-          </view>
-        </material-list-cell>
+<!--        <material-list-cell rightIcon @click="handlePermission('Overlay')">-->
+<!--          <view class="cell-content">-->
+<!--            <text>悬浮窗 (桌面挂件/全局提示)</text>-->
+<!--            <text class="status-text" :class="{ 'status-on': status.isOverlayOn }">-->
+<!--              {{ status.isOverlayOn ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+<!--          </view>-->
+<!--        </material-list-cell>-->
 
-        <material-list-cell rightIcon @click="handlePermission('InstallPackage')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handlePermission('InstallPackage')">
           <view class="cell-content">
-            <text>安装未知应用 (App增量更新)</text>
-            <text class="status-text" :class="{ 'status-on': status.isInstallPackageOn }">
-              {{ status.isInstallPackageOn ? '已授权' : '去授权' }}
-            </text>
+            <text>安装未知应用</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isInstallPackageOn }">-->
+<!--              {{ status.isInstallPackageOn ? '已授权' : '去授权' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isInstallPackageOn" @change="switchChange"/>
           </view>
         </material-list-cell>
 
@@ -88,21 +93,23 @@
       <view class="section-title">核心保活配置 (需跳转系统设置)</view>
       <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-surface)">
 
-        <material-list-cell rightIcon @click="handleSpecialPermission('Accessibility')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handleSpecialPermission('Accessibility')">
           <view class="cell-content">
-            <text>无障碍服务 (行为阻断与精准识别)</text>
-            <text class="status-text" :class="{ 'status-on': status.isAccessibilityOn }">
-              {{ status.isAccessibilityOn ? '已开启' : '去开启' }}
-            </text>
+            <text>无障碍服务</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isAccessibilityOn }">-->
+<!--              {{ status.isAccessibilityOn ? '已开启' : '去开启' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isAccessibilityOn" @change="switchChange"/>
           </view>
         </material-list-cell>
 
-        <material-list-cell rightIcon @click="handleSpecialPermission('BatteryOpt')">
+        <material-list-cell :rightIcon="false" :showLeftText="false" @click="handleSpecialPermission('BatteryOpt')">
           <view class="cell-content">
-            <text>允许后台运行 (忽略电池优化)</text>
-            <text class="status-text" :class="{ 'status-on': status.isBatteryOptIgnored }">
-              {{ status.isBatteryOptIgnored ? '已允许' : '去允许' }}
-            </text>
+            <text>允许后台运行</text>
+<!--            <text class="status-text" :class="{ 'status-on': status.isBatteryOptIgnored }">-->
+<!--              {{ status.isBatteryOptIgnored ? '已允许' : '去允许' }}-->
+<!--            </text>-->
+            <async-switch :checked="status.isBatteryOptIgnored" @change="switchChange"/>
           </view>
         </material-list-cell>
 
@@ -117,9 +124,7 @@ import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-
 import MaterialList from "@/components/material-uni/material-list/material-list.vue";
 import MaterialListCell from "@/components/material-uni/material-list-cell/material-list-cell.vue";
 import { SXData } from "@/components/material-uni/sx";
-
-// 假设原生的 PermissionsManager 插件暴露如下
-const pmPlugin = {};
+import AsyncSwitch from "@/components/helang-asyncSwitch/helang-asyncSwitch.vue";
 
 export default {
   computed: {
@@ -128,18 +133,19 @@ export default {
     }
   },
   components: {
+    AsyncSwitch,
     MaterialListCell, MaterialList, MaterialNavBar
   },
   data() {
     return {
       // 使用对象统一管理状态，方便渲染
       status: {
-        isAudioOn: false,
-        isNotificationOn: false,
-        isStorageOn: false,
+        isRecordAudioOn: false,
+        isNotificationServiceOn: false,
+        // isStorageOn: false,
         isExactAlarmOn: false,
-        isUsageStatsOn: false,
-        isOverlayOn: false,
+        // isUsageStatsOn: false,
+        // isOverlayOn: false,
         isInstallPackageOn: false,
         isAccessibilityOn: false,
         isBatteryOptIgnored: false
@@ -160,24 +166,30 @@ export default {
 
     // 统一拉取最新权限状态
     refreshAllStatus() {
-      if (!pmPlugin) return;
+      const pmPlugin = this.$manager;
 
       // 常规权限检查
-      this.status.isAudioOn = pmPlugin.checkRecordAudio();
-      this.status.isNotificationOn = pmPlugin.checkNotification();
-      this.status.isStorageOn = pmPlugin.checkStorage();
-      this.status.isExactAlarmOn = pmPlugin.checkExactAlarm();
+      this.status.isRecordAudioOn = pmPlugin.checkRecordAudio();
+      this.status.isNotificationServiceOn = pmPlugin.checkNotification();
+      // this.status.isStorageOn = pmPlugin.checkStorage();
+      this.status.isExactAlarmOn = pmPlugin.checkScheduleExactAlarm();
 
       // 高级权限检查
-      this.status.isUsageStatsOn = pmPlugin.checkUsageStats();
-      this.status.isOverlayOn = pmPlugin.checkOverlayWindow();
-      this.status.isInstallPackageOn = pmPlugin.checkRequestInstallPackage();
+      // this.status.isUsageStatsOn = pmPlugin.checkPackageUsageStats();
+      // this.status.isOverlayOn = pmPlugin.checkOverlayWindow();
+      this.status.isInstallPackageOn = pmPlugin.checkInstallPackagePermission();
 
       // 特殊系统配置检查
-      this.status.isAccessibilityOn = pmPlugin.isAccessibilitySettingsOn("com.feifan.keepalive.AppUsageManager");
+      this.status.isAccessibilityOn = pmPlugin.isAccessibilitySettingsOn();
       this.status.isBatteryOptIgnored = pmPlugin.isIgnoringBatteryOptimizations();
     },
-
+    switchChange() {
+      // console.log(e.detail.value)
+      this.$manager.setSmartUpdate(!this.isSmartUpate)
+      setTimeout(() => {
+        this.isSmartUpate = this.$manager.isSmartUpdate()
+      })
+    },
     // 处理可以直接回调的权限申请
     handlePermission(type) {
       const statusKey = `is${type}On`;
@@ -186,9 +198,11 @@ export default {
         uni.showToast({ title: '已授权，修改请前往系统设置', icon: 'none' });
         return;
       }
+      const pmPlugin = this.$manager;
 
       // 动态调用原生插件的申请方法 (例如 requestAudio, requestStorage 等)
       const requestMethodName = `request${type}`;
+      console.log(requestMethodName);
       if (pmPlugin && typeof pmPlugin[requestMethodName] === 'function') {
         pmPlugin[requestMethodName]((success) => {
           this.status[statusKey] = success;
@@ -201,6 +215,7 @@ export default {
 
     // 处理必须跳系统设置的特殊权限
     handleSpecialPermission(type) {
+      const pmPlugin = this.$manager;
       if (type === 'Accessibility') {
         if (this.status.isAccessibilityOn) return uni.showToast({ title: '已开启', icon: 'none' });
 
@@ -251,10 +266,12 @@ export default {
 /* 列表行内 Flex 布局 */
 .cell-content {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  flex: 1;
+  width: 100%;
+  margin-left: sx(6.5);
+  margin-right: sx(6.5);
+  font-size: sx(5);
 }
 
 /* 右侧状态文本样式，默认暗淡色 */

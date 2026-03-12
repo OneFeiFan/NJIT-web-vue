@@ -7,6 +7,9 @@ export default {
   onLaunch: function () {
     // 初始化主题
     themeLogic.init();
+    this.$manager.requestKeepAliveNormalPermissions().then(res=>{
+      console.log(res);
+    })
     // #ifdef APP-PLUS
     const style = plus.navigator.getUIStyle();
     themeLogic.handleSystemChange(style);
@@ -28,14 +31,14 @@ export default {
     console.log('App Launch')
 // #ifdef APP
     plus.nativeUI.setUIStyle('auto'); // 设置系统样式为跟随系统
-    if (this.$manager.isSmartUpdate() && !this.$manager.checkRequestInstallPackagePermission()) {
+    if (this.$manager.isSmartUpdate() && !this.$manager.checkInstallPackagePermission()) {
       uni.showModal({
         title: '增量更新启用提示',
         content: "增量更新功能可以加快更新速度并减少流量消耗。\n如需开启增量更新，请点击“确认”授予安装包权限。否则，请点击“取消”永久关闭此功能。\n如果后续更新异常，可以去设置中关闭增量更新功能。",
         showCancel: true,
         success: (res) => {
           if (res.confirm) {
-            this.$manager.requestRequestInstallPackagePermission()
+            this.$manager.requestInstallPackage()
           } else {
             uni.showToast({
               title: '后续可以在设置中重新开启增量更新功能。',

@@ -3,23 +3,27 @@
  * import { Context } from "android.content.Context";
  * [可选实现，按需引入]
  */
-import { CourseParams, DeleteCourse, RestoreCourse } from "./types";
+// @ts-ignore
+import {CourseParams, DeleteCourse, RestoreCourse} from "./types.uts"
+// @ts-ignore
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
+// @ts-ignore
 import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
-// import WifiAuth from "com.feifan.fuckingnjit.widget.WifiAuth";
+// @ts-ignore
 import PortalManager from "com.feifan.fuckingnjit.utils.wifiauth.PortalManager";
 
 function parseUTSResponse(data: string): UTSJSONObject | Error {
-    try{
+	try {
     	// 使用 JSON.parseObject 进行解析
-    	const result = JSON.parseObject(data);
+		const result = JSON.parse(data);
     	
     	// 检查解析结果是否为空（可能是因为 JSON 字符串格式错误）
     	if (result === null) {
     	    throw new Error("数据解析失败：JSON格式可能不正确或数据为空");
     	}
     	return result;
-    }catch(e){
+		// @ts-ignore
+	} catch (e: Error) {
     	return e
     }
 }
@@ -36,7 +40,7 @@ export class Core {
 	
 
 	public async getCurriculum(refresh : boolean) : Promise<UTSJSONObject> {
-		return JSON.parse<UTSJSONObject>(await Manager.getUserManager().getCurriculum(refresh)) ?? {}
+		return JSON.parse(await Manager.getUserManager().getCurriculum(refresh)) ?? {}
 	}
 
 	public getAllUsers() : string {
@@ -63,62 +67,53 @@ export class Core {
 		return parseUTSResponse(data)
 	}
 	public async getNoticeInformation() : Promise<UTSJSONObject | Error> {
-		const data = await await Manager.getWebService().getNoticeInformation().toJSONString();
+		const data = await Manager.getWebService().getNoticeInformation().toJSONString();
 		return parseUTSResponse(data)
 	}
 
 	public async getAcademicProgress(refresh : boolean) : Promise<UTSJSONObject | Error> {
-		const data = await await Manager.getUserManager().getAcademicProgress(refresh).toJSONString();
+		const data = await Manager.getUserManager().getAcademicProgress(refresh).toJSONString();
 		return parseUTSResponse(data)
 	}
 	
-	public saveCourse(data: CourseParams): UTSJSONObject {
-		return JSON.parse<UTSJSONObject>(
-			Manager.getWebService().saveCourse(data.course, data.hideRule).toJSONString()
-		) ?? {}
+	public async saveCourse(data: CourseParams): Promise<UTSJSONObject | Error> {
+		const result = await Manager.getWebService().saveCourse(data.course, data.hideRule).toJSONString();
+		return parseUTSResponse(result)
 	}
-	public deleteCourse(data: DeleteCourse): UTSJSONObject {
-		return JSON.parse<UTSJSONObject>(
-			Manager.getWebService().deleteCourse(data.courseId, data.isSystem, data.day,data.start).toJSONString()
-		) ?? {}
+	public async deleteCourse(data: DeleteCourse): Promise<UTSJSONObject | Error> {
+		const result = await Manager.getWebService().deleteCourse(data.courseId, data.isSystem, data.day,data.start).toJSONString();
+		return parseUTSResponse(result)
 	}
-	public restoreCourse(data: RestoreCourse): UTSJSONObject {
-		return JSON.parse<UTSJSONObject>(
-			Manager.getWebService().restoreCourse(data.courseId, data.day,data.start).toJSONString()
-		) ?? {}
+	public async restoreCourse(data: RestoreCourse): Promise<UTSJSONObject | Error> {
+		const result = await Manager.getWebService().restoreCourse(data.courseId, data.day,data.start).toJSONString();
+		return parseUTSResponse(result)
 	}
 	public getDate() : string {
 		return Manager.getWebService().getDate()
 	}
 	public createWidget() : string {
+		// @ts-ignore
 		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).createWidget()
 	}
 	public getWidgetPermission() {
+		// @ts-ignore
 		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).getPermission()
 	}
 	public isWidgetAlreadyCreated() : boolean {
+		// @ts-ignore
 		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
 	}
 	
 	public switchStatus(status : boolean) : void {
+		// @ts-ignore
 		PortalManager.switchStatus(UTSAndroid.getAppContext()!,status)
 		// return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
 	}
 	
 	public isEnabled() : boolean {
+		// @ts-ignore
 		return PortalManager.isEnabled(UTSAndroid.getAppContext()!)
 	}
-	
-	
-	// public createWifiAuthWidget() : string {
-	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
-	// }
-	// public getWifiAuthWidgetPermission() {
-	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).getPermission()
-	// }
-	// public isWifiAuthWidgetAlreadyCreated() : boolean {
-	// 	return (new WifiAuth(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
-	// }
 	public setWifiAuthTupe(type : string) {
 		Manager.setWifiAuthTupe(type)
 	}
@@ -139,31 +134,13 @@ export class Core {
 		return Manager.getUserManager().isPasswordStorageEnabled()
 	}
 
-	// public getSemesterStartDate() : string {
-	// 	return Manager.getSemesterStartDate()
-	// }
-
 	public async updateApp(url : string) : Promise<boolean> {
 		return await Manager.updateApp(url)
 	}
-	// public checkOverlayWindowPermission() : boolean {
-	// 	return Manager.getPermissionsManager().checkOverlayWindowPermission()
-	// }
-	// public requestOverlayWindowPermission() : Promise<boolean> {
-	// 	return new Promise((resolve, reject) => {
-	// 		Manager.getPermissionsManager().requestOverlayWindowPermission((isGranted: boolean) => {
-	// 			if (isGranted) {
-	// 				resolve(true)
-	// 			} else {
-	// 				reject(false)
-	// 			}
-	// 		})
-	// 	})
-	// }
-	public checkRequestInstallPackagePermission() : boolean {
+	public checkInstallPackagePermission() : boolean {
 		return Manager.getPermissionsManager().checkRequestInstallPackage()
 	}
-	public requestRequestInstallPackagePermission() : Promise<boolean> {
+	public requestInstallPackage() : Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			Manager.getPermissionsManager().requestRequestInstallPackage((isGranted: boolean) => {
 				if (isGranted) {
@@ -178,23 +155,107 @@ export class Core {
 	public isSmartUpdate() : boolean {
 		return Manager.getPermissionsManager().isSmartUpdate()
 	}
+
 	public setSmartUpdate(isSmart: boolean){
 		Manager.getPermissionsManager().setSmartUpdate(isSmart)
 	}
-	
+
+	public checkRecordAudio() : boolean {
+		return Manager.getPermissionsManager().checkRecordAudio()
+	}
+
+	public requestRecordAudio() : Promise<boolean>{
+		return new Promise((resolve, reject) => {
+			Manager.getPermissionsManager().requestRecordAudio((isGranted: boolean) => {
+				if (isGranted) {
+					resolve(true)
+				} else {
+					reject(false)
+				}
+			})
+		})
+	}
+
+	public checkNotification() : boolean {
+		return Manager.getPermissionsManager().checkNotification()
+	}
+
+	public requestNotificationService() : Promise<boolean>{
+		return new Promise((resolve, reject) => {
+			Manager.getPermissionsManager().requestNotificationServicePermission((isGranted: boolean) => {
+				if (isGranted) {
+					resolve(true)
+				} else {
+					reject(false)
+				}
+			})
+		})
+	}
+
+	// public checkPackageUsageStats() : boolean {
+	// 	return Manager.getPermissionsManager().checkPackageUsageStats()
+	// }
+	//
+	// public requestUsageStats() : Promise<boolean>{
+	// 	return new Promise((resolve, reject) => {
+	// 		Manager.getPermissionsManager().requesPackageUsageStats((isGranted: boolean) => {
+	// 			if (isGranted) {
+	// 				resolve(true)
+	// 			} else {
+	// 				reject(false)
+	// 			}
+	// 		})
+	// 	})
+	// }
+
+	public checkScheduleExactAlarm() : boolean {
+		return Manager.getPermissionsManager().checkScheduleExactAlarm()
+	}
+
+	public requestExactAlarm() : Promise<boolean>{
+		return new Promise((resolve, reject) => {
+			Manager.getPermissionsManager().requestScheduleExactAlarm((isGranted: boolean) => {
+				if (isGranted) {
+					resolve(true)
+				} else {
+					reject(false)
+				}
+			})
+		})
+	}
+
+	public requestKeepAliveNormalPermissions() : Promise<Array<string>>{
+		return new Promise((resolve, reject) => {
+			// @ts-ignore
+			Manager.getPermissionsManager().requestKeepAliveNormalPermissions((isGranted: boolean,list: List<String>) => {
+				if (isGranted) {
+					resolve(Array<string>())
+				} else {
+					// @ts-ignore
+					reject(Array.fromNative(list))
+				}
+			})
+		})
+	}
+
+	public isIgnoringBatteryOptimizations() : boolean {
+		return Manager.getPermissionsManager().isIgnoringBatteryOptimizations()
+	}
+
+	public requestIgnoreBatteryOptimizations(){
+			Manager.getPermissionsManager().requestIgnoreBatteryOptimizations()
+	}
+
+	public isAccessibilitySettingsOn() : boolean {
+		return Manager.getPermissionsManager().isAccessibilitySettingsOn()
+	}
+
+	public requestAccessibilityPermission(){
+		Manager.getPermissionsManager().requestAccessibilityPermission()
+	}
+
 	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject | Error>{
 		const data = await Manager.initYiBan(mobile,password).toJSONString();
 		return parseUTSResponse(data)
 	}
-	
-	
-	//public setLocalCurriculums(data : string) {
-	//	Manager.setLocalCurriculums(data)
-	//}
-	// public modifyLocalCurriculums(keys : string) {
-	// 	Manager.modifyLocalCurriculums(keys)
-	// }
-	// public reSetLocalCurriculums() {
-	// 	Manager.reSetLocalCurriculums()
-	// }
 }
