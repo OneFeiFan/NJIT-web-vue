@@ -314,7 +314,7 @@ export default {
             `确认隐藏该时段的 "${targetCourse.name}" 吗？`
             :
             `确认删除 "${targetCourse.name}" 吗？`,
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
             const params = {
               courseId: targetCourse.id,
@@ -325,7 +325,7 @@ export default {
               params.start = targetCourse.start;
             }
             // #ifdef APP-PLUS
-            let result = this.$manager.deleteCourse(params)
+            let result = await this.$manager.deleteCourse(params)
             if (Object.keys(result).length > 0 && result.code === 200) {
               this.update(true)
             } else {
@@ -349,7 +349,7 @@ export default {
       // 调用后端恢复接口
       uni.showLoading({title: '恢复中'});
       // #ifdef APP-PLUS
-      let result = this.$manager.restoreCourse({
+      let result = await this.$manager.restoreCourse({
         courseId: item.id,
         day: item.day,
         start: item.start // 这里依然需要 day 和 start 做精准恢复

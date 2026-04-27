@@ -298,7 +298,7 @@ export default {
     },
 
     // 提交逻辑
-    submit() {
+    async submit() {
       // 校验
       if (!this.form.name.trim()) {
         return uni.showToast({
@@ -344,7 +344,7 @@ export default {
       }
 
       //#ifdef APP-PLUS
-      let result = this.$manager.saveCourse(payload)
+      let result = await this.$manager.saveCourse(payload)
       if(Object.keys(result).length > 0 && result.code === 200){
           uni.showToast({
             title: '保存成功'
