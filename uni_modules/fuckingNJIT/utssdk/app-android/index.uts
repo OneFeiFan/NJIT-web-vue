@@ -4,7 +4,7 @@
  * [可选实现，按需引入]
  */
 // @ts-ignore
-import {CourseParams, DeleteCourse, RestoreCourse} from "./types.uts"
+import {CourseParams, DeleteCourse, RestoreCourse, DashboardInsightResponse, DashboardResultWrapper} from "./types.uts"
 // @ts-ignore
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
 // @ts-ignore
@@ -257,5 +257,35 @@ export class Core {
 	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject | Error>{
 		const data = await Manager.initYiBan(mobile,password).toJSONString();
 		return parseUTSResponse(data)
+	}
+	
+	public async refreshSleepData() {
+		await Manager.uploadAndClearData();
+	}
+
+	public switchAppMode(mode:string){
+		Manager.switchAppMode(mode);
+	}
+
+	/**
+	 * 获取智能决策看板数据
+	 */
+	public async getDashboardInsight(): Promise<DashboardInsightResponse> {
+		try {
+			// 1. 直接 await 底层的 suspend 函数，拿到的是 JSON 字符串
+			const resString = await Manager.getDashboardInsight();
+			// @ts-ignore
+			const resObj = JSON.parse<DashboardResultWrapper>(resString);
+
+			// 3. 安全判空与提取
+			if (resObj != null && resObj.code == 200) {
+				return resObj.data;
+			} else {
+				return {};
+			}
+		} catch (error) {
+			// 捕获到底层抛出的任何异常
+			return Promise.reject(error);
+		}
 	}
 }

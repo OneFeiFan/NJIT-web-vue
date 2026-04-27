@@ -13,3 +13,56 @@ export type RestoreCourse = {
 	day : Int
 	start : Int
 }
+
+// 1. 基础枚举/联合类型
+export type AppMode = 'SCHOLAR_MODE' | 'HEALTH_MODE' | 'BALANCE_MODE';
+export type InsightLevel = 'critical' | 'warning' | 'info';
+
+// 2. 扁平化拆解各个子模块类型
+export type DashboardFactors = {
+	courseStress: number;
+	physicalState: number;
+	focusCost: number;
+};
+
+export type DashboardInsight = {
+	show: boolean;
+	level: InsightLevel;
+	title: string;
+	message: string;
+};
+
+export type TimelineCourse = {
+	time: string;
+	name: string;
+};
+
+export type DashboardTimeline = {
+	targetSleepTime: string;
+	offset: string;
+	courses: Array<TimelineCourse>; // 这里的嵌套也要抽离
+};
+
+export type DashboardRawStats = {
+	sleepDurationStr: string;
+	steps: number;
+	targetSteps: number;
+	focusRate: number;
+	distractionMins: number;
+};
+
+// 3. 最终组装的根接口
+export type DashboardInsightResponse = {
+	currentMode: AppMode;
+	overallScore: number;
+	factors: DashboardFactors;         // 使用抽离的类型
+	actionableInsight: DashboardInsight; // 使用抽离的类型
+	timeline: DashboardTimeline;       // 使用抽离的类型
+	rawStats: DashboardRawStats;       // 使用抽离的类型
+}
+
+export type DashboardResultWrapper = {
+	code: number;
+	msg: string;
+	data: DashboardInsightResponse; // 把我们的核心类型嵌进来
+};
