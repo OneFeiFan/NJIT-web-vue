@@ -224,6 +224,7 @@ export default {
 
       // #ifdef H5
       http.post("/getDateData").then(res => {
+        console.log(res)
         this.week = res.data.currentWeek - 1; //第一周的index为0
         this.weekStartDate = res.data.startDate
       }).catch(res => {

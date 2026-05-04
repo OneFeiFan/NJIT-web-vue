@@ -77,6 +77,9 @@
 </template>
 
 <script>
+//#ifdef H5
+import {http} from "@/static/util/request";
+//#endif
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import {getClassroom} from "@/static/util/tool";
 import MaterialNavBar from "@/components/material-uni/material-nav-bar/material-nav-bar.vue";
@@ -258,6 +261,7 @@ export default {
         this.tableData = [];
         return;
       }
+      // #ifdef APP-PLUS
       this.$manager.getEmptyClassrooms(this.dateRange, String(this.jcd), this.lh).then(res => {
         let result = {};
         for (let key in res) {
@@ -265,6 +269,25 @@ export default {
         }
         this.tableData = result;
       })
+      // #endif
+      // #ifdef H5
+      http.post("/getEmptyClassrooms",{
+        dateRange: this.dateRange,
+        coursePeriod:String(this.jcd),
+        buildingId:this.lh
+      }).then(res => {
+        if(res.code === 200) {
+          let result = {};
+          for (let key in res.data) {
+            result[key] = getClassroom(res.data[key]);
+          }
+          this.tableData = result;
+        }
+      }).catch(err => {
+        console.error('获取空教室数据失败:', err)
+        this.tableData = []
+      })
+      // #endif
     }
   }
 }
