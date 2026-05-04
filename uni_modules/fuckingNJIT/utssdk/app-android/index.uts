@@ -4,15 +4,26 @@
  * [可选实现，按需引入]
  */
 // @ts-ignore
-import {CourseParams, DeleteCourse, RestoreCourse, DashboardInsightResponse, DashboardResultWrapper} from "./types.uts"
+import {CourseParams, DashboardInsightResponse, DashboardResultWrapper, DeleteCourse, RestoreCourse} from "./types.uts"
 // @ts-ignore
 import Manager from "com.feifan.fuckingnjit.utils.Manager"
 // @ts-ignore
+import CoreInitializer from "com.feifan.fuckingnjit.utils.CoreInitializer"
+// @ts-ignore
+import AppConfig from 'com.feifan.fuckingnjit.utils.AppConfig'
+// @ts-ignore
+import SystemActionHelper from "com.feifan.fuckingnjit.utils.system.SystemActionHelper"
+// @ts-ignore
+import DecisionFacade from 'com.feifan.fuckingnjit.decision.DecisionFacade'
+// @ts-ignore
+import DataSyncService from 'com.feifan.fuckingnjit.service.DataSyncService'
+
+// @ts-ignore
 import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
 // @ts-ignore
-import PortalManager from "com.feifan.fuckingnjit.utils.wifiauth.PortalManager";
+import PortalManager from "com.feifan.fuckingnjit.utils.network.wifiauth.PortalManager";
 
-function parseUTSResponse(data: string): UTSJSONObject | Error {
+function parseUTSResponse(data: string): UTSJSONObject{
 	try {
     	// 使用 JSON.parseObject 进行解析
 		const result = JSON.parse(data);
@@ -21,75 +32,112 @@ function parseUTSResponse(data: string): UTSJSONObject | Error {
     	if (result === null) {
     	    throw new Error("数据解析失败：JSON格式可能不正确或数据为空");
     	}
-    	return result;
+    	return result as UTSJSONObject;
 		// @ts-ignore
 	} catch (e: Error) {
-    	return e
+		console.log(e)
+    	return new UTSJSONObject()
     }
 }
 
 export class Core {
 
 	public showToast(str : string) {
-		Manager.showToast(str);
+		// @ts-ignore
+		SystemActionHelper.showToast(UTSAndroid.getAppContext()!, str);
 	}
 
 	public startLogin(relogin : boolean) {
-		Manager.startLogin(relogin)
+		// @ts-ignore
+		SystemActionHelper.startLogin(UTSAndroid.getAppContext()!, relogin)
 	}
-	
 
-	public async getCurriculum(refresh : boolean) : Promise<UTSJSONObject> {
-		return JSON.parse(await Manager.getUserManager().getCurriculum(refresh)) ?? {}
+
+	public async getCurriculum(refresh: boolean): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getUserManager().getCurriculum(UTSAndroid.getAppContext()!, refresh).toJSONString();
+		const tmp = parseUTSResponse(data)
+		if(tmp.contains('code') && tmp['code'] == 200.0){
+			return tmp['data']
+		}else{
+			this.showToast("课表获取失败")
+			return new UTSJSONObject()
+		}
 	}
 
 	public getAllUsers() : string {
-		return Manager.getUserManager().getAllUsers()
+		// @ts-ignore
+		return Manager.getUserManager().getAllUsers(UTSAndroid.getAppContext()!)
 	}
 
 	public setCurrentUser(id : string) {
-		return Manager.getUserManager().setCurrentUser(id)
+		// @ts-ignore
+		return Manager.getUserManager().setCurrentUser(UTSAndroid.getAppContext()!, id)
 	}
 
 	public async deleteUser(id : string) : Promise<boolean> {
-		return await Manager.getUserManager().deleteUser(id)
+		// @ts-ignore
+		return await Manager.getUserManager().deleteUser(UTSAndroid.getAppContext()!, id)
 	}
 
-	public async getEmptyClassrooms(dateRange : string, coursePeriod : string, buildingId : string) : Promise<string> {
-		return await Manager.getWebService().getEmptyClassrooms(dateRange, coursePeriod, buildingId)
+	public async getEmptyClassrooms(dateRange: string, coursePeriod: string, buildingId: string): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getWebService().getEmptyClassrooms(UTSAndroid.getAppContext()!, dateRange, coursePeriod, buildingId).toJSONString();
+		const tmp = parseUTSResponse(data)
+		if(tmp.contains('code') && tmp['code'] == 200.0){
+			return tmp['data']
+		}else{
+			this.showToast("空教室获取失败")
+			return new UTSJSONObject()
+		}
 	}
-	public async getSorces(xnm:String,xqm:String,refresh : boolean) : Promise<string> {
-		return await Manager.getUserManager().getUserScores(xnm,xqm,refresh)
+
+	public async getSorces(xnm: String, xqm: String, refresh: boolean): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getUserManager().getUserScores(UTSAndroid.getAppContext()!, xnm, xqm, refresh).toJSONString();
+		const tmp = parseUTSResponse(data)
+		if(tmp.contains('code') && tmp['code'] == 200.0){
+			return tmp.toJSONString() // 直接返回data，或者tmp['data']会
+		}else{
+			this.showToast("成绩获取失败")
+			return new UTSJSONObject()
+		}
 	}
-	
-	public async getSorcesDetail(classId : string, schoolYear : string, semester : string, courseName : string) : Promise<UTSJSONObject | Error> {
-		const data = await Manager.getWebService().getSorcesDetail(classId, schoolYear, semester, courseName).toJSONString();
+
+	public async getSorcesDetail(classId : string, schoolYear : string, semester : string, courseName : string) : Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getWebService().getSorcesDetail(UTSAndroid.getAppContext()!, classId, schoolYear, semester, courseName).toJSONString();
 		return parseUTSResponse(data)
 	}
-	public async getNoticeInformation() : Promise<UTSJSONObject | Error> {
-		const data = await Manager.getWebService().getNoticeInformation().toJSONString();
+	// public async getNoticeInformation() : Promise<UTSJSONObject> {
+	// 	const data = await Manager.getWebService().getNoticeInformation().toJSONString();
+	// 	return parseUTSResponse(data)
+	// }
+
+	public async getAcademicProgress(refresh : boolean) : Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getUserManager().getAcademicProgress(UTSAndroid.getAppContext()!,refresh).toJSONString();
 		return parseUTSResponse(data)
 	}
 
-	public async getAcademicProgress(refresh : boolean) : Promise<UTSJSONObject | Error> {
-		const data = await Manager.getUserManager().getAcademicProgress(refresh).toJSONString();
-		return parseUTSResponse(data)
-	}
-	
-	public async saveCourse(data: CourseParams): Promise<UTSJSONObject | Error> {
-		const result = await Manager.getWebService().saveCourse(data.course, data.hideRule).toJSONString();
+	public async saveCourse(data: CourseParams): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const result = await Manager.getWebService().saveCourse(UTSAndroid.getAppContext()!,data.course, data.hideRule).toJSONString();
 		return parseUTSResponse(result)
 	}
-	public async deleteCourse(data: DeleteCourse): Promise<UTSJSONObject | Error> {
-		const result = await Manager.getWebService().deleteCourse(data.courseId, data.isSystem, data.day,data.start).toJSONString();
+	public async deleteCourse(data: DeleteCourse): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const result = await Manager.getWebService().deleteCourse(UTSAndroid.getAppContext()!,data.courseId, data.isSystem, data.day,data.start).toJSONString();
 		return parseUTSResponse(result)
 	}
-	public async restoreCourse(data: RestoreCourse): Promise<UTSJSONObject | Error> {
-		const result = await Manager.getWebService().restoreCourse(data.courseId, data.day,data.start).toJSONString();
+	public async restoreCourse(data: RestoreCourse): Promise<UTSJSONObject> {
+		// @ts-ignore
+		const result = await Manager.getWebService().restoreCourse(UTSAndroid.getAppContext()!,data.courseId, data.day,data.start).toJSONString();
 		return parseUTSResponse(result)
 	}
 	public getDate() : string {
-		return Manager.getWebService().getDate()
+		// @ts-ignore
+		return Manager.getWebService().getDate(UTSAndroid.getAppContext()!)
 	}
 	public createWidget() : string {
 		// @ts-ignore
@@ -103,26 +151,28 @@ export class Core {
 		// @ts-ignore
 		return (new CurriculumsWidget(UTSAndroid.getAppContext()!)).isWidgetAlreadyCreated()
 	}
-	
+
 	public switchStatus(status : boolean) : void {
 		// @ts-ignore
 		PortalManager.switchStatus(UTSAndroid.getAppContext()!,status)
 		// return (new WifiAuth(UTSAndroid.getAppContext()!)).createWidget()
 	}
-	
+
 	public isEnabled() : boolean {
 		// @ts-ignore
 		return PortalManager.isEnabled(UTSAndroid.getAppContext()!)
 	}
-	public setWifiAuthTupe(type : string) {
-		Manager.setWifiAuthTupe(type)
+	public setWifiAuthType(type : string) {
+
+		AppConfig.setWifiAuthType(type)
 	}
-	public getWifiAuthTupe() : string {
-		return Manager.getWifiAuthTupe()
+	public getWifiAuthType() : string {
+		return AppConfig.getWifiAuthType()
 	}
 
 	public goHome() {
-		Manager.goHome()
+		// @ts-ignore
+		SystemActionHelper.goHome(UTSAndroid.getAppContext()!)
 	}
 
 
@@ -135,14 +185,17 @@ export class Core {
 	}
 
 	public async updateApp(url : string) : Promise<boolean> {
-		return await Manager.updateApp(url)
+		// @ts-ignore
+		return await SystemActionHelper.updateApp(UTSAndroid.getAppContext()!,url)
 	}
 	public checkInstallPackagePermission() : boolean {
-		return Manager.getPermissionsManager().checkRequestInstallPackage()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkRequestInstallPackage()
 	}
 	public requestInstallPackage() : Promise<boolean> {
 		return new Promise((resolve, reject) => {
-			Manager.getPermissionsManager().requestRequestInstallPackage((isGranted: boolean) => {
+			// @ts-ignore
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestRequestInstallPackage((isGranted: boolean) => {
 				if (isGranted) {
 					resolve(true)
 				} else {
@@ -153,20 +206,25 @@ export class Core {
 	}
 
 	public isSmartUpdate() : boolean {
-		return Manager.getPermissionsManager().isSmartUpdate()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).isSmartUpdate()
 	}
 
 	public setSmartUpdate(isSmart: boolean){
-		Manager.getPermissionsManager().setSmartUpdate(isSmart)
+		// @ts-ignore
+		Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).setSmartUpdate(isSmart)
 	}
 
 	public checkRecordAudio() : boolean {
-		return Manager.getPermissionsManager().checkRecordAudio()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkRecordAudio()
 	}
 
 	public requestRecordAudio() : Promise<boolean>{
+		// @ts-ignore
 		return new Promise((resolve, reject) => {
-			Manager.getPermissionsManager().requestRecordAudio((isGranted: boolean) => {
+			// @ts-ignore
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestRecordAudio((isGranted: boolean) => {
 				if (isGranted) {
 					resolve(true)
 				} else {
@@ -177,12 +235,14 @@ export class Core {
 	}
 
 	public checkNotification() : boolean {
-		return Manager.getPermissionsManager().checkNotification()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkNotification()
 	}
 
 	public requestNotificationService() : Promise<boolean>{
 		return new Promise((resolve, reject) => {
-			Manager.getPermissionsManager().requestNotificationServicePermission((isGranted: boolean) => {
+			// @ts-ignore
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestNotificationServicePermission((isGranted: boolean) => {
 				if (isGranted) {
 					resolve(true)
 				} else {
@@ -209,12 +269,14 @@ export class Core {
 	// }
 
 	public checkScheduleExactAlarm() : boolean {
-		return Manager.getPermissionsManager().checkScheduleExactAlarm()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkScheduleExactAlarm()
 	}
 
 	public requestExactAlarm() : Promise<boolean>{
 		return new Promise((resolve, reject) => {
-			Manager.getPermissionsManager().requestScheduleExactAlarm((isGranted: boolean) => {
+			// @ts-ignore
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestScheduleExactAlarm((isGranted: boolean) => {
 				if (isGranted) {
 					resolve(true)
 				} else {
@@ -227,7 +289,7 @@ export class Core {
 	public requestKeepAliveNormalPermissions() : Promise<Array<string>>{
 		return new Promise((resolve, reject) => {
 			// @ts-ignore
-			Manager.getPermissionsManager().requestKeepAliveNormalPermissions((isGranted: boolean,list: List<String>) => {
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestKeepAliveNormalPermissions((isGranted: boolean,list: List<String>) => {
 				if (isGranted) {
 					resolve(Array<string>())
 				} else {
@@ -239,53 +301,52 @@ export class Core {
 	}
 
 	public isIgnoringBatteryOptimizations() : boolean {
-		return Manager.getPermissionsManager().isIgnoringBatteryOptimizations()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).isIgnoringBatteryOptimizations()
 	}
 
 	public requestIgnoreBatteryOptimizations(){
-			Manager.getPermissionsManager().requestIgnoreBatteryOptimizations()
+		// @ts-ignore
+			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestIgnoreBatteryOptimizations()
 	}
 
 	public isAccessibilitySettingsOn() : boolean {
-		return Manager.getPermissionsManager().isAccessibilitySettingsOn()
+		// @ts-ignore
+		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).isAccessibilitySettingsOn()
 	}
 
 	public requestAccessibilityPermission(){
-		Manager.getPermissionsManager().requestAccessibilityPermission()
+		// @ts-ignore
+		Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestAccessibilityPermission()
 	}
 
-	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject | Error>{
-		const data = await Manager.initYiBan(mobile,password).toJSONString();
+	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject>{
+		// @ts-ignore
+		const data = await CoreInitializer.initYiBan(UTSAndroid.getAppContext()!,mobile,password).toJSONString();
 		return parseUTSResponse(data)
 	}
-	
+
 	public async refreshSleepData() {
-		await Manager.uploadAndClearData();
+		await DataSyncService.uploadAndClearData();
 	}
 
 	public switchAppMode(mode:string){
-		Manager.switchAppMode(mode);
+		// @ts-ignore
+		DecisionFacade.switchAppMode(mode);
 	}
 
-	/**
-	 * 获取智能决策看板数据
-	 */
+	// /**
+	//  * 获取智能决策看板数据
+	//  */
 	public async getDashboardInsight(): Promise<DashboardInsightResponse> {
-		try {
-			// 1. 直接 await 底层的 suspend 函数，拿到的是 JSON 字符串
-			const resString = await Manager.getDashboardInsight();
-			// @ts-ignore
-			const resObj = JSON.parse<DashboardResultWrapper>(resString);
-
-			// 3. 安全判空与提取
-			if (resObj != null && resObj.code == 200) {
-				return resObj.data;
-			} else {
-				return {};
-			}
-		} catch (error) {
-			// 捕获到底层抛出的任何异常
-			return Promise.reject(error);
+		// @ts-ignore
+		const data = await DecisionFacade.getDashboardInsight(UTSAndroid.getAppContext()!).toJSONString();
+		const tmp = parseUTSResponse(data)
+		if(tmp.contains('code') && tmp['code'] == 200.0){
+			return tmp['data']
+		}else{
+			this.showToast("健康数据获取失败")
+			return {}
 		}
 	}
 }
