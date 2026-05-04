@@ -5,75 +5,97 @@
                    color="var(--md-sys-color-on-surface)">
       <view class="md2-card">
 
-      <!-- 错误提示 -->
-      <view v-if="error" class="error-message">
-        <uni-icons class="icon-error" color="var(--md-sys-color-on-error-container)" size="18" type="info-filled"/>
-        <text class="error-text">{{ error }}</text>
-      </view>
-
-      <!-- 表单 -->
-      <view class="login-form">
-        <material-list background-color="var(--md-sys-color-surface-container-low)" color="var(--md-sys-color-on-surface)"
-                       style="display: contents;gap: 8px;">
-          <material-list-cell :show-left-text="false">
-            <view class="input-wrapper">
-              <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="person-filled"/>
-              <view class="input-content">
-                <text class="floating-label">账号</text>
-                <input v-model="username" class="input" placeholder="请输入账号"/>
-              </view>
-            </view>
-          </material-list-cell>
-          <material-list-cell :show-left-text="false">
-            <view class="input-wrapper">
-              <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="locked-filled"/>
-              <view class="input-content">
-                <text class="floating-label">密码</text>
-
-                <input v-if="showPassword" v-model="password" class="input" placeholder="请输入密码" type="text"/>
-                <input v-else v-model="password" class="input" placeholder="请输入密码" type="password"/>
-              </view>
-              <uni-icons :type="showPassword ? 'eye-filled' : 'eye-slash-filled'" class="suffix-icon" color="var(--md-sys-color-on-surface-variant)"
-                         size="20" @click="showPassword = !showPassword"/>
-            </view>
-          </material-list-cell>
-        </material-list>
-
-        <!-- 记住我 -->
-        <view class="form-options">
-          <label class="remember-me" @click="toggleRemember">
-            <!-- 使用 uni-icons 模拟 MD 风格 checkbox，或者原生 checkbox -->
-            <view class="checkbox-wrapper">
-              <uni-icons v-if="rememberMe" color="var(--md-sys-color-primary)" size="22" type="checkbox-filled"/>
-              <uni-icons v-else color="var(--md-sys-color-outline)" size="22" type="circle"/>
-            </view>
-            <text class="remember-text">记住我</text>
-          </label>
+        <!-- 错误提示 -->
+        <view v-if="error" class="error-message">
+          <uni-icons class="icon-error" color="var(--md-sys-color-on-error-container)" size="18" type="info-filled"/>
+          <text class="error-text">{{ error }}</text>
         </view>
 
-        <!-- 登录按钮 -->
-        <view class="button-area">
-          <material-button
-              :disabled="loading"
-              backgroundColor="var(--md-sys-color-primary)"
-              class="login-button"
-              color="var(--md-sys-color-on-primary)"
-              shape="square"
-              size="large"
-              @click="handleLogin"
-          >
-            <!-- MD2 按钮圆角通常较小 (4px) -->
-            <text v-if="loading">登录中...</text>
-            <text v-else>登 录</text>
-          </material-button>
+        <!-- 表单 -->
+        <view class="login-form">
+          <material-list background-color="var(--md-sys-color-surface-container-low)" color="var(--md-sys-color-on-surface)"
+                         style="display: contents;gap: 8px;">
+            <material-list-cell :show-left-text="false">
+              <view class="input-wrapper">
+                <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="person-filled"/>
+                <view class="input-content">
+                  <text class="floating-label">账号</text>
+                  <input v-model="username" class="input" placeholder="请输入账号"/>
+                </view>
+              </view>
+            </material-list-cell>
+            <material-list-cell :show-left-text="false">
+              <view class="input-wrapper">
+                <uni-icons class="prefix-icon" color="var(--md-sys-color-primary)" size="20" type="locked-filled"/>
+                <view class="input-content">
+                  <text class="floating-label">密码</text>
+
+                  <input v-if="showPassword" v-model="password" class="input" placeholder="请输入密码" type="text"/>
+                  <input v-else v-model="password" class="input" placeholder="请输入密码" type="password"/>
+                </view>
+                <uni-icons :type="showPassword ? 'eye-filled' : 'eye-slash-filled'" class="suffix-icon" color="var(--md-sys-color-on-surface-variant)"
+                           size="20" @click="showPassword = !showPassword"/>
+              </view>
+            </material-list-cell>
+          </material-list>
+
+          <!-- 验证码（根据条件显示） -->
+          <view v-if="captchaImage !== ''" class="form-group">
+            <text class="label">验证码</text>
+            <view class="input-wrapper">
+              <uni-icons class="icon-captcha" type="shield-filled" size="" color="var(--md-sys-color-on-surface)"/>
+              <input
+                  class="input"
+                  v-model="captcha"
+                  type="text"
+                  placeholder="请输入验证码"
+                  placeholder-style="{ color: '#bbb' }"
+              />
+              <image
+                  class="captcha-image"
+                  :src="`data:image/jpeg;base64,${captchaImage}`"
+                  @click="refreshCaptcha"
+                  mode="aspectFit"
+              />
+            </view>
+          </view>
+
+          <!-- 记住我 -->
+          <view class="form-options">
+            <label class="remember-me" @click="toggleRemember">
+              <!-- 使用 uni-icons 模拟 MD 风格 checkbox，或者原生 checkbox -->
+              <view class="checkbox-wrapper">
+                <uni-icons v-if="rememberMe" color="var(--md-sys-color-primary)" size="22" type="checkbox-filled"/>
+                <uni-icons v-else color="var(--md-sys-color-outline)" size="22" type="circle"/>
+              </view>
+              <text class="remember-text">记住我</text>
+            </label>
+          </view>
+
+          <!-- 登录按钮 -->
+          <view class="button-area">
+            <material-button
+                :disabled="loading"
+                backgroundColor="var(--md-sys-color-primary)"
+                class="login-button"
+                color="var(--md-sys-color-on-primary)"
+                shape="square"
+                size="large"
+                @click="handleLogin"
+            >
+              <!-- MD2 按钮圆角通常较小 (4px) -->
+              <text v-if="loading">登录中...</text>
+              <text v-else>登 录</text>
+            </material-button>
+          </view>
         </view>
-      </view>
       </view>
     </material-card>
   </view>
 </template>
 
 <script>
+import {getTheme} from '@/components/material-uni/colors';
 import {SXData} from '@/components/material-uni/sx';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
 import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
@@ -83,28 +105,100 @@ import MaterialListCell from "@/components/material-uni/material-list-cell/mater
 
 export default {
   components: {MaterialListCell, MaterialList, MaterialCard, MaterialButton},
-  computed: {
-    SXData() {
-      return SXData;
-    },
-  },
+  // computed: {
+  //   SXData() {
+  //     return SXData;
+  //   },
+  // },
   data() {
     return {
+      // theme: {},          // 主题样式
+      uuid: '',           // 验证码 uuid
       username: '',
       password: '',
+      captcha: '',        // 验证码
+      captchaImage: '',   // 验证码图片URL
       showPassword: false,
       loading: false,
       rememberMe: false,
       error: '',
+      isFetchingCode: false, // 【新增】防抖锁：是否正在获取验证码
+      deviceId: '',          // 【新增】设备唯一标识
     };
+  },
+  onLoad() {
+    // this.initDeviceId(); // 先初始化设备ID
+    this.refreshCaptcha()
   },
   // uni‑app 生命周期：页面加载完成后执行
   onReady() {
+    this.refreshTheme();
     this.initRemember();
   },
   methods: {
     toggleRemember() {
       this.rememberMe = !this.rememberMe;
+    },
+    // initDeviceId() {
+    //   let devId = uni.getStorageSync('device_unique_id');
+    //   if (!devId) {
+    //     // 简单的生成逻辑，实际项目可用 uuid 库或 uni.getSystemInfoSync().deviceId
+    //     devId = 'dev-' + Date.now() + '-' + Math.random().toString(36).substr(2);
+    //     uni.setStorageSync('device_unique_id', devId);
+    //   }
+    //   this.deviceId = devId;
+    // },
+    refreshCaptcha() {
+      // 1. 防抖检查：如果正在请求中，直接忽略
+      if (this.isFetchingCode) return;
+
+      this.isFetchingCode = true; // 上锁
+      uni.showToast({
+        title: '正在获取验证码...',
+        icon: 'loading',
+        duration: 5000
+      })
+      let request = new Promise((resolve, reject) => uni.request({
+            url: baseUrl + `/perLogin?uuid=${this.uuid}`,
+            method: 'GET',
+            success: (res) => {
+              if (res.data.code === 200) {
+                resolve(res.data)
+              } else {
+                reject(res.data)
+              }
+            },
+            fail: (res) => {
+              reject(res)
+            },
+            complete: () => {
+              // 4. 无论成功失败，最后都要解锁
+              this.isFetchingCode = false;
+            }
+          })
+      )
+      request.then(res => {
+        let data = res.data;
+        this.uuid = data.uuid;
+        this.captchaImage = data.captcha;
+        if(this.captchaImage == ''){
+          uni.showToast({
+            title: '本次登录不需要验证码',
+            icon: 'success',
+            duration: 2000
+          })
+        }else{
+          uni.showToast({
+            title: '验证码已刷新',
+            icon:'success',
+            duration: 2000
+          })
+        }
+      }).catch(err => {
+        uni.showToast({title: err.data, icon: 'error', duration: 2000})
+        console.log(err)
+      })
+      // console.log(request)
     },
     /** 读取本地记住的账号 */
     initRemember() {
@@ -119,7 +213,14 @@ export default {
           this.rememberMe = false;
         }
       }
+
     },
+
+    // /** 刷新主题 */
+    // refreshTheme() {
+    //   this.theme = getTheme();
+    // },
+
     /** 登录主流程（async/await） */
     async handleLogin() {
       if (!this.username || !this.password) {
@@ -131,17 +232,24 @@ export default {
         return;
       }
 
+      if (!this.uuid) {
+        uni.showToast({ title: '正在初始化安全令牌...', icon: 'none' });
+        await this.refreshCaptcha(); // 强制获取一次
+        if (!this.uuid) return; // 如果还是没有，终止登录
+      }
+
       this.error = '';
       this.loading = true;
       uni.showLoading({title: '登录中...'});
 
-      // 保持原有逻辑不变
       let request = new Promise((resolve, reject) => uni.request({
             url: baseUrl+'/login',
             method: 'POST',
             data: {
+              "uuid": this.uuid,
               "studentId": this.username,
-              "password": this.password
+              "password": this.password,
+              "captcha": this.captcha,
             },
             header: {
               "Content-Type": "application/x-www-form-urlencoded"
@@ -165,22 +273,25 @@ export default {
           duration: 2000
         });
         if (this.rememberMe) {
+          uni.removeStorageSync('loginInfo');
           uni.setStorageSync('loginInfo', {
             username: this.username,
             password: this.password  // 存储密码
           });
         } else {
-          // 如果之前存了，现在不记住了，只存用户名或者清除
           uni.setStorageSync('loginInfo', {
-            username: this.username,
-            password: ''
+            username: this.username,  // 只存储账号
+            password: ''  // 密码置空
           });
         }
         // 登录成功后跳转
         uni.navigateBack();
       }).catch(err => {
-        // 错误处理逻辑不变，只展示文字
-        this.error = (err && err.msg) ? err.msg : (typeof err === 'string' ? err : '登录失败，请检查网络');
+        this.error = err.data;
+        if (err.data === 'Timed out waiting for 15000 ms') {
+          this.uuid = '';
+        }
+        this.refreshCaptcha()
       }).finally(() => {
         this.loading = false;
         uni.hideLoading();
@@ -270,6 +381,10 @@ export default {
         width: 100%;
         background: transparent;
       }
+    }
+
+    .captcha-image{
+      height: sx(15);
     }
   }
 
