@@ -157,12 +157,14 @@ export default {
   display: flex;
   position: relative;
   width: 100%;
+  height: 100%;
   transition: height 0.3s ease-out;
   overflow: hidden;
 }
 .my-swipe__track {
   display: flex;
   width: 100%;
+  height: 100%;
   position: relative;
 }
 </style>

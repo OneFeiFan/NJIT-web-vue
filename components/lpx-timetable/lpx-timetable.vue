@@ -9,8 +9,8 @@
     </view>
 
     <!-- 课表主体 -->
-    <view class="main">
-      <scroll-view scroll-y="true" class="scroll-Y">
+    <view class="main" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+      <scroll-view scroll-y="true" class="scroll-Y" @scroll="onScroll">
 
         <!-- 背景网格行（包含左侧时间） -->
         <view class="row" v-for="(item, index) in timetableType" :key="index">
@@ -85,7 +85,7 @@
 
 <script>
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
-import {mx, mxValue, SXData} from "@/components/material-uni/sx";
+import {mx, mxValue} from "@/components/material-uni/sx";
 import TouchRipple from "@/components/material-uni/ripple/component.vue";
 
 export default {
@@ -118,6 +118,10 @@ export default {
   },
   data() {
     return {
+      // 滑动检测：区分用户是"想滑动"还是"想长按"
+      _touchStartX: 0,
+      _touchStartY: 0,
+      _isScrolling: false,
       text2num: {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 7},
       colorIndex: 0,
       // 颜色缓存
@@ -148,7 +152,6 @@ export default {
     }
   },
   computed: {
-    SXData: () => SXData,
     allPalette() {
       return [...this.palette, ...this.defaultPalette];
     },
@@ -251,6 +254,31 @@ export default {
   },
   methods: {
     mx,  mxValue,
+    // 滑动/长按区分：记录起始位置
+    onTouchStart(e) {
+      const touch = e.changedTouches && e.changedTouches[0] || e;
+      this._touchStartX = touch.clientX;
+      this._touchStartY = touch.clientY;
+      this._isScrolling = false;
+    },
+    // 手指移动超过阈值则标记为滚动意图
+    onTouchMove(e) {
+      if (this._isScrolling) return;
+      const touch = e.changedTouches && e.changedTouches[0] || e;
+      const dx = Math.abs(touch.clientX - this._touchStartX);
+      const dy = Math.abs(touch.clientY - this._touchStartY);
+      if (dx > 8 || dy > 8) {
+        this._isScrolling = true;
+      }
+    },
+    onTouchEnd() {
+      // 延迟清除标志，确保 longpress 回调执行时还能读到状态
+      setTimeout(() => { this._isScrolling = false; }, 200);
+    },
+    // scroll-view 滚动时也标记为滚动意图（覆盖上下滑动场景）
+    onScroll() {
+      this._isScrolling = true;
+    },
     getDateOfWeek(dayName) {
       if (!this.thisWeek) return '';
       const dayIndex = this.text2num[dayName];
@@ -280,14 +308,13 @@ export default {
       // },250);
     },
     handleLongPressCourse(courses) {
-      // setTimeout(() => {
+      // 检测到滚动意图则忽略长按
+      if (this._isScrolling) return;
       this.$emit('handleLongPressCourse', courses);
-      // },250);
     },
     handleLongPressEmpty(dayIndex, nodeIndex) {
-      // setTimeout(() => {
+      if (this._isScrolling) return;
       this.$emit('handleLongPressEmpty', {dayIndex, nodeIndex});
-      // },250);
     },
   }
 }
@@ -300,6 +327,7 @@ export default {
   $time-item-height: sx(18);
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   .header {
     background-color: var(--md-sys-color-surface);
@@ -334,7 +362,7 @@ export default {
 
 
     .scroll-Y {
-      height: 100%;
+      height: calc(100% - sx(15));
     }
 
     .row {
