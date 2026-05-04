@@ -256,10 +256,8 @@ export default {
     // #ifdef APP-PLUS
     this.$manager.refreshSleepData().finally(() => {
       this.$manager.getDashboardInsight().then(res => {
-        console.log("获取到底层决策数据:", res);
         if(res !== null){
           // 直接覆盖响应式数据，页面会自动更新
-		  console.log(res)
           this.dashboardData = res;
         }
       }).catch(err => {

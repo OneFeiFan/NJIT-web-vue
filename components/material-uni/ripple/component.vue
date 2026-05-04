@@ -33,7 +33,6 @@ export default {
     }
   },
   methods: {
-    // addRipple 和 removeRipple 方法都可以删除了，Logic 层不再关心波纹
     handleLongPress(e) {
       this.$emit("longpress", e);
     },

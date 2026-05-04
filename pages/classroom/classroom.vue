@@ -225,13 +225,11 @@ export default {
   },
   methods: {
     onChangeTagOne(e) {
-      console.log(e)
       // [{"value":1,"label":"第一节"}]
       this.jcd = 0;
       for (let key in e) {
         this.jcd += Math.pow(2, e[key].value - 1);
       }
-      console.log(this.jcd)
       this.getClassRoom();
     },
     dateChange(array) {
@@ -247,7 +245,6 @@ export default {
         return;
       }
       this.lh = this.buildingsMap[this.building];
-      console.log(this.lh)
       this.getClassRoom();
     },
     selectBuilding({value}) {
@@ -258,15 +255,13 @@ export default {
     },
     getClassRoom() {
       if (this.lh === '' || this.jcd === 0 || this.dateRange === 'yyyy-mm-dd/yyyy-mm-dd') {
-        console.log('请选择完整信息', this.xqj === '')
         this.tableData = [];
         return;
       }
       this.$manager.getEmptyClassrooms(this.dateRange, String(this.jcd), this.lh).then(res => {
-        let data = JSON.parse(res);
         let result = {};
-        for (let key in data) {
-          result[key] = getClassroom(JSON.parse(data[key]));
+        for (let key in res) {
+          result[key] = getClassroom(res[key]);
         }
         this.tableData = result;
       })

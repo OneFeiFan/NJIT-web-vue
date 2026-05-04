@@ -73,13 +73,8 @@ export default {
       datas: {},
     }
   },
-  onLoad() {
-
-  },
-  onReady() {
-    this.update(false)
-  },
   onShow() {
+	  this.update(false)
   },
   methods: {
     mx,
