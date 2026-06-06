@@ -52,16 +52,16 @@ export default {
     // 获取当前app的版本
     let version_number = systemInfo.appWgtVersion;
     uni.request({
-      url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
+      url: 'https://raw.giteeusercontent.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
       header: {
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "gitee.com",
+        "Host": "raw.giteeusercontent.com",
         "Connection": "keep-alive"
       },
       success: (res) => {
         const data = res.data;
-        // console.log(data.version)
+        // console.log(data)
         if (data.version !== undefined && version_number !== data.version) {
           const url = `https://gitee.com/OneFeiFan/fxxking-NJIT/releases/download/v${data.version}/${data.version}.apk`;
           // console.log('发现新版本', data.version, data.description);

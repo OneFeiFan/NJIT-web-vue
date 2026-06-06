@@ -1,8 +1,3 @@
-/**
- * 引用 Android 系统库，示例如下：
- * import { Context } from "android.content.Context";
- * [可选实现，按需引入]
- */
 // @ts-ignore
 import {CourseParams, DashboardInsightResponse, DashboardResultWrapper, DeleteCourse, RestoreCourse} from "./types.uts"
 // @ts-ignore
@@ -13,10 +8,6 @@ import CoreInitializer from "com.feifan.fuckingnjit.utils.CoreInitializer"
 import AppConfig from 'com.feifan.fuckingnjit.utils.AppConfig'
 // @ts-ignore
 import SystemActionHelper from "com.feifan.fuckingnjit.utils.system.SystemActionHelper"
-// @ts-ignore
-import DecisionFacade from 'com.feifan.fuckingnjit.decision.DecisionFacade'
-// @ts-ignore
-import DataSyncService from 'com.feifan.fuckingnjit.service.DataSyncService'
 
 // @ts-ignore
 import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
@@ -215,138 +206,9 @@ export class Core {
 		Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).setSmartUpdate(isSmart)
 	}
 
-	public checkRecordAudio() : boolean {
-		// @ts-ignore
-		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkRecordAudio()
-	}
-
-	public requestRecordAudio() : Promise<boolean>{
-		// @ts-ignore
-		return new Promise((resolve, reject) => {
-			// @ts-ignore
-			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestRecordAudio((isGranted: boolean) => {
-				if (isGranted) {
-					resolve(true)
-				} else {
-					reject(false)
-				}
-			})
-		})
-	}
-
-	public checkNotification() : boolean {
-		// @ts-ignore
-		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkNotification()
-	}
-
-	public requestNotificationService() : Promise<boolean>{
-		return new Promise((resolve, reject) => {
-			// @ts-ignore
-			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestNotificationServicePermission((isGranted: boolean) => {
-				if (isGranted) {
-					resolve(true)
-				} else {
-					reject(false)
-				}
-			})
-		})
-	}
-
-	// public checkPackageUsageStats() : boolean {
-	// 	return Manager.getPermissionsManager().checkPackageUsageStats()
-	// }
-	//
-	// public requestUsageStats() : Promise<boolean>{
-	// 	return new Promise((resolve, reject) => {
-	// 		Manager.getPermissionsManager().requesPackageUsageStats((isGranted: boolean) => {
-	// 			if (isGranted) {
-	// 				resolve(true)
-	// 			} else {
-	// 				reject(false)
-	// 			}
-	// 		})
-	// 	})
-	// }
-
-	public checkScheduleExactAlarm() : boolean {
-		// @ts-ignore
-		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).checkScheduleExactAlarm()
-	}
-
-	public requestExactAlarm() : Promise<boolean>{
-		return new Promise((resolve, reject) => {
-			// @ts-ignore
-			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestScheduleExactAlarm((isGranted: boolean) => {
-				if (isGranted) {
-					resolve(true)
-				} else {
-					reject(false)
-				}
-			})
-		})
-	}
-
-	public requestKeepAliveNormalPermissions() : Promise<Array<string>>{
-		return new Promise((resolve, reject) => {
-			// @ts-ignore
-			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestKeepAliveNormalPermissions((isGranted: boolean,list: List<String>) => {
-				if (isGranted) {
-					resolve(Array<string>())
-				} else {
-					// @ts-ignore
-					reject(Array.fromNative(list))
-				}
-			})
-		})
-	}
-
-	public isIgnoringBatteryOptimizations() : boolean {
-		// @ts-ignore
-		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).isIgnoringBatteryOptimizations()
-	}
-
-	public requestIgnoreBatteryOptimizations(){
-		// @ts-ignore
-			Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestIgnoreBatteryOptimizations()
-	}
-
-	public isAccessibilitySettingsOn() : boolean {
-		// @ts-ignore
-		return Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).isAccessibilitySettingsOn()
-	}
-
-	public requestAccessibilityPermission(){
-		// @ts-ignore
-		Manager.getPermissionsManager(UTSAndroid.getUniActivity()!).requestAccessibilityPermission()
-	}
-
 	public async initYiBan(mobile: string, password: string): Promise<UTSJSONObject>{
 		// @ts-ignore
 		const data = await CoreInitializer.initYiBan(UTSAndroid.getAppContext()!,mobile,password).toJSONString();
 		return parseUTSResponse(data)
-	}
-
-	public async refreshSleepData() {
-		await DataSyncService.uploadAndClearData();
-	}
-
-	public switchAppMode(mode:string){
-		// @ts-ignore
-		DecisionFacade.switchAppMode(mode);
-	}
-
-	// /**
-	//  * 获取智能决策看板数据
-	//  */
-	public async getDashboardInsight(): Promise<DashboardInsightResponse> {
-		// @ts-ignore
-		const data = await DecisionFacade.getDashboardInsight(UTSAndroid.getAppContext()!).toJSONString();
-		const tmp = parseUTSResponse(data)
-		if(tmp.contains('code') && tmp['code'] == 200.0){
-			return tmp['data']
-		}else{
-			this.showToast("健康数据获取失败")
-			return {}
-		}
 	}
 }
