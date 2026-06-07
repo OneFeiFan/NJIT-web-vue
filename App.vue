@@ -7,9 +7,6 @@ export default {
   onLaunch: function () {
     // 初始化主题
     themeLogic.init();
-    this.$manager.requestKeepAliveNormalPermissions().then(res=>{
-      console.log(res);
-    })
     // #ifdef APP-PLUS
     const style = plus.navigator.getUIStyle();
     themeLogic.handleSystemChange(style);
@@ -52,11 +49,11 @@ export default {
     // 获取当前app的版本
     let version_number = systemInfo.appWgtVersion;
     uni.request({
-      url: 'https://raw.giteeusercontent.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
+      url: 'https://gitee.com/OneFeiFan/fxxking-NJIT/raw/master/version.json',
       header: {
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "raw.giteeusercontent.com",
+        // "Host": "gitee.com",
         "Connection": "keep-alive"
       },
       success: (res) => {
@@ -160,7 +157,7 @@ export default {
   }
 
   .title {
-    margin: 0 auto 0 sx(8);
+    margin: 0 auto 0 auto;
     font-size: sx(6.5);
     display: block;
     text-align: center;

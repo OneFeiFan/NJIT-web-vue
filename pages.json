@@ -161,15 +161,14 @@
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
-    },
-    {
-      "path": "pages/settings/permissionmanager",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false,
-        "navigationStyle": "custom"
-      }
-    }
+	},
+	{
+		"path": "pages/exam/exam",
+		"style": {
+          "navigationBarTitleText": "",
+          "navigationStyle": "custom"
+		}
+	}
   ],
   "tabBar": {
     "color": "#000000",

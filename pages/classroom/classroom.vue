@@ -1,29 +1,26 @@
 <template>
   <view class="container" :style="themeStyle">
-    <!-- 头部控制栏 -->
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back"
-                   class="icon-left"/>
+        <uni-icons color="var(--md-sys-color-on-primary)" size="" type="left" @click="back" class="icon-left"/>
         <view class="title">空教室查询</view>
-        <uni-icons class="icon-right" color="#00000000" size="" type="loop" @click=""/>
+        <view class="icon-right"></view>
       </view>
     </material-nav-bar>
-    <!-- 选择区 -->
+
     <view class="main">
       <view class="select" id="select">
         <material-list background-color="var(--md-sys-color-surface)" color="var(--md-sys-color-on-secondary-container)">
-          <!--   日期选择区     -->
           <material-list-cell @click="openDatePicker">
             <view class="list-content">
               <zui-svg-icon icon="event_available" collection="material-filled" :color="getColor('--md-sys-color-on-secondary-container')"/>
-              <view>日期：{{ dateRange }}</view>
+              <view class="filter-text">日期：{{ dateRange }}</view>
             </view>
           </material-list-cell>
           <material-list-cell @click="pickBuilding = true">
             <view class="list-content">
               <zui-svg-icon icon="location_on" collection="material-filled" :color="getColor('--md-sys-color-on-secondary-container')"/>
-              <view class="title">地点：{{ building }}</view>
+              <view class="filter-text">地点：{{ building }}</view>
             </view>
           </material-list-cell>
           <material-list-cell :showLeftText="false">
@@ -36,39 +33,44 @@
           </material-list-cell>
         </material-list>
       </view>
+
       <scroll-view scroll-y="true" class="table-container">
 
-        <view class="no-data" v-if="tableData.length <= 0">
-          暂无数据
+        <view class="no-data" v-if="Object.keys(tableData).length <= 0">
+          <text>当前时段暂无空教室</text>
         </view>
 
-        <uni-table ref="table" border stripe emptyText="">
-          <slot v-for="(value, key) in tableData">
-            <uni-tr>
-              <uni-th class="table-color" align="center"></uni-th>
-              <uni-th class="table-color" align="center">第{{ key }}周</uni-th>
-              <uni-td class="table-color" align="center"></uni-td>
-            </uni-tr>
-            <uni-tr>
-              <uni-th class="table-color" width="1" align="center">地点</uni-th>
-              <uni-th class="table-color" width="1" align="center">教室</uni-th>
-              <uni-th class="table-color" width="1" align="center">座位</uni-th>
-            </uni-tr>
+        <view class="week-card-group" v-for="(value, key) in tableData" :key="key">
+          <material-card background-color="var(--md-sys-color-surface-container-low)">
+            <view class="week-card-inner">
 
+              <view class="week-title">
+                <text>第 {{ key }} 周</text>
+              </view>
 
-            <uni-tr v-for="(item, index) in value" :key="index">
-              <uni-td class="table-color" align="center">{{ item.jxlmc }}</uni-td>
-              <uni-td class="table-color" align="center">
-                {{ item.cdmc }}
-              </uni-td>
-              <uni-td class="table-color" align="center">
-                {{ item.zws }}
-              </uni-td>
-            </uni-tr>
-          </slot>
-        </uni-table>
+              <view class="md3-table">
+                <view class="md3-thead">
+                  <view class="md3-th align-left">地点</view>
+                  <view class="md3-th align-center">教室</view>
+                  <view class="md3-th align-center">余座</view> </view>
+
+                <view class="md3-tr" v-for="(item, index) in value" :key="index">
+                  <view class="md3-td align-left">{{ item.jxlmc }}</view>
+                  <view class="md3-td align-center">{{ item.cdmc }}</view>
+                  <view class="md3-td align-center">
+                    <view class="seat-chip" :class="{'is-full': Number(item.zws) < 10}">
+                      {{ item.zws }}
+                    </view>
+                  </view>
+                </view>
+              </view>
+
+            </view>
+          </material-card>
+        </view>
       </scroll-view>
     </view>
+
     <v-md-date-range-picker :autoApply="false" showYearSelect ref="datePicker" @change="dateChange"/>
     <u-picker style="position: absolute;" :show="pickBuilding" @change="selectBuilding" :columns="buildings"
               @close="buildingConfirm" @confirm="buildingConfirm" @cancel="buildingConfirm"
@@ -88,10 +90,6 @@ import MaterialList from "@/components/material-uni/material-list/material-list.
 import zuiSvgIcon from "@/uni_modules/zui-svg-icon/components/zui-svg-icon/zui-svg-icon.vue";
 import VMdDateRangePicker from '@/components/material-uni/material-date-range-picker/components/Picker.vue'
 import WoTag from "@/components/material-uni/tag-list/tag-list.vue";
-import UniTable from "@/uni_modules/uni-table/components/uni-table/uni-table.vue";
-import UniTr from "@/uni_modules/uni-table/components/uni-tr/uni-tr.vue";
-import UniTh from "@/uni_modules/uni-table/components/uni-th/uni-th.vue";
-import UniTd from "@/uni_modules/uni-table/components/uni-td/uni-td.vue";
 import UPicker from "@/uni_modules/uview-ui/components/u-picker/u-picker.vue";
 import {SXData} from "@/components/material-uni/sx"
 
@@ -103,10 +101,6 @@ export default {
   },
   components: {
     UPicker,
-    UniTd,
-    UniTh,
-    UniTr,
-    UniTable,
     WoTag,
     VMdDateRangePicker,
     zuiSvgIcon,
@@ -119,116 +113,28 @@ export default {
     return {
       pickBuilding: false,
       dateRange: "yyyy-mm-dd/yyyy-mm-dd",
-      coursesList: [{
-        value: 1,
-        label: '第一节',
-      },
-        {
-          value: 2,
-          label: '第二节',
-        },
-        {
-          value: 3,
-          label: '第三节',
-        },
-        {
-          value: 4,
-          label: '第四节',
-        },
-        {
-          value: 5,
-          label: '第五节',
-        },
-        {
-          value: 6,
-          label: '第六节',
-        },
-        {
-          value: 7,
-          label: '第七节',
-        },
-        {
-          value: 8,
-          label: '第八节',
-        },
-        {
-          value: 9,
-          label: '第九节',
-        },
-        {
-          value: 10,
-          label: '第十节',
-        },
-        {
-          value: 11,
-          label: '第十一节',
-        }],
+      coursesList: [
+        {value: 1, label: '第一节'}, {value: 2, label: '第二节'},
+        {value: 3, label: '第三节'}, {value: 4, label: '第四节'},
+        {value: 5, label: '第五节'}, {value: 6, label: '第六节'},
+        {value: 7, label: '第七节'}, {value: 8, label: '第八节'},
+        {value: 9, label: '第九节'}, {value: 10, label: '第十节'},
+        {value: 11, label: '第十一节'}
+      ],
       building: '东馆',
-      buildings: [[
-        "东馆",
-        "西馆",
-        "南馆",
-        "信息楼",
-        "经管楼",
-        "文理楼",
-        "设计楼",
-        // "教学楼": "JXL001",
-        // "北大活": "BDH001",
-        // "图书馆": "TSG001",
-        // "体育中心": "TY001",
-        // "体育公园": "TYG001",
-        "工程中心"
-        // "科创中心": "KC001",
-        // "实验楼": "SYL001",
-        // "基础实验楼": "JCS001",
-        // "江宁校区实验楼": "JN001",
-        // "无楼号": "wlh",
-        // "无": "W001"
-      ]],
+      buildings: [["东馆", "西馆", "南馆", "信息楼", "经管楼", "文理楼", "设计楼", "工程中心"]],
       buildingsMap: {
-        "东馆": "DG001",
-        "西馆": "XG001",
-        "南馆": "NG001",
-        "信息楼": "XXL001",
-        "经管楼": "JGL001",
-        "文理楼": "WLL001",
-        "设计楼": "SJl001",
-        // "教学楼": "JXL001",
-        // "北大活": "BDH001",
-        // "图书馆": "TSG001",
-        // "体育中心": "TY001",
-        // "体育公园": "TYG001",
-        "工程中心": "GCZ001",
-        // "科创中心": "KC001",
-        // "实验楼": "SYL001",
-        // "基础实验楼": "JCS001",
-        // "江宁校区实验楼": "JN001",
-        // "无楼号": "wlh",
-        // "无": "W001"
+        "东馆": "DG001", "西馆": "XG001", "南馆": "NG001",
+        "信息楼": "XXL001", "经管楼": "JGL001", "文理楼": "WLL001",
+        "设计楼": "SJl001", "工程中心": "GCZ001",
       },
-      num2text: {
-        1: '一',
-        2: '二',
-        3: '三',
-        4: '四',
-        5: '五',
-        6: '六',
-        7: '日'
-      },
-      zcd: 0,
       jcd: 0,
-      xqj: '',
       lh: 'DG001',
-      // xnm: "",//学年，且取小的那个
-      // xqm: "",//哪个学期1学期3，2学期12，3学期？16
-      tableData: []
+      tableData: {}
     }
-  },
-  onLoad() {
   },
   methods: {
     onChangeTagOne(e) {
-      // [{"value":1,"label":"第一节"}]
       this.jcd = 0;
       for (let key in e) {
         this.jcd += Math.pow(2, e[key].value - 1);
@@ -244,9 +150,7 @@ export default {
     },
     buildingConfirm() {
       this.pickBuilding = false;
-      if (this.lh === this.buildingsMap[this.building]) {
-        return;
-      }
+      if (this.lh === this.buildingsMap[this.building]) return;
       this.lh = this.buildingsMap[this.building];
       this.getClassRoom();
     },
@@ -258,7 +162,7 @@ export default {
     },
     getClassRoom() {
       if (this.lh === '' || this.jcd === 0 || this.dateRange === 'yyyy-mm-dd/yyyy-mm-dd') {
-        this.tableData = [];
+        this.tableData = {};
         return;
       }
       // #ifdef APP-PLUS
@@ -271,10 +175,10 @@ export default {
       })
       // #endif
       // #ifdef H5
-      http.post("/getEmptyClassrooms",{
+      http.post("/getEmptyClassrooms", {
         dateRange: this.dateRange,
-        coursePeriod:String(this.jcd),
-        buildingId:this.lh
+        coursePeriod: String(this.jcd),
+        buildingId: this.lh
       }).then(res => {
         if(res.code === 200) {
           let result = {};
@@ -284,8 +188,8 @@ export default {
           this.tableData = result;
         }
       }).catch(err => {
-        console.error('获取空教室数据失败:', err)
-        this.tableData = []
+        console.error('获取空教室数据失败:', err);
+        this.tableData = {};
       })
       // #endif
     }
@@ -293,7 +197,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .container {
   display: flex;
   flex-direction: column;
@@ -306,7 +210,11 @@ export default {
     display: flex;
     align-items: center;
   }
-
+  .filter-text {
+    margin-left: sx(2);
+    font-size: sx(4.5);
+    color: var(--md-sys-color-on-surface);
+  }
   .group {
     width: 100%;
   }
@@ -317,13 +225,9 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: var(--md-sys-color-on-secondary-container);
-  font-weight: bold;
-}
-
-.table-color {
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: sx(4.5);
+  font-weight: 500;
 }
 
 .main {
@@ -333,11 +237,106 @@ export default {
     height: calc(100vh - var(--status-bar-height) - sx(60));
   }
 
+  /* === MD3 风格表格设计 === */
+  .week-card-group {
+    padding: sx(4) sx(4) 0 sx(4);
+  }
+
+  .week-card-inner {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: sx(2);
+    // 左侧强调线
+    border-left: sx(1.5) solid var(--md-sys-color-primary);
+  }
+
+  .week-title {
+    padding: sx(4) sx(4) sx(2) sx(4);
+    font-size: sx(4.5);
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+  }
+
+  .md3-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .md3-thead {
+    display: flex;
+    align-items: center;
+    padding: sx(2) sx(4);
+    border-bottom: max(sx(0.25), 0.5px) solid var(--md-sys-color-outline-variant);
+  }
+
+  .md3-tr {
+    display: flex;
+    align-items: center;
+    padding: sx(3) sx(4);
+    // 极浅色分割线
+    border-bottom: max(sx(0.25), 0.5px) solid color-mix(in srgb, var(--md-sys-color-outline-variant) 30%, transparent);
+
+    // 偶数行微弱斑马纹
+    &:nth-child(even) {
+      background-color: color-mix(in srgb, var(--md-sys-color-surface-variant) 15%, transparent);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  /* 基础单元格：升级为 Flex 布局以保证多端绝对水平+垂直居中 */
+  .md3-th, .md3-td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .md3-th {
+    font-size: sx(3.5);
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  .md3-td {
+    font-size: sx(4);
+    color: var(--md-sys-color-on-surface);
+  }
+
+  /* 对齐辅助类：改用 flex 轴线对齐 */
+  .align-left { justify-content: flex-start; }
+  .align-center { justify-content: center; }
+  .align-right { justify-content: flex-end; }
+
+  /* 状态胶囊 */
+  .seat-chip {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: sx(8);
+    padding: sx(0.5) sx(2);
+    border-radius: sx(2);
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    font-family: monospace;
+    font-weight: 600;
+    font-size: sx(3.5);
+
+    // 告急状态（余座小于 10 时变红）
+    &.is-full {
+      background-color: var(--md-sys-color-error-container);
+      color: var(--md-sys-color-on-error-container);
+    }
+  }
+
+  /* 横屏适配 */
   @media (orientation: landscape) {
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between; /* 根据需要调整 */
+    justify-content: space-between;
 
     .table-container {
       height: calc(100vh - var(--status-bar-height) - sx(15));
@@ -346,8 +345,8 @@ export default {
     .select {
       width: 50%;
       height: 100%;
-
     }
+
     scroll-view {
       flex: 1;
     }

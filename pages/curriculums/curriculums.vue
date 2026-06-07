@@ -2,7 +2,7 @@
   <view :style="themeStyle" class="container">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons class="icon-left" color="--md-sys-color-on-primary" size="" type="bars"
+        <uni-icons class="icon-left" color="#00000000" size="" type="bars"
                    @click="isDrawerOpen = true"/>
         <picker :range="range" :value="week" class="title" @change="change">
           <view>{{ range[week] }}</view>
@@ -41,7 +41,7 @@
                           @restore="handleRestoreFromManager"/>
     <course-dialog :courses="dialog.courses" :mode="dialog.mode" :time-info="dialog.timeInfo" :visible="dialog.visible"
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
-    <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/>
+    <!-- <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/> -->
     <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
     <material-tab-bar color="var(--md-sys-color-outline)"/>
   </view>

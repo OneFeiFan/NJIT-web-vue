@@ -13,9 +13,9 @@
         <material-list-cell rightIcon @click="jump(`widget`)">
           <text>小部件管理</text>
         </material-list-cell>
-        <material-list-cell rightIcon @click="jumpSetting(`permissionmanager`)">
-          <text>权限管理</text>
-        </material-list-cell>
+<!--        <material-list-cell rightIcon @click="jumpSetting(`permissionmanager`)">-->
+<!--          <text>权限管理</text>-->
+<!--        </material-list-cell>-->
         <material-list-cell rightIcon @click="jump(`safetymanager`)">
           <text>安全管理</text>
         </material-list-cell>

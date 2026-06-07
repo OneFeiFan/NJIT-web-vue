@@ -25,8 +25,8 @@ Vue.use(materialTabBar,[
     page: "pages/curriculums/curriculums",
   },
   {
-    icon:'report',
-    name:"通知",
+    icon:'account_circle',
+    name:"个人",
     page: "pages/notice/notice",
   }
 ])

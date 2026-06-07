@@ -100,10 +100,18 @@ export class Core {
 		const data = await Manager.getWebService().getSorcesDetail(UTSAndroid.getAppContext()!, classId, schoolYear, semester, courseName).toJSONString();
 		return parseUTSResponse(data)
 	}
-	// public async getNoticeInformation() : Promise<UTSJSONObject> {
-	// 	const data = await Manager.getWebService().getNoticeInformation().toJSONString();
-	// 	return parseUTSResponse(data)
-	// }
+
+	public async getAllExam() : Promise<UTSJSONObject> {
+		// @ts-ignore
+		const data = await Manager.getWebService().getAllExam(UTSAndroid.getAppContext()!).toJSONString();
+		const tmp = parseUTSResponse(data)
+		if(tmp.contains('code') && tmp['code'] == 200.0){
+			return tmp['data']
+		}else{
+			this.showToast("考试信息获取失败")
+			return new UTSJSONObject()
+		}
+	}
 
 	public async getAcademicProgress(refresh : boolean) : Promise<UTSJSONObject> {
 		// @ts-ignore

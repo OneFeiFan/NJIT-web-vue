@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <view class="container" :style="themeStyle">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
@@ -109,20 +109,23 @@ export default {
     return {
       rawExamData: [
         {
-          "xh_id": "******",
-          "ksfs": "？？",
-          "bj": "-------",
-          "zwh": "0",
-          "ksmc": "？？？？？",
-          "kssj": "？？？？？",
-          "cdmc": "未知",
-          "kcmc": "暂无数据",
-          "xnmc": "？？？？-****",
-          "xnm": "----",
-          "xqmmc": "？"
+            "xh_id": "******",
+            "ksfs": "？？",
+            "bj": "-------",
+            "zwh": "0",
+            "ksmc": "？？？？？",
+            "kssj": "？？？？？",
+            "cdmc": "未知",
+            "kcmc": "暂无数据",
+            "xnmc": "？？？？-****",
+            "xnm": "----",
+            "xqmmc": "？"
         }
       ]
     };
+  },
+  onLoad(){
+    this.update()
   },
   methods: {
     mx,
@@ -132,14 +135,15 @@ export default {
     },
     update() {
       // if (forceRefresh) {
-      uni.showLoading({
-        title: '请优先以授课老师安排准'
-      });
+        uni.showLoading({
+          title: '请优先以授课老师安排准'
+        });
       // }
       // const year = this.selectedYear.split('-')[0];
       // const term = this.selectedTerm === '' ? '' : this.selectedTerm === '第一学期' ? '3' : '12';
       this.$manager.getAllExam().then(res => {
-        this.rawExamData = JSON.parse(res).data;
+        console.log(res)
+        this.rawExamData = res.items;
         // this.tableData = this.tableData.reverse()
       }).catch(err => {
         console.error(err)
@@ -168,7 +172,6 @@ export default {
 /* 滚动区样式 */
 .exam-list-container {
   height: calc(100vh - var(--status-bar-height) - sx(15));
-  padding-bottom: sx(8);
 }
 
 /* 暂无数据提示 */
@@ -299,4 +302,4 @@ export default {
     }
   }
 }
-</style> -->
+</style>

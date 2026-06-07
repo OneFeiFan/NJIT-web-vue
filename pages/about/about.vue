@@ -40,7 +40,7 @@ export default {
       header: {
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "gitee.com",
+        // "Host": "gitee.com",
         "Connection": "keep-alive"
       },
       success: (res) => {
