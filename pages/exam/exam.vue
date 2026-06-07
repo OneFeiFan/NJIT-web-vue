@@ -25,7 +25,7 @@
             <view class="exam-card-inner">
 
               <view class="exam-header">
-                <view class="exam-type">{{ exam.ksfs }}</view>
+                <view class="exam-type">{{ exam.ksfs || "未知"}}</view>
                 <text class="exam-course">{{ exam.kcmc }}</text>
               </view>
 
@@ -136,7 +136,7 @@ export default {
     update() {
       // if (forceRefresh) {
         uni.showLoading({
-          title: '请优先以授课老师安排准'
+          title: '请优先以授课老师安排为准'
         });
       // }
       // const year = this.selectedYear.split('-')[0];
@@ -154,7 +154,9 @@ export default {
           duration: 2000
         });
       }).finally(() => {
-        uni.hideLoading();
+        setTimeout(()=>{
+          uni.hideLoading();
+        },1000)
       })
     },
   }
