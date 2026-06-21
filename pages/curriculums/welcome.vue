@@ -17,7 +17,7 @@
 				<!-- 内容区域 -->
 				<scroll-view class="content-container" scroll-y="true">
 					<view class="intro-text">
-						你好，希望你能够为我停留 10 秒钟。经过最近的一段时间开发，APP 加入并优化了以下功能：
+						抱歉，因为各种不好的原因APP的使用出现不少问题，我已在尽力恢复中。
 					</view>
 
 					<!-- 功能列表 -->
@@ -25,26 +25,26 @@
 
 						<view class="feature-item">
 							<view class="icon-box">
-								<uni-icons type="checkbox-filled" color="var(--md-sys-color-primary)"
+								<uni-icons type="chat-filled" color="var(--md-sys-color-primary)"
 									size="20"></uni-icons>
 							</view>
 							<view class="text-box">
-								<text class="feat-title">易班签到</text>
-								<text class="feat-desc">本次更新加入了易班签到功能，让校园生活更便捷。</text>
+								<text class="feat-title">考试信息</text>
+								<text class="feat-desc">本次增加了考试信息的获取。</text>
 							</view>
 						</view>
 
-						<view class="feature-item">
-							<view class="icon-box">
-								<uni-icons type="settings-filled" color="var(--md-sys-color-primary)"
-									size="20"></uni-icons>
-							</view>
-							<view class="text-box">
-								<text class="feat-title">功能优化</text>
-                <text class="feat-desc">编辑课表的教程移至“设置>FAQ”中。</text>
-								<text class="feat-desc">上一版的课表编辑和 WiFi 一键认证的功能已完成体验优化。</text>
-							</view>
-						</view>
+<!--						<view class="feature-item">-->
+<!--							<view class="icon-box">-->
+<!--								<uni-icons type="settings-filled" color="var(&#45;&#45;md-sys-color-primary)"-->
+<!--									size="20"></uni-icons>-->
+<!--							</view>-->
+<!--							<view class="text-box">-->
+<!--								<text class="feat-title">功能优化</text>-->
+<!--                <text class="feat-desc">编辑课表的教程移至“设置>FAQ”中。</text>-->
+<!--								<text class="feat-desc">上一版的课表编辑和 WiFi 一键认证的功能已完成体验优化。</text>-->
+<!--							</view>-->
+<!--						</view>-->
 
 						<view class="feature-item">
 							<view class="icon-box">

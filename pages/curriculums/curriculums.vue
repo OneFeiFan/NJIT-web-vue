@@ -198,9 +198,9 @@ export default {
           this.other = Object.freeze(value.nullTimeCourses);
           this.hiddenCourses = Object.freeze(value.hiddenCourses || []);
           let welcome = uni.getStorageSync("welcome")
-          if(welcome === undefined || welcome === null || welcome !== "1.2.5"){
+          if(welcome === undefined || welcome === null || welcome !== "1.2.9"){
             this.showWelcome = true;
-            uni.setStorageSync("welcome", "1.2.5")
+            uni.setStorageSync("welcome", "1.2.9")
           }
         }
       }).catch(res => {
