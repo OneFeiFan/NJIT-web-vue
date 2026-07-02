@@ -36,6 +36,9 @@
           <material-list-cell rightIcon @click="jump('classroom')">
             <text>空教室查询</text>
           </material-list-cell>
+          <material-list-cell rightIcon @click="jump(`scores`)">
+            <text>成绩查询</text>
+          </material-list-cell>
           <material-list-cell rightIcon @click="jump('academicprogress')">
             <text>学业进度</text>
           </material-list-cell>

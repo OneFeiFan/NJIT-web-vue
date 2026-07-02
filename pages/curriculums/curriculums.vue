@@ -2,8 +2,8 @@
   <view :style="themeStyle" class="container">
     <material-nav-bar background-color="var(--md-sys-color-primary)" color="var(--md-sys-color-on-primary)">
       <view class="nav-bar">
-        <uni-icons class="icon-left" color="#00000000" size="" type="bars"
-                   @click="isDrawerOpen = true"/>
+        <uni-icons class="icon-left" color="var(--md-sys-color-on-primary)" size="" type="calendar"
+                   @click="openSemesterDialog"/>
         <picker :range="range" :value="week" class="title" @change="change">
           <view>{{ range[week] }}</view>
         </picker>
@@ -42,7 +42,37 @@
     <course-dialog :courses="dialog.courses" :mode="dialog.mode" :time-info="dialog.timeInfo" :visible="dialog.visible"
                    @add="navigateToAdd" @close="dialog.visible = false" @delete="confirmDelete" @edit="navigateToEdit"/>
     <!-- <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/> -->
-    <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible"/>
+        <!-- 3. 自定义学期日期弹窗 -->
+    <uni-popup ref="SemesterDialog" type="center" :mask-click="true" @change="onSemesterDialogChange">
+      <material-card color="var(--md-sys-color-on-surface)">
+        <view class="semester-card">
+          <view class="semester-header">
+            <text class="semester-title">自定义学期开始日期</text>
+          </view>
+          <view class="semester-body">
+            <text class="current-date-text">当前学期开始于：{{ weekStartDate }}</text>
+            <view class="picker-area">
+              <text class="picker-label">选择新的开始日期：</text>
+              <picker mode="date" :value="semesterDate" @change="onDateChange">
+                <view class="date-display">
+                  <text :class="{ placeholder: !semesterDate }">{{ semesterDate || '点击选择日期' }}</text>
+                  <uni-icons class="calendar-icon" type="calendar" size="16" color="var(--md-sys-color-primary)"/>
+                </view>
+              </picker>
+            </view>
+          </view>
+          <view class="semester-footer">
+            <material-button background-color="#ffffff00" color="var(--md-sys-color-primary)" size="small"
+                             @click="resetSemester">恢复默认</material-button>
+            <material-button background-color="var(--md-sys-color-primary)"
+                             color="var(--md-sys-color-surface)" size="small"
+                             @click="confirmSemester">确认设置</material-button>
+          </view>
+        </view>
+      </material-card>
+    </uni-popup>
+    <!-- <MyDrawer :opened="isDrawerOpen" @onClose="isDrawerOpen = false"/> -->
+    <sv-intercept-back :beforeIntercept="()=>{isDrawerOpen = false; showHiddenManager = false; dialog.visible = false; showSemesterDialog = false }" :show="isDrawerOpen || showHiddenManager || dialog.visible || showSemesterDialog"/>
     <material-tab-bar color="var(--md-sys-color-outline)"/>
   </view>
 </template>
@@ -59,6 +89,7 @@ import {mx, SXData} from "@/components/material-uni/sx";
 import CourseDialog from '@/components/lpx-timetable/coursedialog.vue';
 import HiddenCourseDialog from '@/components/lpx-timetable/hiddendialog.vue';
 import MaterialButton from "@/components/material-uni/material-button/material-button.vue";
+import MaterialCard from "@/components/material-uni/material-card/material-card.vue";
 import MySwipeItem from "@/components/material-uni/my-swipe/my-swipe-item.vue";
 import Welcome from "@/pages/curriculums/welcome.vue";
 
@@ -69,7 +100,7 @@ export default {
     }
   },
   components: {
-    Welcome, MySwipeItem, MaterialButton, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
+    Welcome, MySwipeItem, MaterialButton, MaterialCard, HiddenCourseDialog, CourseDialog, MaterialTabBar, Timetable, MySwipe, MaterialNavBar
   },
   data() {
     return {
@@ -157,6 +188,8 @@ export default {
       hiddenCourses: [], // 后端返回的完整列表
       showHiddenManager: false, // 控制新弹窗显示
       showWelcome: false, // 控制欢迎页显示
+      showSemesterDialog: false, // 控制学期日期弹窗显示
+      semesterDate: '', // 用户选择的学期开始日期
     };
   },
   onLoad() {
@@ -393,6 +426,51 @@ export default {
         weekIndex = 6
       }
       return weekIndex
+    },
+    openSemesterDialog() {
+      this.semesterDate = this.weekStartDate
+      this.showSemesterDialog = true
+      this.$nextTick(() => {
+        if (this.$refs.SemesterDialog) {
+          this.$refs.SemesterDialog.open('center')
+        }
+      })
+    },
+    onSemesterDialogChange(e) {
+      if (!e.show) {
+        this.showSemesterDialog = false
+      }
+    },
+    onDateChange(e) {
+      this.semesterDate = e.detail.value
+    },
+    confirmSemester() {
+      if (!this.semesterDate) {
+        uni.showToast({ title: '请先选择日期', icon: 'none' })
+        return
+      }
+      // #ifdef APP-PLUS
+      const result = this.$manager.setCustomSemesterStartDate(this.semesterDate)
+      if (result) {
+        if (this.$refs.SemesterDialog) {
+          this.$refs.SemesterDialog.close()
+        }
+        this.showSemesterDialog = false
+        this.update(true)
+      }
+      // #endif
+    },
+    resetSemester() {
+      // #ifdef APP-PLUS
+      const result = this.$manager.setCustomSemesterStartDate('')
+      if (result) {
+        if (this.$refs.SemesterDialog) {
+          this.$refs.SemesterDialog.close()
+        }
+        this.showSemesterDialog = false
+        this.update(true)
+      }
+      // #endif
     }
   }
 };
@@ -416,5 +494,72 @@ export default {
   bottom: sx(25); // 根据你的 TabBar 高度调整
   right: sx(6);
   z-index: 5;
+}
+
+.semester-card {
+  padding: sx(6);
+  width: sx(85);
+  box-sizing: border-box;
+
+  .semester-header {
+    margin-bottom: sx(5);
+
+    .semester-title {
+      font-size: sx(5.5);
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+  }
+
+  .semester-body {
+    margin-bottom: sx(6);
+
+    .current-date-text {
+      font-size: sx(4);
+      color: var(--md-sys-color-on-surface-variant);
+      display: block;
+      margin-bottom: sx(4);
+    }
+
+    .picker-area {
+      .picker-label {
+        font-size: sx(4);
+        color: var(--md-sys-color-on-surface);
+        display: block;
+        margin-bottom: sx(2);
+      }
+
+      .date-display {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--md-sys-color-surface-container-low);
+        padding: sx(3) sx(4);
+        border-radius: sx(2);
+        border: 1px solid var(--md-sys-color-outline-variant);
+
+        .placeholder {
+          color: var(--md-sys-color-outline);
+          font-size: sx(4);
+        }
+
+        text {
+          font-size: sx(4);
+          color: var(--md-sys-color-on-surface);
+        }
+
+        .calendar-icon {
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+
+  .semester-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: sx(2.5);
+  }
 }
 </style>

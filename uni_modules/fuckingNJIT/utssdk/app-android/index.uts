@@ -8,6 +8,10 @@ import CoreInitializer from "com.feifan.fuckingnjit.utils.CoreInitializer"
 import AppConfig from 'com.feifan.fuckingnjit.utils.AppConfig'
 // @ts-ignore
 import SystemActionHelper from "com.feifan.fuckingnjit.utils.system.SystemActionHelper"
+// @ts-ignore
+import AppDataCenter from "com.feifan.fuckingnjit.utils.database.AppDataCenter"
+// @ts-ignore
+import TodayScheduleManager from "com.feifan.fuckingnjit.utils.TodayScheduleManager"
 
 // @ts-ignore
 import CurriculumsWidget from 'com.feifan.fuckingnjit.widget.CurriculumsWidget'
@@ -69,6 +73,46 @@ export class Core {
 	public async deleteUser(id : string) : Promise<boolean> {
 		// @ts-ignore
 		return await Manager.getUserManager().deleteUser(UTSAndroid.getAppContext()!, id)
+	}
+
+	public setCustomSemesterStartDate(date: string): boolean {
+		// @ts-ignore
+		const user = AppDataCenter.getCurrentUser()
+		if (user == null) {
+			return false
+		}
+
+		try {
+			if (date.length == 0) {
+				// 传入空字符串：清除自定义设置，恢复使用全局默认日期
+				user.customSemesterStartDateMs = 0
+			} else {
+				// 解析 yyyy-MM-dd 格式，转为当天零点的时间戳（使用本地时区）
+				const parts = date.split('-')
+				if (parts.length != 3) {
+					// @ts-ignore
+					SystemActionHelper.showToast(UTSAndroid.getAppContext()!, "日期格式错误，请使用 yyyy-MM-dd 格式")
+					return false
+				}
+				// 使用 Java SimpleDateFormat 解析，Date.getTime() 返回 native long，类型匹配 Long 字段
+				// @ts-ignore
+				const sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+				// @ts-ignore
+				const parsedDate = sdf.parse(date)
+				user.customSemesterStartDateMs = parsedDate.getTime()
+			}
+
+			// @ts-ignore
+			AppDataCenter.saveUser(user)
+			// 清除课表缓存以重新计算当前周
+			// @ts-ignore
+			TodayScheduleManager.clearCache()
+			return true
+		} catch (e) {
+			// @ts-ignore
+			SystemActionHelper.showToast(UTSAndroid.getAppContext()!, "日期格式错误，请使用 yyyy-MM-dd 格式")
+			return false
+		}
 	}
 
 	public async getEmptyClassrooms(dateRange: string, coursePeriod: string, buildingId: string): Promise<UTSJSONObject> {
