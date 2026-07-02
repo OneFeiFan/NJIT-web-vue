@@ -32,7 +32,7 @@
             <text>学业进度</text>
           </material-list-cell>
                     <material-list-cell rightIcon @click="jump(`test`)">
-                      <text>测试</text>
+                      <text>闹钟管理</text>
                     </material-list-cell>
           <!--  #ifdef APP-PLUS  -->
           <material-list-cell rightIcon @click="jump(`usermanager`)">
